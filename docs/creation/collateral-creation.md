@@ -36,7 +36,7 @@ Five collateral types exist today. Each type has its own form:
 
 Toolbar actions available throughout: **Help**, **Comment**, **New** (clear the screen), **Submit**, **Exit**.
 
-A draft flowchart is in [`flowchart.md`](flowchart.md).
+The flowchart, built from the PL/SQL, is in [`flowchart.md`](flowchart.md).
 
 ## 3. Screen layout
 
@@ -192,6 +192,8 @@ Columns: Collateral no., Customer no., Collateral type, Description, Amount cons
 - The collateral number is system-generated. Example: `202509273039629`, which looks like `YYYYMMDD` + a 7-digit sequence.
 
 ### 5.2 To confirm against the PL/SQL
+
+> **Update:** the Creation PL/SQL answers Q1 (cash only), Q5, Q8 and Q9, and shows no business-rule checks for Q2–Q4. See [flowchart.md §5–6](flowchart.md#5-findings-to-check-before-migrating) for the answers and the findings it raised.
 
 These rules are likely but not visible in the screenshots. The prototype does **not** enforce them yet.
 

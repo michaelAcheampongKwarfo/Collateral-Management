@@ -4,7 +4,7 @@ Design and documentation for moving the Collateral Management screens from Oracl
 
 | Module | Status |
 |---|---|
-| Creation | Spec, UI prototype and draft flow ready. Flowchart to be finalised from the PL/SQL. |
+| Creation | Spec, UI prototype and flowchart from the PL/SQL ready ([flowchart](docs/creation/flowchart.md)). |
 | Amendment | Spec, UI prototype and draft flow ready. Open questions listed in the spec. |
 | Cancellation | Planned |
 
