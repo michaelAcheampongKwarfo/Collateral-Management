@@ -161,7 +161,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .section-title{font-size:14px;font-weight:700;color:var(--fg);margin:0}
 
 /* Step 1: customer */
-.cust-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start}
+.cust-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start}
 .search{display:flex;gap:0}
 .search .input{border-top-right-radius:0;border-bottom-right-radius:0;font-family:var(--font-mono);letter-spacing:.04em}
 .search .btn{border-top-left-radius:0;border-bottom-left-radius:0;border-left:0;height:38px}
@@ -170,6 +170,20 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .cust-card .nm{font-weight:700;font-size:15px}
 .cust-card .meta{color:var(--muted);font-size:12.5px;display:flex;gap:10px;flex-wrap:wrap}
 .cust-card.empty{color:var(--faint);border-style:dashed;background:transparent}
+/* Customer profile strip: identity, then evenly spread facts separated by dividers */
+.profile{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(4,minmax(0,1fr));align-items:stretch;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);min-height:72px}
+.profile > div{padding:12px 18px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
+.profile > div + div{border-left:1px solid var(--line)}
+.profile .who{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px}
+.profile .who .avatar{width:40px;height:40px;font-size:13px;background:var(--primary-soft);color:var(--primary);flex:none}
+.profile .nm{font-weight:700;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.profile .sub{font-size:12px;color:var(--muted)}
+.profile .k{white-space:nowrap;font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--muted)}
+.profile .v{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile .v.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.profile.empty{border-style:dashed;background:transparent}
+.profile.empty .v,.profile.empty .nm{color:var(--faint);font-weight:500}
+@media (max-width:1100px){.profile{grid-template-columns:repeat(2,minmax(0,1fr))}.profile .who{grid-column:1/-1}.profile > div + div{border-left:0;border-top:1px solid var(--line)}.profile > div:nth-child(odd):not(.who){border-left:1px solid var(--line)}}
 .badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:2px 9px;background:var(--primary-soft);color:var(--primary)}
 .badge.corp{background:var(--warn-soft);color:var(--warn)}
 .skeleton{background:linear-gradient(90deg,var(--sunken),var(--surface-2),var(--sunken));background-size:200% 100%;animation:sh 1.1s infinite;border-radius:4px;height:12px}
@@ -359,7 +373,7 @@ tr.new td{background:var(--primary-soft)}
               <div class="hint" id="custHint" style="max-width:220px">Press Enter to fetch the customer.</div>
             </div>
             <div class="field">
-              <span class="lbl">Customer details</span>
+              <span class="lbl">Customer profile</span>
               <div id="custCard"></div>
             </div>
           </div>
@@ -535,10 +549,17 @@ function renderCustomer(){
   if(S.custError){hint.className="err";hint.innerHTML=icon("alert")+esc(S.custError)}
   else if(S.showErrors&&!c){hint.className="err";hint.innerHTML=icon("alert")+"Enter a customer number to continue."}
   else{hint.className="hint";hint.textContent=c?"Customer found.":"Press Enter to fetch the customer."}
-  if(S.loading){card.innerHTML=`<div class="cust-card"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px"><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:35%"></div></div></div>`;return}
-  if(!c){card.innerHTML=`<div class="cust-card empty">${icon("search")}Customer name and type appear here once the number is found.</div>`;return}
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  if(S.loading){const sk=`<div class="skeleton" style="width:70%"></div>`;card.innerHTML=`<div class="profile"><div class="who"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px">${sk}<div class="skeleton" style="width:40%"></div></div></div>${[1,2,3,4].map(()=>`<div style="gap:8px"><div class="skeleton" style="width:50%;height:9px"></div>${sk}</div>`).join("")}</div>`;return}
+  if(!c){card.innerHTML=`<div class="profile empty"><div class="who"><div class="avatar">${icon("search")}</div><div><div class="nm">No customer selected</div><div class="sub">Enter a customer number to load the profile</div></div></div>${cell("Customer type","—")}${cell("Home branch","—")}${cell("Collaterals","—")}${cell("Amount held","—")}</div>`;return}
   const ini=c.name.split(" ").slice(0,2).map(w=>w[0]).join("");
-  card.innerHTML=`<div class="cust-card"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="meta"><span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span><span class="mono">${esc(c.code)}</span><span>Home branch · <span class="mono">${esc(c.brCode)}</span> ${esc(c.branch)}</span></div></div></div>`;
+  const held=[...S.newRows,...(OTHER[c.code]||[])];
+  const total=held.reduce((a,r)=>a+(r.amt||0),0);
+  card.innerHTML=`<div class="profile"><div class="who"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="sub">Customer no. <span class="mono">${esc(c.code)}</span></div></div></div>
+    ${cell("Customer type",`<span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span>`)}
+    ${cell("Home branch",`<span class="mono">${esc(c.brCode)}</span> · ${esc(c.branch)}`)}
+    ${cell("Collaterals",String(held.length),"num")}
+    ${cell("Amount held",held.length?fmt(total):"—","num")}</div>`;
 }
 function fetchCustomer(code){
   code=String(code||"").trim();

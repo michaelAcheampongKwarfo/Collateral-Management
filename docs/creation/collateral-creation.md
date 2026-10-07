@@ -63,7 +63,7 @@ A draft flowchart is in [`flowchart.md`](flowchart.md).
 |---|---|---|
 | Navigation | One window per screen | App shell with a module sidebar: **Creation** now, **Amendment** and **Cancellation** next |
 | Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
-| Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search, Enter to fetch, customer card with name, type badge and home branch |
+| Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search (Enter to fetch), next to a **customer profile strip** across the row: name and number, customer type, home branch (`010 · SINKOR`), number of collaterals held and total amount held |
 | Collateral type | Code + LOV button + description | **Step 2** card: five selectable tiles that show code, name and a one-line description. Arrow keys move between tiles. |
 | Dynamic area | Stacked canvas for the selected type | **Step 3** card built from the type's form definition, grouped into sections |
 | Collateral No | Read-only green field | Shown in the **Summary** panel as "Assigned on submit", then in the confirmation dialog |
