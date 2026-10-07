@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Collateral Management Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: app shell (module sidebar + workspace). Workspace = page header, two step cards,
+   dynamic collateral form with a sticky summary rail, then the customer's existing collaterals. */
+:root{
+  --bg:#E6EBF2; --surface:#F9FAFC; --surface-2:#F1F4F8; --sunken:#E7ECF2; --field:#FFFFFF;
+  --line:#D5DDE8; --line-strong:#BCC8D8;
+  --side-bg:#0F2342; --side-fg:#B9C7DB; --side-muted:#7F93AF; --side-strong:#FFFFFF; --side-active:#1D3B66; --side-line:#203A5E; --brand-mark:#2F7BD1;
+  --chg:#A35F00; --chg-soft:#FFF1D6;
+  --fg:#13223A; --muted:#5A6A80; --faint:#8A97A8;
+  --primary:#0B5CAD; --primary-hover:#094C90; --primary-ink:#FFFFFF; --primary-soft:#E7F0FA;
+  --danger:#B42318; --danger-soft:#FDEDEB;
+  --success:#1D7A4C; --success-soft:#E4F3EB;
+  --warn:#9A5A00; --warn-soft:#FFF4E0;
+  --act-blue:#0B5CAD; --act-blue-soft:#E7F0FA; --act-green:#1D7A4C; --act-green-ink:#FFFFFF; --act-red:#B42318; --act-red-soft:#FDEDEB;
+  --t-cash:#1D7A4C; --t-ins:#6A4BC2; --t-prop:#B05E0C; --t-guar:#0B5CAD; --t-shares:#0D7A84;
+  --shadow:0 1px 2px rgba(19,34,58,.06),0 4px 16px rgba(19,34,58,.05);
+  --overlay:rgba(12,22,38,.42);
+  --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r-sm:6px; --r-md:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28; --field:#151E2E;
+  --line:#26324A; --line-strong:#34425D;
+  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
+  --chg:#E9B15C; --chg-soft:#352812;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
+  --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
+  --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
+  --warn:#E9B15C; --warn-soft:#352812;
+  --act-blue:#6AAEF2; --act-blue-soft:#16304F; --act-green:#3FB57A; --act-green-ink:#06180E; --act-red:#F2867B; --act-red-soft:#3A1C1C;
+  --t-cash:#5CC892; --t-ins:#A890F0; --t-prop:#E6A25A; --t-guar:#5AA2EE; --t-shares:#4CC3CC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(3,7,14,.6);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28; --field:#151E2E;
+  --line:#26324A; --line-strong:#34425D;
+  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
+  --chg:#E9B15C; --chg-soft:#352812;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
+  --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
+  --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
+  --warn:#E9B15C; --warn-soft:#352812;
+  --act-blue:#6AAEF2; --act-blue-soft:#16304F; --act-green:#3FB57A; --act-green-ink:#06180E; --act-red:#F2867B; --act-red-soft:#3A1C1C;
+  --t-cash:#5CC892; --t-ins:#A890F0; --t-prop:#E6A25A; --t-guar:#5AA2EE; --t-shares:#4CC3CC;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(3,7,14,.6);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--font-body);-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+[hidden]{display:none!important}
+.table-wrap{position:relative}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* Shell */
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100%}
+.side{background:var(--side-bg);border-right:1px solid var(--side-line);padding:20px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:0 6px}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:var(--brand-mark);color:#FFFFFF;display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:.02em}
+.brand b{display:block;font-size:14px;line-height:1.2;color:var(--side-strong)}
+.brand small{color:var(--side-muted);font-size:12px}
+.nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--side-muted);font-weight:600;padding:0 8px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);color:var(--side-fg);text-decoration:none;font-weight:500}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a:not(.soon):hover{background:var(--side-active);color:var(--side-strong)}
+.nav a[aria-current="page"]{background:var(--side-active);color:var(--side-strong);font-weight:600;box-shadow:inset 3px 0 0 var(--brand-mark)}
+.nav a.soon{cursor:default;opacity:.75}
+.nav a .tag{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--side-muted);border:1px solid var(--side-line);border-radius:99px;padding:0 7px}
+.side-foot{margin-top:auto;font-size:12px;color:var(--side-muted);padding:10px;border:1px dashed var(--side-line);border-radius:var(--r-sm)}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 28px;border-bottom:1px solid var(--line);background:var(--surface);position:sticky;top:env(safe-area-inset-top,0px);z-index:20}
+.crumbs{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;min-width:0}
+.crumbs b{color:var(--fg);font-weight:600}
+.topbar .spacer{flex:1}
+.sample-pill{font-size:12px;font-weight:600;color:var(--warn);background:var(--warn-soft);border-radius:99px;padding:2px 10px;white-space:nowrap}
+.user{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;font-weight:700;font-size:12px;color:var(--fg)}
+.menu-btn{display:none}
+
+.page{padding:24px 28px 40px;max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-head h1{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.page-head p{margin:4px 0 0;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.btn.primary:hover{background:var(--primary-hover)}
+/* Standard action bar (same on every module screen): Help, Comment, New = blue · Submit = green · Exit = red */
+.actionbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.actionbar .sep{width:1px;height:24px;background:var(--line-strong);margin:0 4px}
+.btn.act-blue{background:var(--act-blue-soft);border-color:var(--act-blue);color:var(--act-blue)}
+.btn.act-blue:hover{background:var(--act-blue);color:var(--surface)}
+.btn.act-green{background:var(--act-green);border-color:var(--act-green);color:var(--act-green-ink)}
+.btn.act-green:hover{filter:brightness(1.08)}
+.btn.act-red{background:var(--act-red-soft);border-color:var(--act-red);color:var(--act-red)}
+.btn.act-red:hover{background:var(--act-red);color:var(--surface)}
+.btn:disabled:hover{background:inherit;color:inherit}
+.actionbar .btn:disabled{filter:grayscale(.6)}
+.actionbar .btn{min-width:104px;justify-content:center}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--sunken);color:var(--fg)}
+.btn.icon{padding:0;width:36px;justify-content:center}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow)}
+.card-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.step{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:700;background:var(--sunken);color:var(--muted);flex:none}
+.step.done{background:var(--success);color:var(--surface)}
+.step.active{background:var(--primary);color:var(--primary-ink)}
+.card-head h2{margin:0;font-size:15.5px;font-weight:700}
+.card-head p{margin:0;color:var(--muted);font-size:13px}
+.card-head .right{margin-left:auto}
+.card-body{padding:20px}
+
+/* Fields */
+/* 12-column form grid: fields span columns in proportion to their value; every row totals 12 */
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px 16px}
+.grid > .field{grid-column:span var(--col,12)}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label,.field .lbl{font-size:12.5px;font-weight:600;color:var(--fg)}
+.req{color:var(--danger);margin-left:2px}
+.input,.lookup-btn,.ro{height:38px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--field);padding:0 11px;width:100%;min-width:0}
+textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
+.input:hover,.lookup-btn:hover{border-color:var(--faint)}
+.input:focus,.lookup-btn:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px var(--primary-soft)}
+.input.amount{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.affix{position:relative;display:flex}
+.affix .pre,.affix .post{position:absolute;top:0;bottom:0;display:flex;align-items:center;color:var(--faint);font-size:12px;font-weight:600;pointer-events:none}
+.affix .pre{left:11px}.affix .post{right:11px}
+.affix .pre + .input{padding-left:46px}
+.affix .input.has-post{padding-right:30px}
+.ro{display:flex;align-items:center;background:var(--sunken);border-color:transparent;color:var(--fg);gap:8px;overflow:hidden;white-space:nowrap}
+.ro .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ro svg{color:var(--faint);width:14px;height:14px}
+.lbl-auto{font-weight:500;color:var(--faint);font-size:11px;margin-left:6px}
+.ro.empty{color:var(--faint)}
+.lookup-btn{display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer}
+.lookup-btn .code{font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--sunken);border-radius:4px;padding:1px 6px}
+.lookup-btn .desc{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lookup-btn .ph{flex:1;color:var(--faint)}
+.lookup-btn svg{color:var(--muted)}
+.lookup-btn:disabled{background:var(--sunken);cursor:not-allowed}
+.hint{font-size:12px;color:var(--muted)}
+.err{font-size:12px;color:var(--danger);display:flex;gap:5px;align-items:center}
+.field.invalid .input,.field.invalid .lookup-btn{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+.section{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+#formCard .card-body{container-type:inline-size}
+@container (min-width:880px){.section{grid-template-columns:210px minmax(0,1fr);gap:28px}}
+.section-head p{max-width:62ch}
+.section-head{display:flex;flex-direction:column;gap:4px;padding-top:2px}
+.section-head .n{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--tc,var(--primary));letter-spacing:.06em}
+.section-head p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.section + .section{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.section-title{font-size:14px;font-weight:700;color:var(--fg);margin:0}
+
+/* Step 1: customer */
+.cust-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start}
+.search{display:flex;gap:0}
+.search .input{border-top-right-radius:0;border-bottom-right-radius:0;font-family:var(--font-mono);letter-spacing:.04em}
+.search .btn{border-top-left-radius:0;border-bottom-left-radius:0;border-left:0;height:38px}
+.cust-card{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line);min-height:62px}
+.cust-card .avatar{width:38px;height:38px;font-size:13px;background:var(--primary-soft);color:var(--primary)}
+.cust-card .nm{font-weight:700;font-size:15px}
+.cust-card .meta{color:var(--muted);font-size:12.5px;display:flex;gap:10px;flex-wrap:wrap}
+.cust-card.empty{color:var(--faint);border-style:dashed;background:transparent}
+/* Customer profile strip: identity, then evenly spread facts separated by dividers */
+.profile{display:grid;grid-template-columns:minmax(220px,1.6fr) repeat(4,minmax(0,1fr));align-items:stretch;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);min-height:72px}
+.profile > div{padding:12px 18px;display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
+.profile > div + div{border-left:1px solid var(--line)}
+.profile .who{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px}
+.profile .who .avatar{width:40px;height:40px;font-size:13px;background:var(--primary-soft);color:var(--primary);flex:none}
+.profile .nm{font-weight:700;font-size:15px;line-height:1.25;overflow-wrap:anywhere}
+.profile .sub{font-size:12px;color:var(--muted)}
+.profile .k{white-space:nowrap;font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--muted)}
+.profile .v{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile .v.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.profile.empty{border-style:dashed;background:transparent}
+.profile.empty .v,.profile.empty .nm{color:var(--faint);font-weight:500}
+@media (max-width:1100px){.profile{grid-template-columns:repeat(2,minmax(0,1fr))}.profile .who{grid-column:1/-1}.profile > div + div{border-left:0;border-top:1px solid var(--line)}.profile > div:nth-child(odd):not(.who){border-left:1px solid var(--line)}}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:99px;padding:2px 9px;background:var(--primary-soft);color:var(--primary)}
+.badge.corp{background:var(--warn-soft);color:var(--warn)}
+.skeleton{background:linear-gradient(90deg,var(--sunken),var(--surface-2),var(--sunken));background-size:200% 100%;animation:sh 1.1s infinite;border-radius:4px;height:12px}
+@keyframes sh{to{background-position:-200% 0}}
+
+/* Step 2: collateral type tiles */
+.types{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tile{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--line-strong);border-radius:var(--r-md);background:var(--surface);cursor:pointer;text-align:left;min-width:0}
+.tile:hover:not(:disabled){border-color:var(--tc);background:var(--surface-2)}
+.tile[aria-checked="true"]{border-color:var(--tc);box-shadow:inset 0 0 0 1px var(--tc);background:var(--surface-2)}
+.tile:disabled{opacity:.5;cursor:not-allowed}
+.tile .ic{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--tc);background:var(--sunken)}
+.tile .ic svg{width:19px;height:19px}
+.tile .code{position:absolute;top:12px;right:12px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--muted)}
+.tile b{font-size:14px}
+.tile span.d{font-size:12px;color:var(--muted);line-height:1.4}
+.tile .tick{position:absolute;bottom:12px;right:12px;width:18px;height:18px;border-radius:50%;background:var(--tc);color:var(--surface);display:none;place-items:center}
+.tile .tick svg{width:12px;height:12px;stroke-width:3}
+.tile[aria-checked="true"] .tick{display:grid}
+
+/* Step 3: dynamic form + rail */
+.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.type-chip{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--tc)}
+.type-chip .ic{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:var(--sunken)}
+.rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px}
+.rail .card-body{padding:16px}
+.rail h3{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.kv:last-child{border-bottom:0}
+.kv span{color:var(--muted)}
+.kv b{font-weight:600;text-align:right;min-width:0;overflow-wrap:anywhere}
+.kv .pend{color:var(--faint);font-weight:500;font-style:italic}
+.progress{height:6px;border-radius:99px;background:var(--sunken);overflow:hidden;margin:10px 0 6px}
+.progress i{display:block;height:100%;background:var(--success);border-radius:99px;transition:width .25s}
+.bal-total{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-.01em}
+.bal-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;gap:8px}
+.bal-row:last-child{border-bottom:0}
+.bal-row span{color:var(--muted)}
+.bal-row .v{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:500;display:flex;align-items:center;gap:6px}
+.link-btn{border:0;background:none;color:var(--primary);font-weight:600;font-size:12px;cursor:pointer;padding:0}
+.drop{border:1.5px dashed var(--line-strong);border-radius:var(--r-md);padding:16px;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.drop:hover,.drop.over{border-color:var(--primary);color:var(--primary);background:var(--primary-soft)}
+.files{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.files li{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:6px 8px;border-radius:var(--r-sm);background:var(--surface-2);min-width:0}
+.files li span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.files li button{border:0;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.empty-state{padding:44px 20px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty-state .ic{width:44px;height:44px;border-radius:50%;background:var(--sunken);display:grid;place-items:center}
+
+.alert{display:flex;gap:10px;padding:12px 14px;border-radius:var(--r-sm);background:var(--danger-soft);color:var(--danger);font-size:13px;margin-bottom:18px}
+.alert ul{margin:4px 0 0;padding-left:18px}
+.alert a{color:inherit;font-weight:600}
+
+/* Table */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:10px 16px;background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.status{font-size:11.5px;font-weight:600;border-radius:99px;padding:2px 9px;background:var(--success-soft);color:var(--success)}
+.status.pending{background:var(--warn-soft);color:var(--warn)}
+tr.new td{background:var(--primary-soft)}
+
+.foot-note{font-size:12.5px;color:var(--muted);display:flex;gap:6px;align-items:center}
+
+/* Modal + drawer */
+.scrim{position:fixed;inset:0;background:var(--overlay);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--surface);border-radius:12px;width:min(640px,100%);max-height:min(640px,90vh);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid var(--line)}
+.modal header{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.modal header h2{margin:0;font-size:16px}
+.modal header .btn{margin-left:auto}
+.modal .mb{padding:14px 18px;overflow:auto}
+.modal footer{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.lov-search{position:relative;margin-bottom:10px}
+.lov-search svg{position:absolute;left:10px;top:10px;color:var(--faint)}
+.lov-search .input{padding-left:34px}
+.lov-table tbody tr{cursor:pointer}
+.lov-table tbody tr:hover td,.lov-table tbody tr.hl td{background:var(--primary-soft)}
+.lov-table td:first-child{font-family:var(--font-mono);font-weight:600}
+.drawer-scrim{justify-content:flex-end;align-items:stretch;padding:0}
+.drawer{background:var(--surface);width:min(420px,100%);height:100%;display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.drawer header{display:flex;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.drawer header h2{margin:0;font-size:16px}
+.drawer header .btn{margin-left:auto}
+.drawer .db{padding:18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.drawer ol{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.comment{padding:10px 12px;border-radius:var(--r-sm);background:var(--surface-2);font-size:13px}
+.comment small{color:var(--muted);display:block}
+.success-ic{width:52px;height:52px;border-radius:50%;background:var(--success-soft);color:var(--success);display:grid;place-items:center;margin:6px auto 10px}
+.success-ic svg{width:26px;height:26px;stroke-width:2.4}
+.coll-no{font-family:var(--font-mono);font-size:22px;font-weight:600;text-align:center;letter-spacing:.04em;padding:10px;border-radius:var(--r-sm);background:var(--sunken);margin:12px 0}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:13px;font-weight:500;z-index:80;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+
+@media (max-width:1100px){.types{grid-template-columns:repeat(3,minmax(0,1fr))}.form-wrap{grid-template-columns:minmax(0,1fr)}.rail{position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}}
+@media (max-width:900px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;left:0;top:0;bottom:0;z-index:60;transform:translateX(-100%);transition:transform .2s;width:260px;box-shadow:var(--shadow)}
+  .side.open{transform:none}
+  .menu-btn{display:inline-flex}
+  .topbar{padding:10px 16px}
+  .page{padding:18px 16px 32px}
+  .cust-row{grid-template-columns:minmax(0,1fr)}
+  .user span{display:none}
+}
+@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid > .field{grid-column:1/-1}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right:not(.chips){display:none}.card-head .chips{width:100%}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Amendment ---------- */
+.was{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
+.was b{font-weight:500;color:var(--fg);text-decoration:line-through;text-decoration-color:var(--chg);overflow-wrap:anywhere}
+.field.changed .input,.field.changed .lookup-btn{border-color:var(--chg);box-shadow:0 0 0 3px var(--chg-soft)}
+.chg-tag{margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--chg);background:var(--chg-soft);border-radius:99px;padding:1px 7px;vertical-align:1px}
+.step svg{width:14px;height:14px}
+.card-head.wrap{flex-wrap:wrap}
+.search-actions{display:flex;justify-content:flex-end;gap:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{height:30px;padding:0 12px;border-radius:99px;border:1px solid var(--line-strong);background:var(--field);font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{color:var(--fg);border-color:var(--faint)}
+.chip[aria-pressed="true"]{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.chip .n{font-family:var(--font-mono);font-size:11px;opacity:.75}
+.tdot{width:8px;height:8px;border-radius:50%;background:var(--tc,var(--faint));display:inline-block;margin-right:8px;vertical-align:1px}
+.chip .tdot{margin-right:0}
+.grid-table tbody tr{cursor:pointer}
+.grid-table tbody tr:hover td{background:var(--surface-2)}
+.grid-table tbody tr.is-pending td{color:var(--muted)}
+.grid-table td{padding-block:10px}
+.grid-table th,.grid-table td{padding-inline:14px}
+.grid-table .sticky-r{position:sticky;right:0;background:var(--surface);box-shadow:-1px 0 0 var(--line)}
+.grid-table th.sticky-r{background:var(--surface-2)}
+.grid-table tbody tr:hover td.sticky-r{background:var(--surface-2)}
+.grid-table .status + .sub{margin-top:3px}
+.grid-table .cell-name{font-weight:600}
+.grid-table .sub{font-size:11.5px;color:var(--muted)}
+.sub-strong{font-size:12px}
+th[data-sort]{cursor:pointer;user-select:none}
+th[data-sort]:hover{color:var(--fg)}
+th .arr{opacity:.35}
+th[aria-sort]{color:var(--primary)} th[aria-sort] .arr{opacity:1}
+.open-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-strong);background:var(--field);display:grid;place-items:center;cursor:pointer;color:var(--primary)}
+.open-btn:hover{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.open-btn:disabled{color:var(--faint);cursor:not-allowed;background:var(--sunken)}
+.pager{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.pager b{color:var(--fg)}
+.pager .pg{display:flex;gap:6px;align-items:center}
+.pager .btn{height:32px}.pager .btn.icon{width:32px}
+.pg-n{padding:0 6px}
+svg.flip{transform:scaleX(-1)}
+.back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:var(--primary);font-weight:600;font-size:13px;cursor:pointer;padding:0;margin-bottom:6px}
+.back svg{width:16px;height:16px}
+.h1-no{font-size:.8em;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.coll-no-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);background:var(--sunken);border-radius:99px;padding:4px 12px}
+.coll-no-chip b{color:var(--fg);font-size:12.5px}
+.chg-head{display:flex;align-items:baseline;gap:8px;color:var(--muted);font-size:13px}
+.chg-count{font-family:var(--font-mono);font-size:28px;font-weight:600;color:var(--chg)}
+.chg-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.chg-list li{font-size:12.5px;padding:8px 10px;border-radius:var(--r-sm);background:var(--surface-2);border-left:3px solid var(--chg);overflow-wrap:anywhere}
+.chg-list .f{font-weight:600;display:block;margin-bottom:2px}
+.chg-list .o,.diff .o{color:var(--muted);text-decoration:line-through}
+.chg-list .nv,.diff .nv{font-weight:600}
+.files li .link-btn{flex:none}
+.files li.new-doc{background:var(--primary-soft)}
+.diff{border:1px solid var(--line);border-radius:var(--r-sm)}
+.diff td,.diff th{white-space:normal}
+@media (max-width:640px){.coll-no-chip{display:none}.grid > .search-actions{justify-content:stretch}.search-actions .btn{flex:1;justify-content:center}}
+
+/* ---------- Cancellation ---------- */
+.stack{display:flex;flex-direction:column;gap:18px;min-width:0}
+.figs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2)}
+.figs > div{padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.figs > div + div{border-left:1px solid var(--line)}
+.figs .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figs .v{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figs .v.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.figs .sub{font-size:11.5px;color:var(--muted)}
+.ro.ro-view{background:var(--surface-2);border-color:var(--line);color:var(--fg)}
+.ro.ro-view .code{font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--sunken);border-radius:4px;padding:1px 6px;flex:none}
+.ro.num{justify-content:flex-end;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.ro.ro-multi{height:auto;min-height:60px;align-items:flex-start;padding-block:9px;white-space:normal}
+.ro.empty.ro-view{color:var(--faint)}
+.reason-card{border-color:var(--act-red);box-shadow:var(--shadow),inset 3px 0 0 var(--act-red)}
+.reason-card .step.active{background:var(--act-red);color:var(--surface)}
+.reason-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.reason-chips .hint{margin-right:2px}
+.reason-foot{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.next-steps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.warn-ic{width:52px;height:52px;border-radius:50%;background:var(--danger-soft);color:var(--danger);display:grid;place-items:center;margin:4px auto 12px}
+.warn-ic svg{width:24px;height:24px}
+.reason-q{font-weight:500;font-style:italic;text-align:right}
+@media (max-width:1100px){.figs{grid-template-columns:repeat(3,minmax(0,1fr))}.figs > div:nth-child(4){border-left:0}.figs > div:nth-child(n+4){border-top:1px solid var(--line)}}
+@media (max-width:640px){.figs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs > div{border-left:0!important;border-top:1px solid var(--line)}.figs > div:nth-child(-n+2){border-top:0}.figs > div:nth-child(even){border-left:1px solid var(--line)!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17.2v.1"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><path d="m21 11-8.6 8.6a5 5 0 0 1-7-7l8.5-8.6a3.3 3.3 0 0 1 4.7 4.7L10 17.3a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></symbol>
+  <symbol id="i-cash" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3.5 10.5 12 4l8.5 6.5"/><path d="M5.5 9v11h13V9"/><path d="M10 20v-5.5h4V20"/></symbol>
+  <symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20.5h18"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 4v16h16"/><path d="m7.5 14.5 3.5-4 3 2.5 5-6"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.6L20 16"/><path d="M20 20v-4h-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
+</svg>
+
+<div class="shell">
+  <aside class="side" id="side" aria-label="Modules">
+    <div class="brand"><div class="brand-mark">CM</div><div><b>Collateral<br>Management</b><small>LRSK · Core Banking</small></div></div>
+    <nav class="nav">
+      <div class="nav-label">Modules</div>
+      <a href="#creation" data-view="creation" aria-current="page"><svg class="i"><use href="#i-plus"/></svg>Creation</a>
+      <a href="#amendment" data-view="amendment"><svg class="i"><use href="#i-edit"/></svg>Amendment</a>
+      <a href="#cancellation" data-view="cancellation"><svg class="i"><use href="#i-ban"/></svg>Cancellation</a>
+    </nav>
+    <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="btn icon ghost menu-btn" id="menuBtn" aria-label="Open modules menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <div class="crumbs" id="crumbs">Collateral Management <span>/</span> <b>Creation</b></div>
+      <div class="spacer"></div>
+      <span class="sample-pill">Prototype · sample data</span>
+      <button class="btn icon ghost" id="themeBtn" aria-label="Toggle dark mode"><svg class="i"><use href="#i-moon"/></svg></button>
+      <div class="user"><div class="avatar">KA</div><span>K. Asare · Sinkor</span></div>
+    </header>
+
+    <main class="page" id="view-creation">
+      <div class="page-head">
+        <div>
+          <h1>Capture customer collateral</h1>
+          <p>Find the customer, choose a collateral type, then complete its details for approval.</p>
+        </div>
+        <div class="actionbar" role="toolbar" aria-label="Screen actions">
+          <button class="btn act-blue" id="helpBtn"><svg class="i"><use href="#i-help"/></svg>Help</button>
+          <button class="btn act-blue" id="commentBtn"><svg class="i"><use href="#i-msg"/></svg>Comment<span id="commentCount"></span></button>
+          <span class="sep" aria-hidden="true"></span>
+          <button class="btn act-blue" id="newBtn"><svg class="i"><use href="#i-plus"/></svg>New</button>
+          <button class="btn act-green" id="submitBtn"><svg class="i"><use href="#i-check"/></svg>Submit</button>
+          <button class="btn act-red" id="exitBtn"><svg class="i"><use href="#i-close"/></svg>Exit</button>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <section class="card" aria-labelledby="s1">
+        <div class="card-head"><div class="step" id="step1">1</div><div><h2 id="s1">Customer</h2><p>Enter the customer number or search for the customer.</p></div></div>
+        <div class="card-body">
+          <div class="cust-row">
+            <div class="field w-sm" id="fld-customer">
+              <label for="custNo">Customer number<span class="req">*</span></label>
+              <div class="search">
+                <input class="input" id="custNo" inputmode="numeric" autocomplete="off" placeholder="e.g. 056719" maxlength="10">
+                <button class="btn" id="custSearch" type="button" aria-label="Search customers"><svg class="i"><use href="#i-search"/></svg></button>
+              </div>
+              <div class="hint" id="custHint" style="max-width:220px">Press Enter to fetch the customer.</div>
+            </div>
+            <div class="field">
+              <span class="lbl">Customer profile</span>
+              <div id="custCard"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="card" aria-labelledby="s2">
+        <div class="card-head"><div class="step" id="step2">2</div><div><h2 id="s2">Collateral type</h2><p>Each type opens its own set of details.</p></div></div>
+        <div class="card-body"><div class="types" role="radiogroup" aria-labelledby="s2" id="types"></div></div>
+      </section>
+
+      <!-- Step 3 -->
+      <div class="form-wrap">
+        <section class="card" aria-labelledby="s3" id="formCard"></section>
+        <aside class="rail" id="rail"></aside>
+      </div>
+
+      <!-- Other collaterals -->
+      <section class="card" aria-labelledby="s4">
+        <div class="card-head"><div><h2 id="s4">Customer's other collaterals</h2><p id="otherSub">Collaterals already held for this customer.</p></div></div>
+        <div class="table-wrap" id="otherWrap"></div>
+      </section>
+
+      <div class="foot-note"><svg class="i"><use href="#i-info"/></svg>Fields marked <span class="req">*</span> are required.</div>
+    </main>
+    <main class="page" id="view-records" hidden></main>
+  </div>
+</div>
+
+<div id="layer"></div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const icon=(n,cls="i")=>`<svg class="${cls}"><use href="#i-${n}"/></svg>`;
+const fmt=n=>Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const fmtDate=iso=>{if(!iso)return"";const[y,m,d]=iso.split("-");return `${d}-${MON[+m-1]}-${y}`};
+const parseAmt=v=>{const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n)?null:n};
+
+/* ---------- Sample reference data (stands in for the Oracle LOVs) ---------- */
+const CUSTOMERS=[
+  {code:"056719",name:"ABENA MENSAH",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"048213",name:"KOFI BOATENG ENTERPRISES",type:"CORPORATE",branch:"SINKOR",brCode:"010"},
+  {code:"061104",name:"EFUA ASANTE",type:"INDIVIDUAL",branch:"CONGO TOWN",brCode:"012"},
+  {code:"072530",name:"RIVERSIDE TRADERS LTD",type:"CORPORATE",branch:"BROAD STREET",brCode:"015"},
+];
+const ACCOUNTS=[
+  {code:"00422004346801",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",brCode:"010",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:1220.78,cleared:1542.78,uncleared:0,od:0,block:322.00}},
+  {code:"00422001198320",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",brCode:"010",prod:"310",prodDesc:"FIXED DEPOSIT 12M",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:25000,cleared:25000,uncleared:0,od:0,block:0}},
+  {code:"00431007712055",desc:"KOFI BOATENG ENTERPRISES",cust:"048213",branch:"SINKOR",brCode:"010",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"020",ccyDesc:"US DOLLAR",bal:{avail:84310.5,cleared:90110.5,uncleared:5800,od:0,block:0}},
+  {code:"00515002203914",desc:"EFUA ASANTE",cust:"061104",branch:"CONGO TOWN",brCode:"012",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:6420,cleared:6420,uncleared:0,od:0,block:0}},
+  {code:"00608009934117",desc:"RIVERSIDE TRADERS LTD",cust:"072530",branch:"BROAD STREET",brCode:"015",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:142800,cleared:150000,uncleared:7200,od:0,block:0}},
+];
+const L=(code,desc,extra)=>Object.assign({code,desc},extra||{});
+const LOVS={
+  insCompany:{title:"Insurance companies",rows:()=>[L("001","MERIDIAN LIFE ASSURANCE"),L("002","COASTAL GENERAL INSURANCE"),L("003","HARBOR MUTUAL INSURANCE"),L("004","NORTHGATE ASSURANCE CO.")]},
+  policyType:{title:"Policy types",rows:()=>[L("01","LIFE ASSURANCE"),L("02","ENDOWMENT"),L("03","FIRE & ALLIED PERILS"),L("04","MOTOR COMPREHENSIVE")]},
+  propType:{title:"Property types",rows:()=>[L("01","RESIDENTIAL"),L("02","COMMERCIAL"),L("03","LAND"),L("04","INDUSTRIAL")]},
+  propSub:{title:"Sub property types",dependsOn:"propType",rows:s=>{const p=s.values.propType;const all={"01":[L("011","DETACHED HOUSE"),L("012","APARTMENT / FLAT"),L("013","TOWNHOUSE")],"02":[L("021","OFFICE BUILDING"),L("022","SHOP / RETAIL"),L("023","WAREHOUSE")],"03":[L("031","SERVICED PLOT"),L("032","AGRICULTURAL LAND")],"04":[L("041","FACTORY"),L("042","WORKSHOP")]};return all[p]||[]}},
+  finInst:{title:"Financial institutions",rows:()=>[L("101","ATLANTIC COMMERCIAL BANK"),L("102","UNITY SAVINGS & LOANS"),L("103","CAPE TRUST BANK")]},
+  guarAccount:{title:"Accounts at institution",dependsOn:"finInst",rows:s=>{const f=s.values.finInst;const all={"101":[L("1010047781200","FD - ABENA MENSAH"),L("1010047781311","CALL - ABENA MENSAH")],"102":[L("2200319004","FD - ABENA MENSAH")],"103":[L("3300881276551","TBILL 182D - ABENA MENSAH")]};return all[f]||[]}},
+  currency:{title:"Currencies",rows:()=>[L("010","GHANA CEDIS"),L("020","US DOLLAR"),L("030","EURO"),L("040","POUND STERLING")]},
+  depositType:{title:"Deposit types",rows:()=>[L("01","FIXED DEPOSIT"),L("02","CALL DEPOSIT"),L("03","TREASURY BILL")]},
+  guarCollType:{title:"Guarantee collateral types",rows:()=>[L("01","BANK GUARANTEE"),L("02","LIEN ON DEPOSIT"),L("03","STANDBY LETTER OF CREDIT")]},
+  shareCode:{title:"Shares / securities",rows:()=>[L("ACB","ATLANTIC COMMERCIAL BANK PLC"),L("WCM","WEST COAST CEMENT LTD"),L("GBD","GOVT BOND 3Y 2027"),L("TPL","TROPIC PALM OIL PLC")]},
+  shareIndex:{title:"Indices",rows:()=>[L("01","GSE COMPOSITE INDEX"),L("02","GSE FINANCIAL STOCKS INDEX"),L("03","FIXED INCOME (GFIM)")]},
+  account:{title:"Customer accounts",rows:s=>ACCOUNTS.filter(a=>a.cust===s.customer?.code).map(a=>Object.assign({},a,{desc:a.desc+" · "+a.prodDesc}))},
+};
+
+/* ---------- Collateral type schemas (same shape the Angular dynamic form would read) ---------- */
+/* Layout: every section is a 12-column grid. `col` = columns the field spans, chosen from the
+   length of its value. Every row adds up to 12, so left and right edges always line up. */
+const COLL=(o)=>({title:"Collateral details",desc:o.desc||"Value the bank will rely on, and when the collateral must be reviewed.",fields:[
+  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:4},
+  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true,col:4},
+  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:4},
+  {id:"comment",label:"Comment",type:"textarea",col:12,placeholder:"Optional notes for the approver"},
+]});
+const TYPES=[
+  {code:"C01",name:"Cash",title:"Cash collateral",lovDesc:"CASH COLLATERALS",tc:"--t-cash",ic:"cash",d:"Lien on the customer's own deposit account",
+   sections:[
+    {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
+      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:8},
+      {id:"srcBranch",label:"Source branch",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`},
+      {id:"product",label:"Product",type:"derived",col:8,get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
+      {id:"ccy",label:"Currency",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
+    ]},
+    COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
+   rail:"balances"},
+  {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
+   sections:[
+    {title:"Insurance details",desc:"The insurer and the policy assigned to the bank.",fields:[
+      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:8},
+      {id:"insCode",label:"Insurance code",type:"text",req:true,col:4},
+      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,col:4},
+      {id:"policyNo",label:"Policy number",type:"text",req:true,col:4},
+      {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:4},
+    ]},
+    COLL({})]},
+  {code:"C03",name:"Property",title:"Property collateral",lovDesc:"PROPERTY COLLATERAL",tc:"--t-prop",ic:"home",d:"Land or buildings under a legal charge",
+   sections:[
+    {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
+      {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
+      {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
+      {id:"owner",label:"Ownership name",type:"text",req:true,col:5},
+      {id:"location",label:"Location",type:"text",req:true,col:7,placeholder:"Street, town, plot number"},
+    ]},
+    {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
+      {id:"valuer",label:"Valuer name",type:"text",req:true,col:8},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:4,placeholder:"e.g. 0302678178"},
+      {id:"valDate",label:"Valuation date",type:"date",req:true,col:4},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:4},
+    ]},
+    COLL({})]},
+  {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
+   sections:[
+    {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
+      {id:"branch",label:"Branch",type:"text",col:4},
+      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,col:8},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
+      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
+      {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
+    ]},
+    {title:"Terms and folio",desc:"Amount, rate and tenor of the guarantee, and its folio range.",fields:[
+      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:4},
+      {id:"rate",label:"Interest rate",type:"percent",req:true,col:4},
+      {id:"months",label:"Number of months",type:"int",req:true,col:4},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+    ]},
+    COLL({})]},
+  {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
+   sections:[
+    {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
+      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
+      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
+      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:4},
+      {id:"secAmount",label:"Security amount",type:"amount",req:true,col:4},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+    ]},
+    {title:"Folio",desc:"Folio reference and the certificate range pledged.",fields:[
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+    ]},
+    COLL({})]},
+];
+const typeBy=c=>TYPES.find(t=>t.code===c);
+
+const OTHER={
+  "056719":[{no:"2606204210",type:"C03",desc:"PROPERTY COLLATERAL",amt:150000,avail:null,date:"27-SEP-2025",status:"Approved"},
+            {no:"2601187735",type:"C02",desc:"INSURANCE COLLATERALS",amt:45000,avail:45000,date:"14-MAR-2025",status:"Approved"}],
+  "048213":[{no:"2511093318",type:"C04",desc:"GUARANTEE COLLATERALS",amt:500000,avail:320000,date:"02-NOV-2024",status:"Approved"}],
+  "061104":[],
+  "072530":[{no:"2603300457",type:"C01",desc:"CASH COLLATERALS",amt:60000,avail:60000,date:"30-JUN-2025",status:"Approved"}],
+};
+
+/* ---------- State ---------- */
+let S;
+function fresh(){return{customer:null,loading:false,custError:"",type:null,values:{},lookups:{},files:[],errors:{},showErrors:false,comments:[],newRows:[]}}
+
+/* ---------- Step 1: customer ---------- */
+function renderCustomer(){
+  const c=S.customer,card=$("#custCard");
+  $("#fld-customer").classList.toggle("invalid",!!S.custError||(S.showErrors&&!c));
+  const hint=$("#custHint");
+  if(S.custError){hint.className="err";hint.innerHTML=icon("alert")+esc(S.custError)}
+  else if(S.showErrors&&!c){hint.className="err";hint.innerHTML=icon("alert")+"Enter a customer number to continue."}
+  else{hint.className="hint";hint.textContent=c?"Customer found.":"Press Enter to fetch the customer."}
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  if(S.loading){const sk=`<div class="skeleton" style="width:70%"></div>`;card.innerHTML=`<div class="profile"><div class="who"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px">${sk}<div class="skeleton" style="width:40%"></div></div></div>${[1,2,3,4].map(()=>`<div style="gap:8px"><div class="skeleton" style="width:50%;height:9px"></div>${sk}</div>`).join("")}</div>`;return}
+  if(!c){card.innerHTML=`<div class="profile empty"><div class="who"><div class="avatar">${icon("search")}</div><div><div class="nm">No customer selected</div><div class="sub">Enter a customer number to load the profile</div></div></div>${cell("Customer type","—")}${cell("Home branch","—")}${cell("Collaterals","—")}${cell("Amount held","—")}</div>`;return}
+  const held=[...S.newRows,...(OTHER[c.code]||[])];
+  card.innerHTML=profileHtml(c,held.length,held.reduce((a,r)=>a+(r.amt||0),0));
+}
+function fetchCustomer(code){
+  code=String(code||"").trim();
+  if(!code){S.customer=null;S.custError="";renderAll();return}
+  const padded=code.padStart(6,"0");
+  S.loading=true;S.custError="";renderCustomer();
+  setTimeout(()=>{
+    S.loading=false;
+    const c=CUSTOMERS.find(x=>x.code===padded);
+    if(!c){S.customer=null;S.custError=`No customer found with number ${padded}. Check the number or search by name.`;}
+    else{
+      if(S.customer?.code!==c.code){S.values={};S.lookups={};S.errors={};S.newRows=[]}
+      S.customer=c;$("#custNo").value=c.code;
+    }
+    renderAll();
+  },450);
+}
+
+/* ---------- Step 2: type tiles ---------- */
+function renderTypes(){
+  $("#types").innerHTML=TYPES.map(t=>`<button type="button" class="tile" role="radio" aria-checked="${S.type===t.code}" data-type="${t.code}" style="--tc:var(${t.tc})" ${S.customer?"":"disabled"}>
+    <span class="code">${t.code}</span><span class="ic">${icon(t.ic)}</span><b>${t.name}</b><span class="d">${t.d}</span><span class="tick">${icon("check")}</span></button>`).join("");
+}
+
+/* ---------- Step 3: dynamic form ---------- */
+const CCY={"010":"GHS","020":"USD","030":"EUR","040":"GBP"};
+function ccyOf(st){const c=st.type==="C01"?st.lookups.account?.ccy:st.type==="C04"?st.values.currency:null;return CCY[c]||"GHS"}
+function fieldHtml(t,f,st=S){
+  const P=st.pfx||"f";
+  const id=`${P}-${t.code}-${f.id}`,v=st.values[f.id]??"",err=st.showErrors&&st.errors[f.id];
+  if(st.readonly){
+    const lk=f.type==="lookup"&&st.lookups[f.id];
+    const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
+    const body=empty?"—":lk?`<span class="code">${esc(lk.code)}</span><span class="t">${esc(lk.desc)}</span>`:`<span class="t">${esc(val)}</span>`;
+    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}</span><div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${body}</div></div>`;
+  }
+  const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
+  let ctl="";
+  if(f.type==="lookup"){
+    const row=st.lookups[f.id];const lov=LOVS[f.lov];
+    const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
+    ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code">${esc(row.code)}</span><span class="desc">${esc(row.desc)}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
+  }else if(f.type==="derived"){
+    const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):"From source account"}</span>${icon("lock")}</div>`;
+    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
+  }else if(f.type==="textarea"){
+    ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
+  }else if(f.type==="amount"){
+    const ccy=ccyOf(st);
+    ctl=`<div class="affix"><span class="pre">${ccy}</span><input class="input amount" id="${id}" data-f="${f.id}" data-kind="amount" inputmode="decimal" placeholder="0.00" value="${esc(v)}"></div>`;
+  }else if(f.type==="percent"){
+    ctl=`<div class="affix"><input class="input amount has-post" id="${id}" data-f="${f.id}" data-kind="num" inputmode="decimal" placeholder="0.00" value="${esc(v)}"><span class="post">%</span></div>`;
+  }else if(f.type==="int"){
+    ctl=`<input class="input amount" id="${id}" data-f="${f.id}" data-kind="int" inputmode="numeric" placeholder="0" value="${esc(v)}">`;
+  }else{
+    const typ=f.type==="date"?"date":f.type==="tel"?"tel":"text";
+    ctl=`<input class="input" type="${typ}" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
+  }
+  let help="";const chg=st.orig&&isChanged(f,st);
+  if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
+  else if(chg)help=`<div class="was">Was <b>${esc(origDisplay(f,st))}</b><button type="button" class="link-btn" data-revert="${f.id}">Undo</button></div>`;
+  else if(f.id==="amount"&&st.type==="C01"&&st.lookups.account)help=`<div class="hint">Available balance <span class="mono">${fmt(st.lookups.account.bal.avail)}</span></div>`;
+  return `<div class="field ${err?"invalid":""} ${chg?"changed":""}" style="--col:${f.col}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
+}
+const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
+
+function renderForm(){
+  const card=$("#formCard"),t=typeBy(S.type);
+  if(!t){
+    card.innerHTML=`<div class="card-head"><div class="step">3</div><div><h2 id="s3">Collateral details</h2><p>The details form depends on the collateral type.</p></div></div>
+    <div class="empty-state"><div class="ic">${icon("layers")}</div><b>${S.customer?"Choose a collateral type above":"Start with the customer"}</b><span>${S.customer?"Cash, insurance, property, guarantee and shares each have their own fields.":"Collateral types unlock once a customer is found."}</span></div>`;
+    return;
+  }
+  const errList=S.showErrors?Object.entries(S.errors):[];
+  card.style.setProperty("--tc",`var(${t.tc})`);
+  card.innerHTML=`<div class="card-head"><div class="step active">3</div>
+      <div><h2 id="s3"><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2></div>
+      <div class="right"><span class="mono" style="font-size:12px;color:var(--muted)">${t.code} · ${esc(t.lovDesc)}</span></div></div>
+    <div class="card-body">
+      ${errList.length?`<div class="alert" role="alert" id="errSummary">${icon("alert")}<div><b>${errList.length} field${errList.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errList.slice(0,6).map(([k,m])=>`<li><a href="#f-${t.code}-${k}" data-jump="f-${t.code}-${k}">${esc(m)}</a></li>`).join("")}${errList.length>6?`<li>and ${errList.length-6} more</li>`:""}</ul></div></div>`:""}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f)).join("")}</div></div>`).join("")}
+    </div>`;
+}
+
+/* ---------- Summary rail ---------- */
+function requiredFields(t){return t?t.sections.flatMap(s=>s.fields).filter(f=>f.req):[]}
+function renderRail(){
+  const t=typeBy(S.type),rail=$("#rail");
+  if(!t){rail.hidden=true;$(".form-wrap").style.gridTemplateColumns="minmax(0,1fr)";return}
+  rail.hidden=false;$(".form-wrap").style.gridTemplateColumns="";
+  const req=requiredFields(t),done=req.filter(f=>hasValue(f.id)).length;
+  const amt=parseAmt(S.values.amount);
+  let html=`<div class="card"><div class="card-body"><h3>Summary</h3>
+    <div class="kv"><span>Collateral no.</span><b class="pend">Assigned on submit</b></div>
+    <div class="kv"><span>Customer</span><b>${esc(S.customer?.name||"")}</b></div>
+    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
+    <div class="kv"><span>${t.code==="C01"?"Collateral amount":"Amount considered"}</span><b class="mono">${amt!=null?fmt(amt):"—"}</b></div>
+    <div class="kv"><span>Review / expiry</span><b>${S.values.reviewDate?fmtDate(S.values.reviewDate):"—"} / ${S.values.expiryDate?fmtDate(S.values.expiryDate):"—"}</b></div>
+    <div class="progress" aria-hidden="true"><i style="width:${req.length?done/req.length*100:0}%"></i></div>
+    <div class="hint">${done} of ${req.length} required fields complete</div></div></div>`;
+  if(t.rail==="balances"){
+    const a=S.lookups.account;
+    html+=`<div class="card"><div class="card-body"><h3>Account balances</h3>${a?`
+      <div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
+      <div style="margin-top:8px">
+      <div class="bal-row"><span>Cleared balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
+      <div class="bal-row"><span>Uncleared balance</span><span class="v">${fmt(a.bal.uncleared)}<button class="link-btn" data-detail="uncleared">Details</button></span></div>
+      <div class="bal-row"><span>OD amount</span><span class="v">${fmt(a.bal.od)}</span></div>
+      <div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}<button class="link-btn" data-detail="block">Details</button></span></div></div>`
+      :`<div class="hint">Select a source account to see its balances.</div>`}</div></div>`;
+  }
+  html+=`<div class="card"><div class="card-body"><h3>Supporting documents</h3>
+    <label class="drop" id="drop" for="fileIn">${icon("upload")}<span><b>Attach documents</b><br>Drop files here or browse</span><span class="hint">Valuation report, title deed, policy, certificate…</span></label>
+    <input type="file" id="fileIn" multiple class="sr">
+    ${S.files.length?`<ul class="files">${S.files.map((n,i)=>`<li>${icon("clip")}<span>${esc(n)}</span><button aria-label="Remove ${esc(n)}" data-rm="${i}">${icon("x")}</button></li>`).join("")}</ul>`:""}
+    </div></div>`;
+  rail.innerHTML=html;
+}
+
+/* ---------- Other collaterals ---------- */
+function renderOther(){
+  const w=$("#otherWrap");
+  if(!S.customer){w.innerHTML=`<div class="empty-state" style="padding:28px">No customer selected.</div>`;$("#otherSub").textContent="Collaterals already held for this customer.";return}
+  const rows=[...S.newRows,...(OTHER[S.customer.code]||[])];
+  $("#otherSub").textContent=`${rows.length} collateral${rows.length===1?"":"s"} held for ${S.customer.name}.`;
+  if(!rows.length){w.innerHTML=`<div class="empty-state" style="padding:28px">This customer has no other collaterals.</div>`;return}
+  w.innerHTML=`<table><thead><tr><th>Collateral no.</th><th>Customer no.</th><th>Type</th><th>Description</th><th class="num">Amount considered</th><th class="num">Amount available</th><th>Approval date</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr class="${r.isNew?"new":""}"><td class="mono">${r.no}</td><td class="mono">${S.customer.code}</td><td class="mono">${r.type}</td><td>${esc(r.desc)}</td><td class="num">${fmt(r.amt)}</td><td class="num">${r.avail==null?"—":fmt(r.avail)}</td><td>${r.date||"—"}</td><td><span class="status ${r.status==="Approved"?"":"pending"}">${r.status}</span></td></tr>`).join("")}
+  </tbody></table>`;
+}
+
+function renderSteps(){
+  $("#step1").className="step "+(S.customer?"done":"active");$("#step1").innerHTML=S.customer?icon("check"):"1";
+  $("#step2").className="step "+(S.type?"done":S.customer?"active":"");$("#step2").innerHTML=S.type?icon("check"):"2";
+  $("#commentCount").textContent=S.comments.length?`(${S.comments.length})`:"";
+}
+function renderAll(){renderCustomer();renderTypes();renderForm();renderRail();renderOther();renderSteps()}
+
+/* ---------- Validation ---------- */
+function hasValue(id){const v=S.values[id];return v!=null&&String(v).trim()!==""}
+function validate(){
+  const t=typeBy(S.type);S.errors={};
+  if(!t)return;
+  for(const f of requiredFields(t)){
+    if(hasValue(f.id))continue;
+    const l=f.label.toLowerCase();
+    S.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`;
+  }
+  for(const f of t.sections.flatMap(s=>s.fields)){
+    if(["amount","percent","int"].includes(f.type)&&hasValue(f.id)&&parseAmt(S.values[f.id])==null)S.errors[f.id]=`${f.label} must be a number.`;
+  }
+}
+
+/* ---------- Layer: modal, drawer, toast ---------- */
+let lastFocus=null;
+function openLayer(html,cls=""){lastFocus=document.activeElement;$("#layer").innerHTML=`<div class="scrim ${cls}" id="scrim">${html}</div>`;}
+function closeLayer(){$("#layer").innerHTML="";lastFocus&&lastFocus.focus&&lastFocus.focus()}
+let toastT;
+function toast(msg){clearTimeout(toastT);let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";el.className="toast";el.setAttribute("role","status");document.body.appendChild(el)}el.textContent=msg;el.hidden=false;toastT=setTimeout(()=>el.hidden=true,2800)}
+
+function openLov(title,rows,onPick,cols){
+  cols=cols||[["code","Code"],["desc","Description"]];
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="lovT"><header><h2 id="lovT">${esc(title)}</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb"><div class="lov-search">${icon("search")}<input class="input" id="lovQ" placeholder="Type to filter by code or description" autocomplete="off"></div>
+    <div class="table-wrap"><table class="lov-table"><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join("")}</tr></thead><tbody id="lovBody"></tbody></table></div></div>
+    <footer><span class="hint" style="margin-right:auto">↑ ↓ to move · Enter to select</span><button class="btn" data-close>Cancel</button></footer></div>`);
+  let hl=0,shown=rows;
+  const draw=()=>{const q=$("#lovQ").value.trim().toLowerCase();shown=rows.filter(r=>cols.some(c=>String(r[c[0]]).toLowerCase().includes(q)));hl=Math.min(hl,Math.max(shown.length-1,0));
+    $("#lovBody").innerHTML=shown.length?shown.map((r,i)=>`<tr data-i="${i}" class="${i===hl?"hl":""}">${cols.map(c=>`<td>${esc(r[c[0]])}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${cols.length}" style="color:var(--muted);font-family:var(--font-body);font-weight:400">No matches.</td></tr>`};
+  draw();$("#lovQ").focus();
+  $("#lovQ").addEventListener("input",()=>{hl=0;draw()});
+  $("#lovQ").addEventListener("keydown",e=>{if(e.key==="ArrowDown"){hl=Math.min(hl+1,shown.length-1);draw();e.preventDefault()}else if(e.key==="ArrowUp"){hl=Math.max(hl-1,0);draw();e.preventDefault()}else if(e.key==="Enter"&&shown[hl]){e.preventDefault();const r=shown[hl];closeLayer();onPick(r)}});
+  $("#lovBody").addEventListener("click",e=>{const tr=e.target.closest("tr[data-i]");if(!tr)return;const r=shown[+tr.dataset.i];closeLayer();onPick(r)});
+}
+
+function openDrawer(title,body){
+  openLayer(`<div class="drawer" role="dialog" aria-modal="true" aria-labelledby="drT"><header><h2 id="drT">${esc(title)}</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header><div class="db">${body}</div></div>`,"drawer-scrim");
+}
+
+/* ---------- Events ---------- */
+$("#custNo").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();fetchCustomer(e.target.value)}});
+$("#custNo").addEventListener("change",e=>fetchCustomer(e.target.value));
+$("#custSearch").addEventListener("click",()=>openLov("Find customer",CUSTOMERS,r=>fetchCustomer(r.code),[["code","Customer no."],["name","Name"],["type","Type"]]));
+
+$("#types").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b||b.disabled)return;
+  if(S.type!==b.dataset.type){S.type=b.dataset.type;S.values={};S.lookups={};S.errors={};S.showErrors=false}
+  renderAll();$("#formCard").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});});
+$("#types").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key))return;const tiles=[...document.querySelectorAll(".tile")];const i=tiles.indexOf(document.activeElement);if(i<0)return;const n=tiles[(i+(e.key==="ArrowRight"||e.key==="ArrowDown"?1:-1)+tiles.length)%tiles.length];n.focus();e.preventDefault()});
+
+$("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=e.target.value;if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});
+$("#formCard").addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k)return;const n=parseAmt(e.target.value);if(n==null)return;e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);S.values[e.target.dataset.f]=e.target.value;renderRail()});
+$("#formCard").addEventListener("click",e=>{
+  const j=e.target.closest("[data-jump]");if(j){e.preventDefault();const el=document.getElementById(j.dataset.jump);el&&(el.scrollIntoView({block:"center"}),el.focus());return}
+  const b=e.target.closest("[data-lov]");if(!b)return;
+  const t=typeBy(S.type),f=t.sections.flatMap(s=>s.fields).find(x=>x.id===b.dataset.lov),lov=LOVS[f.lov];
+  const cols=f.lov==="account"?[["code","Account no."],["prodDesc","Product"],["ccyDesc","Currency"]]:undefined;
+  openLov(lov.title,lov.rows(S),r=>{
+    S.values[f.id]=r.code;S.lookups[f.id]=r;delete S.errors[f.id];
+    for(const k in LOVS){if(LOVS[k].dependsOn===f.id){const dep=t.sections.flatMap(s=>s.fields).find(x=>x.lov===k);if(dep){delete S.values[dep.id];delete S.lookups[dep.id]}}}
+    renderForm();renderRail();document.getElementById(`f-${t.code}-${f.id}`)?.focus();
+  },cols);
+});
+
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-close]")||e.target.id==="scrim"){closeLayer();return}
+  const rm=e.target.closest("[data-rm]");if(rm){S.files.splice(+rm.dataset.rm,1);renderRail();return}
+  const d=e.target.closest("[data-detail]");
+  if(d){const a=S.lookups.account;const rows=d.dataset.detail==="block"?[{code:"BLK-2209",desc:"Standing order guarantee",amt:fmt(a.bal.block)}]:a.bal.uncleared?[{code:"CHQ-88120",desc:"Inward clearing cheque",amt:fmt(a.bal.uncleared)}]:[];
+    openLov(d.dataset.detail==="block"?"Blocked amounts":"Uncleared items",rows,()=>{},[["code","Reference"],["desc","Description"],["amt","Amount"]]);}
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#scrim"))closeLayer()});
+document.addEventListener("change",e=>{if(e.target.id==="fileIn"){S.files.push(...[...e.target.files].map(f=>f.name));renderRail()}});
+document.addEventListener("dragover",e=>{const d=e.target.closest&&e.target.closest("#drop");if(d){e.preventDefault();d.classList.add("over")}});
+document.addEventListener("dragleave",e=>{const d=e.target.closest&&e.target.closest("#drop");d&&d.classList.remove("over")});
+document.addEventListener("drop",e=>{const d=e.target.closest&&e.target.closest("#drop");if(!d)return;e.preventDefault();S.files.push(...[...e.dataTransfer.files].map(f=>f.name));renderRail()});
+
+$("#newBtn").addEventListener("click",()=>{S=fresh();$("#custNo").value="";renderAll();$("#custNo").focus();toast("Form cleared. Ready for a new collateral.")});
+$("#exitBtn").addEventListener("click",()=>toast("Exit returns to the Collateral Management home in the Angular app."));
+$("#helpBtn").addEventListener("click",()=>{const t=typeBy(S.type);openDrawer("Help · Collateral creation",`
+  <ol><li>Enter the <b>customer number</b> and press Enter, or search for the customer. Name and type fill in automatically.</li>
+  <li>Choose a <b>collateral type</b>. The details form changes to match it.</li>
+  <li>Complete every field marked <span class="req">*</span>. Codes such as policy type or currency are picked from a searchable list.</li>
+  <li>Attach supporting documents, then <b>Submit</b>. The collateral number is assigned and the record goes for approval.</li></ol>
+  ${t?`<div class="comment"><small>Current type</small><b>${t.code} · ${esc(t.title)}</b><br>${requiredFields(t).length} required fields.</div>`:""}
+  <div class="hint">Shortcuts: Enter fetches the customer · ↑ ↓ and Enter work in every search list · Esc closes dialogs.</div>`)});
+$("#commentBtn").addEventListener("click",()=>{openDrawer("Comments",`
+  <div class="field"><label for="cmtIn">Add a comment for the approver</label><textarea class="input" id="cmtIn" placeholder="e.g. Valuation report to follow by Friday"></textarea></div>
+  <div><button class="btn primary" id="cmtAdd">Add comment</button></div>
+  <div id="cmtList" style="display:flex;flex-direction:column;gap:8px">${S.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
+  $("#cmtAdd").addEventListener("click",()=>{const v=$("#cmtIn").value.trim();if(!v)return;S.comments.unshift({text:v,when:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})});closeLayer();renderSteps();toast("Comment added.")})});
+
+$("#submitBtn").addEventListener("click",()=>{
+  S.showErrors=true;validate();
+  if(!S.customer){renderAll();$("#custNo").focus();toast("Find the customer first.");return}
+  if(!S.type){renderAll();$("#types").scrollIntoView({block:"center"});toast("Choose a collateral type.");return}
+  if(Object.keys(S.errors).length){renderForm();$("#errSummary").scrollIntoView({block:"center"});return}
+  const t=typeBy(S.type),d=new Date(),p=n=>String(n).padStart(2,"0");
+  const no=`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}${String(Math.floor(Math.random()*1e7)).padStart(7,"0")}`;
+  const amt=parseAmt(S.values.amount);
+  S.newRows.unshift({no,type:t.code,desc:t.lovDesc,amt,avail:null,date:null,status:"Pending approval",isNew:true});
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="okT" style="width:min(460px,100%)"><div class="mb" style="text-align:center;padding:24px">
+    <div class="success-ic">${icon("check")}</div><h2 id="okT" style="margin:0;font-size:18px">Collateral submitted for approval</h2>
+    <div class="coll-no">${no}</div>
+    <div style="text-align:left"><div class="kv"><span>Customer</span><b>${esc(S.customer.name)} · <span class="mono">${S.customer.code}</span></b></div>
+    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.title)}</b></div>
+    <div class="kv"><span>${t.code==="C01"?"Collateral amount":"Amount considered"}</span><b class="mono">${fmt(amt)}</b></div>
+    <div class="kv"><span>Documents</span><b>${S.files.length||"None"}</b></div>
+    <div class="kv"><span>Status</span><b><span class="status pending">Pending approval</span></b></div></div></div>
+    <footer><button class="btn" id="okClose">Back to customer</button><button class="btn primary" id="okNew">Capture another</button></footer></div>`);
+  $("#okNew").focus();
+  $("#okClose").addEventListener("click",()=>{closeLayer();S.type=null;S.values={};S.lookups={};S.files=[];S.errors={};S.showErrors=false;renderAll();$("#otherWrap").scrollIntoView({block:"center"})});
+  $("#okNew").addEventListener("click",()=>{closeLayer();$("#newBtn").click()});
+});
+
+$("#menuBtn").addEventListener("click",()=>$("#side").classList.toggle("open"));
+$("#themeBtn").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"});
+document.querySelectorAll(".nav a.soon").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();toast(`${a.textContent.replace("Next","").trim()} will be designed in a later phase.`)}));
+
+/* =====================================================================
+   AMENDMENT MODULE
+   List: search approved collaterals → "›" opens the type's details page.
+   Detail: same 12-column forms, every edit tracked against the original.
+   ===================================================================== */
+CUSTOMERS.push(
+  {code:"004997",name:"SAMUEL K. TOWEH",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"019727",name:"COASTLINE BUILDERS LTD",type:"CORPORATE",branch:"BROAD STREET",brCode:"015"},
+  {code:"036551",name:"PETER B. GAYE",type:"INDIVIDUAL",branch:"CONGO TOWN",brCode:"012"},
+  {code:"008626",name:"HAWA M. KAMARA",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"029265",name:"GRACE N. WESSEH",type:"INDIVIDUAL",branch:"BROAD STREET",brCode:"015"},
+  {code:"063486",name:"JOSEPH T. FLOMO",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"046937",name:"MIRIAM A. DUNBAR",type:"INDIVIDUAL",branch:"CONGO TOWN",brCode:"012"},
+  {code:"023483",name:"ATLANTIC TRADING GROUP INC",type:"CORPORATE",branch:"BROAD STREET",brCode:"015"},
+  {code:"713350",name:"DAVID N. KPANAN",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"046378",name:"ROSE T. NYEMAH",type:"INDIVIDUAL",branch:"CONGO TOWN",brCode:"012"},
+);
+const ACC=(code,cust,name,brCode,branch,cleared,avail)=>({code,desc:name,cust,branch,brCode,prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail,cleared,uncleared:0,od:0,block:0}});
+ACCOUNTS.push(
+  ACC("00622503655101","036551","PETER B. GAYE","012","CONGO TOWN",82283.15,82283.15),
+  ACC("00422007781340","008626","HAWA M. KAMARA","010","SINKOR",167890.25,165890.25),
+  ACC("00615003300912","029265","GRACE N. WESSEH","015","BROAD STREET",95000,95000),
+  ACC("00422009001877","063486","JOSEPH T. FLOMO","010","SINKOR",2500,2500),
+  ACC("00515004410256","046937","MIRIAM A. DUNBAR","012","CONGO TOWN",444.29,444.29),
+);
+
+/* Amendment forms follow the Oracle Forms amendment screens, on the same 12-column grid as Creation */
+const AMT=(code,sections)=>Object.assign({},typeBy(code),{sections});
+const AM_TYPES=[
+  Object.assign(AMT("C01",[TYPES[0].sections[0],COLL({desc:"Amount held against the account, and when the lien must be reviewed."})]),{rail:"balances"}),
+  AMT("C02",[TYPES[1].sections[0],COLL({})]),
+  AMT("C03",[TYPES[2].sections[0],
+    {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
+      {id:"valuer",label:"Valuer name",type:"text",req:true,col:8},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:4},
+      {id:"valDate",label:"Valuation date",type:"date",req:true,col:4},
+      {id:"collAmount",label:"Collateral amount",type:"amount",req:true,col:4},
+      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:4},
+    ]},COLL({})]),
+  AMT("C04",[
+    {title:"Guarantee details",desc:"The institution, currency and deposit behind the guarantee.",fields:[
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
+      {id:"branch",label:"Branch",type:"text",col:4},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
+      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:8},
+    ]},TYPES[3].sections[1],COLL({})]),
+  AMT("C05",[
+    {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
+      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
+      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
+      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:4},
+      {id:"stockAmount",label:"Stock amount",type:"amount",req:true,col:4},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+    ]},TYPES[4].sections[1],COLL({})]),
+];
+const amTypeBy=c=>AM_TYPES.find(t=>t.code===c);
+const fieldsOf=t=>t.sections.flatMap(s=>s.fields);
+
+function mkRec(no,cust,type,by,appr,vals,lks){
+  const values=Object.assign({comment:""},vals),lookups={};
+  for(const k in lks)values[k]=lks[k][1];
+  const ctx={values,customer:{code:cust}};
+  for(const k in lks)lookups[k]=LOVS[lks[k][0]].rows(ctx).find(r=>r.code===lks[k][1]);
+  return{no,cust,type,by,appr,values,lookups,status:"Approved"};
+}
+const F=fmt;
+const AM=[
+  mkRec("2609184352","004997","C03","OPS.ADMIN","15-SEP-2025",{owner:"STERLING POINT ESTATES",location:"Plot 14, Tubman Boulevard, Sinkor",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-09",collAmount:F(5000000),forcedSale:F(4500000),amount:F(4000000),reviewDate:"2028-09-15",expiryDate:"2029-09-15"},{propType:["propType","03"],propSub:["propSub","031"]}),
+  mkRec("2310024084","019727","C03","E.QUAYE","31-OCT-2024",{owner:"COASTLINE BUILDERS LTD",location:"Warehouse 3, Freeport Road, Bushrod Island",valuer:"Meridian Property Consult",valuerTel:"0886441290",valDate:"2024-10-20",collAmount:F(1095500),forcedSale:F(950000),amount:F(876400),reviewDate:"2027-10-28",expiryDate:"2027-10-31"},{propType:["propType","02"],propSub:["propSub","023"]}),
+  mkRec("2606204210","056719","C03","OPS.ADMIN","27-SEP-2025",{owner:"ABENA MENSAH",location:"House 22, 9th Street, Sinkor",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-12",collAmount:F(210000),forcedSale:F(180000),amount:F(150000),reviewDate:"2027-06-16",expiryDate:"2028-06-16"},{propType:["propType","01"],propSub:["propSub","011"]}),
+  mkRec("202509272578252","036551","C01","OPS.ADMIN","27-SEP-2025",{amount:F(50000),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00622503655101"]}),
+  mkRec("202509272579098","008626","C01","OPS.ADMIN","27-SEP-2025",{amount:F(2000),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00422007781340"]}),
+  mkRec("202509272617913","029265","C01","E.QUAYE","27-SEP-2025",{amount:F(95000),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00615003300912"]}),
+  mkRec("202509272574269","063486","C01","OPS.ADMIN","27-SEP-2025",{amount:F(2500),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00422009001877"]}),
+  mkRec("202509272613905","046937","C01","K.ASARE","27-SEP-2025",{amount:F(350),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00515004410256"]}),
+  mkRec("2506303783","023483","C02","OPS.ADMIN","30-JUN-2025",{insCode:"5432",policyNo:"24321",sumAssured:F(250000),amount:F(200000),reviewDate:"2026-06-27",expiryDate:"2027-06-27"},{insCompany:["insCompany","001"],policyType:["policyType","04"]}),
+  mkRec("2601187735","056719","C02","E.QUAYE","14-MAR-2025",{insCode:"7810",policyNo:"LA-2025-0412",sumAssured:F(60000),amount:F(45000),reviewDate:"2026-03-14",expiryDate:"2027-03-14"},{insCompany:["insCompany","002"],policyType:["policyType","01"]}),
+  mkRec("2603273965","713350","C04","OPS.ADMIN","27-MAR-2025",{branch:"001",rate:"5.00",months:"12",guarAmount:F(120000),folioNo:"2454",folioStart:"2",folioEnd:"4",amount:F(100000),reviewDate:"2026-03-27",expiryDate:"2027-03-27"},{finInst:["finInst","103"],currency:["currency","020"],depositType:["depositType","01"]}),
+  mkRec("2511093318","048213","C04","K.ASARE","02-NOV-2024",{branch:"014",rate:"7.25",months:"24",guarAmount:F(650000),folioNo:"9921",folioStart:"10",folioEnd:"40",amount:F(500000),reviewDate:"2026-11-02",expiryDate:"2027-11-02"},{finInst:["finInst","101"],currency:["currency","010"],depositType:["depositType","01"]}),
+  mkRec("2603273966","046378","C05","OPS.ADMIN","27-MAR-2025",{units:"2000",stockAmount:F(45000),marketValue:F(48000),folioNo:"234567",folioStart:"23",folioEnd:"67",amount:F(40000),reviewDate:"2026-03-27",expiryDate:"2027-03-27"},{shareCode:["shareCode","ACB"],shareIndex:["shareIndex","01"]}),
+  mkRec("2603300457","072530","C01","OPS.ADMIN","30-JUN-2025",{amount:F(60000),reviewDate:"2026-06-30",expiryDate:"2027-06-30"},{account:["account","00608009934117"]}),
+];
+const amountOf=r=>({C01:()=>r.lookups.account?.bal.cleared,C02:()=>parseAmt(r.values.sumAssured),C03:()=>parseAmt(r.values.collAmount),C04:()=>parseAmt(r.values.guarAmount),C05:()=>parseAmt(r.values.marketValue)})[r.type]();
+const custBy=code=>CUSTOMERS.find(c=>c.code===code);
+const DOCS={C01:["Lien letter.pdf","Account mandate.pdf"],C02:["Policy schedule.pdf","Deed of assignment.pdf"],C03:["Valuation report.pdf","Title deed.pdf"],C04:["Guarantee letter.pdf"],C05:["Share certificate.pdf","Pledge form.pdf"]};
+
+/* ---------- change tracking ---------- */
+const NUMERIC=["amount","percent","int"];
+function isChanged(f,st){
+  if(f.type==="derived")return false;
+  const o=st.orig[f.id]??"",v=st.values[f.id]??"";
+  if(NUMERIC.includes(f.type))return parseAmt(o)!==parseAmt(v);
+  return String(o).trim()!==String(v).trim();
+}
+function showVal(f,vals,lks){
+  const v=vals[f.id];if(v==null||String(v).trim()==="")return"(blank)";
+  if(f.type==="lookup"){const l=lks[f.id];return l?`${l.code} · ${l.desc}`:v}
+  if(f.type==="date")return fmtDate(v);
+  if(f.type==="amount")return parseAmt(v)!=null?fmt(parseAmt(v)):v;
+  if(f.type==="percent")return v+" %";
+  return v;
+}
+const origDisplay=(f,st)=>showVal(f,st.orig,st.origLookups);
+const changesOf=st=>fieldsOf(amTypeBy(st.type)).filter(f=>isChanged(f,st));
+
+/* ---------- state ---------- */
+const PAGE=8;
+/* Amendment and Cancellation share the search list and record engine; the module decides wording and what is editable */
+const MODS={
+  amendment:{kind:"amend",label:"Amendment",title:"Amend a collateral",sub:"Search for an approved collateral, then open it to update its details.",openFor:"for amendment",verb:"amend"},
+  cancellation:{kind:"cancel",label:"Cancellation",title:"Cancel a collateral",sub:"Search for an approved collateral, then open it to review it and record why it is being cancelled.",openFor:"to cancel it",verb:"cancel"},
+};
+const newState=(mod,pfx)=>({mod,view:"list",q:{cust:"",coll:""},qCust:null,filter:"ALL",sort:{k:"no",d:1},page:0,rec:null,pfx,readonly:mod.kind==="cancel",
+  type:null,customer:null,values:{},lookups:{},orig:null,origLookups:{},errors:{},showErrors:false,comments:[],files:[],reason:""});
+const STATES={amendment:newState(MODS.amendment,"a"),cancellation:newState(MODS.cancellation,"c")};
+let A=STATES.amendment;
+const isCancel=()=>A.mod.kind==="cancel";
+
+function amRows(){
+  let rows=AM.filter(r=>(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll)));
+  const counts={ALL:rows.length};TYPES.forEach(t=>counts[t.code]=rows.filter(r=>r.type===t.code).length);
+  if(A.filter!=="ALL")rows=rows.filter(r=>r.type===A.filter);
+  const key={no:r=>r.no,name:r=>custBy(r.cust).name,type:r=>r.type,amount:r=>amountOf(r)||0,considered:r=>parseAmt(r.values.amount)||0,review:r=>r.values.reviewDate,expiry:r=>r.values.expiryDate,by:r=>r.by}[A.sort.k];
+  rows=[...rows].sort((a,b)=>{const x=key(a),y=key(b);return(x>y?1:x<y?-1:0)*A.sort.d});
+  return{rows,counts};
+}
+
+function amActionBar(mode){
+  const help=`<button class="btn act-blue" id="amHelp">${icon("help")}Help</button>`,
+        exit=`<button class="btn act-red" id="amExit">${icon("close")}Exit</button>`,sep=`<span class="sep" aria-hidden="true"></span>`;
+  if(mode!=="detail")return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${sep}
+    <button class="btn act-blue" id="amNew" title="Clear the search and show all collaterals">${icon("plus")}New</button>${exit}</div>`;
+  const dirty=isDirty();
+  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}
+    <button class="btn act-blue" id="amComment">${icon("msg")}Comment${A.comments.length?`<span>(${A.comments.length})</span>`:""}</button>${sep}
+    <button class="btn act-blue" id="amNew" ${dirty?`title="${newTitle()}"`:`disabled title="Nothing to reset yet."`}>${icon("plus")}New</button>
+    <button class="btn act-green" id="amSubmit" ${dirty?"":`disabled title="${submitWhy()}"`}>${icon("check")}Submit</button>${exit}</div>`;
+}
+/* "Dirty" = something the user entered that New would reset and Submit would send */
+const isDirty=()=>isCancel()?!!A.reason.trim():changesOf(A).length>0;
+const submitWhy=()=>isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment.";
+const newTitle=()=>isCancel()?"Clear the closure reason":"Reset every field to its original value";
+function resetEntry(){
+  if(isCancel()){A.reason="";A.showErrors=false;$("#cxReason").outerHTML=reasonCardHtml();syncSubmit();$("#cxReasonIn").focus();toast("Closure reason cleared.");return}
+  A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};A.showErrors=false;renderAmForm();renderAmRail();syncSubmit();toast("All fields reset to their original values.");
+}
+
+function profileHtml(c,count,total){
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  const ini=c.name.split(" ").slice(0,2).map(w=>w[0]).join("");
+  return `<div class="profile"><div class="who"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="sub">Customer no. <span class="mono">${esc(c.code)}</span></div></div></div>
+    ${cell("Customer type",`<span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span>`)}
+    ${cell("Home branch",`<span class="mono">${esc(c.brCode)}</span> · ${esc(c.branch)}`)}
+    ${cell("Collaterals",String(count),"num")}
+    ${cell("Amount held",count?fmt(total):"—","num")}</div>`;
+}
+
+function renderAm(){
+  const v=$("#view-records");
+  if(A.view==="list"){setCrumbs([A.mod.label]);v.innerHTML=amListHtml();}
+  else{setCrumbs([A.mod.label,A.rec.no]);v.innerHTML=isCancel()?cxDetailHtml():amDetailHtml();renderAmForm();renderAmRail();}
+}
+
+function amListHtml(){
+  const{rows,counts}=amRows(),pages=Math.max(1,Math.ceil(rows.length/PAGE));
+  A.page=Math.min(A.page,pages-1);
+  const shown=rows.slice(A.page*PAGE,A.page*PAGE+PAGE);
+  const th=(k,l,cls="")=>`<th class="${cls}" data-sort="${k}" ${A.sort.k===k?`aria-sort="${A.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${l} <span class="arr">${A.sort.k===k&&A.sort.d<0?"↓":"↑"}</span></th>`;
+  const qc=A.qCust;
+  return `<div class="page-head"><div><h1>${A.mod.title}</h1><p>${A.mod.sub}</p></div>${amActionBar("list")}</div>
+  <section class="card" aria-labelledby="amS1">
+    <div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="amS1">Search criteria</h2><p>Search by customer, collateral number or both. Leave both blank to list every approved collateral.</p></div></div>
+    <div class="card-body"><form id="amSearch" class="grid" autocomplete="off">
+      <div class="field" style="--col:3"><label for="amCust">Customer number</label>
+        <div class="search"><input class="input" id="amCust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(A.q.cust)}"><button class="btn" type="button" id="amCustSearch" aria-label="Search customers">${icon("search")}</button></div></div>
+      <div class="field" style="--col:5"><span class="lbl">Customer name<span class="lbl-auto">Auto-filled</span></span><div class="ro ${qc?"":"empty"}"><span class="t">${qc?esc(qc.name):"Filled from customer number"}</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:4"><label for="amColl">Collateral number</label><input class="input mono" id="amColl" placeholder="e.g. 2609184352" value="${esc(A.q.coll)}"></div>
+      <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="amClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div>
+    </form></div>
+  </section>
+  <section class="card" aria-labelledby="amS2">
+    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
+      <div class="right chips" role="group" aria-label="Filter by collateral type">
+        <button class="chip" data-filter="ALL" aria-pressed="${A.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
+        ${TYPES.map(t=>`<button class="chip" data-filter="${t.code}" aria-pressed="${A.filter===t.code}" style="--tc:var(${t.tc})"><span class="tdot"></span>${t.name} <span class="n">${counts[t.code]}</span></button>`).join("")}
+      </div></div>
+    <div class="table-wrap">${shown.length?`<table class="grid-table"><thead><tr>${th("no","Collateral no.")}${th("name","Customer")}${th("type","Collateral type")}${th("amount","Amount","num")}${th("considered","Considered","num")}${th("review","Review / expiry")}${th("by","Status")}<th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+      ${shown.map(r=>{const c=custBy(r.cust),t=typeBy(r.type),pend=r.status!=="Approved";return `<tr data-row="${r.no}" class="${pend?"is-pending":""}">
+        <td class="mono">${r.no}</td>
+        <td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
+        <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td>
+        <td class="num">${amountOf(r)!=null?fmt(amountOf(r)):"—"}</td>
+        <td class="num">${fmt(parseAmt(r.values.amount))}</td>
+        <td><div>${fmtDate(r.values.reviewDate)}</div><div class="sub">to ${fmtDate(r.values.expiryDate)}</div></td>
+        <td><span class="status ${pend?"pending":""}">${r.status}</span><div class="sub">by <span class="mono">${r.by}</span></div></td>
+        <td class="sticky-r"><button class="open-btn" data-open="${r.no}" aria-label="Open collateral ${r.no} ${A.mod.openFor}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${icon("chev")}</button></td></tr>`}).join("")}
+      </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collaterals match your search</b><span>Check the customer or collateral number, or clear the search to see all records.</span></div>`}</div>
+    <div class="pager"><span>Showing <b>${rows.length?A.page*PAGE+1:0}–${Math.min(rows.length,(A.page+1)*PAGE)}</b> of <b>${rows.length}</b></span>
+      <div class="pg"><button class="btn" data-page="first" ${A.page?"":"disabled"}>First</button><button class="btn icon" data-page="prev" aria-label="Previous page" ${A.page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button><span class="pg-n">Page ${A.page+1} of ${pages}</span><button class="btn icon" data-page="next" aria-label="Next page" ${A.page<pages-1?"":"disabled"}>${icon("chev")}</button><button class="btn" data-page="last" ${A.page<pages-1?"":"disabled"}>Last</button></div></div>
+  </section>`;
+}
+
+function amDetailHtml(){
+  const r=A.rec,c=A.customer,t=amTypeBy(r.type),held=AM.filter(x=>x.cust===c.code);
+  return `<div class="page-head"><div><button class="back" data-back>${`<svg class="i flip"><use href="#i-chev"/></svg>`}Back to search results</button>
+    <h1>Amend collateral <span class="mono h1-no">${r.no}</span></h1><p>Change what needs updating. Edited fields are highlighted, with the original value underneath.</p></div>${amActionBar("detail")}</div>
+  <section class="card" aria-labelledby="amC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="amC">Customer</h2><p>The customer who owns this collateral. Customer details can't be changed here.</p></div></div>
+    <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
+  <div class="form-wrap"><section class="card" id="amForm" style="--tc:var(${t.tc})"></section><aside class="rail" id="amRail"></aside></div>
+  <div class="foot-note">${icon("info")}Fields marked <span class="req">*</span> are required. Changes go for approval before they take effect.</div>`;
+}
+
+function renderAmForm(){
+  const t=amTypeBy(A.type),errs=A.showErrors?Object.entries(A.errors):[];
+  $("#amForm").innerHTML=`<div class="card-head"><div class="step ${A.readonly?"done":"active"}">${icon(A.readonly?"lock":"edit")}</div>
+      <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2>${A.readonly?`<p>Read only. These details can't be changed while cancelling.</p>`:""}</div>
+      <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${A.rec.no}</b></div></div>
+    <div class="card-body">
+      ${errs.length?`<div class="alert" role="alert" id="amErr">${icon("alert")}<div><b>${errs.length} field${errs.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errs.map(([k,m])=>`<li><a href="#a-${t.code}-${k}" data-jump="a-${t.code}-${k}">${esc(m)}</a></li>`).join("")}</ul></div></div>`:""}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,A)).join("")}</div></div>`).join("")}
+    </div>`;
+}
+
+function renderAmRail(){
+  const t=amTypeBy(A.type),ch=changesOf(A),r=A.rec;
+  let h=isCancel()?`<div class="card"><div class="card-body"><h3>What happens on submit</h3><ol class="next-steps">
+    <li><b>Sent for approval.</b> The collateral stays active until it is approved.</li>
+    <li><b>Locked.</b> It shows <i>Cancellation pending</i> and can't be amended or cancelled again meanwhile.</li>
+    <li><b>Closed on approval.</b> It no longer secures the customer's facilities${r.type==="C01"?". The hold on the source account is released (to confirm)":""}.</li></ol></div></div>`:`<div class="card"><div class="card-body"><h3>Amendment</h3>
+    <div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
+    ${ch.length?`<ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,A))}</span> → <span class="nv">${esc(showVal(f,A.values,A.lookups))}</span></li>`).join("")}</ul>
+      <button class="link-btn" id="amUndoAll" style="margin-top:10px">Undo all changes</button>`
+    :`<p class="hint" style="margin:6px 0 0">No changes yet. Edit any field to start an amendment. Submit stays off until something changes.</p>`}
+  </div></div>`;
+  h+=`
+  <div class="card"><div class="card-body"><h3>Record</h3>
+    <div class="kv"><span>Collateral no.</span><b class="mono">${r.no}</b></div>
+    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
+    <div class="kv"><span>Status</span><b><span class="status">${r.status}</span></b></div>
+    <div class="kv"><span>Approved by</span><b class="mono">${r.by}</b></div>
+    <div class="kv"><span>Approval date</span><b>${r.appr}</b></div></div></div>`;
+  if(t.rail==="balances"&&A.lookups.account){const a=A.lookups.account;
+    h+=`<div class="card"><div class="card-body"><h3>Account balances</h3><div class="hint">Available amount</div><div class="bal-total">${fmt(a.bal.avail)}</div>
+      <div style="margin-top:8px"><div class="bal-row"><span>Source balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
+      <div class="bal-row"><span>Used amount</span><span class="v">${fmt(a.bal.block)}</span></div>
+      <div class="bal-row"><span>Amount considered</span><span class="v">${A.values.amount||"—"}</span></div></div></div></div>`;}
+  h+=`<div class="card"><div class="card-body"><h3>Documents</h3><ul class="files">${(DOCS[r.type]||[]).map(n=>`<li>${icon("clip")}<span>${esc(n)}</span><button class="link-btn" data-viewdoc="${esc(n)}">View</button></li>`).join("")}
+    ${A.files.map((n,i)=>`<li class="new-doc">${icon("upload")}<span>${esc(n)}</span><button aria-label="Remove ${esc(n)}" data-amrm="${i}">${icon("x")}</button></li>`).join("")}</ul>
+    ${isCancel()?`<p class="hint" style="margin:10px 0 0">View only. Documents can't be added while cancelling.</p>`:`<label class="drop" for="amFileIn" style="margin-top:10px">${icon("upload")}<span><b>Add documents</b><br>Drop files here or browse</span></label><input type="file" id="amFileIn" multiple class="sr">`}</div></div>`;
+  $("#amRail").innerHTML=h;
+}
+
+/* refresh one field's edited state without re-rendering its input (keeps focus) */
+function syncSubmit(){const sub=$("#amSubmit"),nw=$("#amNew");if(!sub)return;const d=isDirty();sub.disabled=!d;sub.title=d?"":submitWhy();if(nw){nw.disabled=!d;nw.title=d?newTitle():"Nothing to reset yet."}}
+function refreshField(f){
+  syncSubmit();
+  const t=amTypeBy(A.type),wrap=document.getElementById(`wrap-a-${t.code}-${f.id}`);if(!wrap)return;
+  const chg=isChanged(f,A);wrap.classList.toggle("changed",chg);
+  const lab=wrap.querySelector("label");let tag=lab&&lab.querySelector(".chg-tag");
+  if(chg&&!tag&&lab)lab.insertAdjacentHTML("beforeend",'<span class="chg-tag">Edited</span>');if(!chg&&tag)tag.remove();
+  wrap.querySelector(".was")?.remove();
+  if(chg&&!wrap.querySelector(".err"))wrap.insertAdjacentHTML("beforeend",`<div class="was">Was <b>${esc(origDisplay(f,A))}</b><button type="button" class="link-btn" data-revert="${f.id}">Undo</button></div>`);
+}
+
+function openAm(no){
+  const r=AM.find(x=>x.no===no);if(!r)return;
+  if(r.status!=="Approved"){toast(`${r.status}. This collateral can't be opened until that request is approved or rejected.`);return}
+  Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[],reason:""});
+  renderAm();window.scrollTo(0,0);
+}
+function backToList(){A.view="list";A.rec=null;A.orig=null;renderAm();window.scrollTo(0,0)}
+function amFetch(){
+  const raw=$("#amCust").value.trim(),coll=$("#amColl").value.trim();
+  const cust=raw?raw.padStart(6,"0"):"";
+  if(cust&&!custBy(cust)){toast(`No customer found with number ${cust}.`);return}
+  A.q={cust,coll};A.qCust=cust?custBy(cust):null;A.page=0;renderAm();
+}
+function amValidate(){
+  const t=amTypeBy(A.type);A.errors={};
+  for(const f of fieldsOf(t)){
+    const has=A.values[f.id]!=null&&String(A.values[f.id]).trim()!=="";
+    if(f.req&&!has){const l=f.label.toLowerCase();A.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`}
+    else if(NUMERIC.includes(f.type)&&has&&parseAmt(A.values[f.id])==null)A.errors[f.id]=`${f.label} must be a number.`;
+  }
+  return !Object.keys(A.errors).length;
+}
+function amSubmit(){
+  if(isCancel()){cxSubmit();return}
+  const ch=changesOf(A);if(!ch.length)return;
+  A.showErrors=true;
+  if(!amValidate()){renderAmForm();$("#amErr").scrollIntoView({block:"center"});return}
+  const r=A.rec,t=amTypeBy(A.type);
+  const rows=ch.map(f=>`<tr><td>${esc(f.label)}</td><td class="o">${esc(origDisplay(f,A))}</td><td class="nv">${esc(showVal(f,A.values,A.lookups))}</td></tr>`).join("");
+  r.status="Amendment pending";
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amOk" style="width:min(560px,100%)"><div class="mb" style="padding:24px">
+    <div class="success-ic">${icon("check")}</div><h2 id="amOk" style="margin:0;font-size:18px;text-align:center">Amendment submitted for approval</h2>
+    <p class="hint" style="text-align:center;margin:6px 0 16px">${t.code} · ${esc(t.title)} <span class="mono">${r.no}</span> for ${esc(A.customer.name)}. The current values stay in force until the amendment is approved.</p>
+    <div class="table-wrap diff"><table><thead><tr><th>Field</th><th>Before</th><th>After</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </div><footer><button class="btn primary" id="amOkBack">Back to search results</button></footer></div>`);
+  $("#amOkBack").focus();
+  $("#amOkBack").addEventListener("click",()=>{closeLayer();backToList()});
+}
+function amExit(){
+  if(A.view==="detail"&&isCancel()&&A.reason.trim()){
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amDx" style="width:min(440px,100%)"><div class="mb" style="padding:22px"><h2 id="amDx" style="margin:0 0 8px;font-size:17px">Discard this cancellation?</h2><p class="hint" style="margin:0">The reason you entered for collateral <span class="mono">${A.rec.no}</span> hasn't been submitted. Leaving now discards it.</p></div>
+      <footer><button class="btn" data-close>Keep editing</button><button class="btn act-red" id="amDiscard">Discard and leave</button></footer></div>`);
+    $("#amDiscard").addEventListener("click",()=>{closeLayer();backToList()});return;
+  }
+  if(A.view==="detail"&&!isCancel()&&changesOf(A).length){
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amDx" style="width:min(440px,100%)"><div class="mb" style="padding:22px"><h2 id="amDx" style="margin:0 0 8px;font-size:17px">Discard your changes?</h2><p class="hint" style="margin:0">You have ${changesOf(A).length} unsaved change${changesOf(A).length>1?"s":""} on collateral <span class="mono">${A.rec.no}</span>. Leaving now discards them.</p></div>
+      <footer><button class="btn" data-close>Keep editing</button><button class="btn act-red" id="amDiscard">Discard and leave</button></footer></div>`);
+    $("#amDiscard").addEventListener("click",()=>{closeLayer();backToList()});return;
+  }
+  if(A.view==="detail")backToList();else toast("Exit returns to the Collateral Management home in the Angular app.");
+}
+
+const amView=$("#view-records");
+amView.addEventListener("submit",e=>{if(e.target.id==="amSearch"){e.preventDefault();amFetch()}});
+amView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-sort]");if(th&&(e.key==="Enter"||e.key===" ")){e.preventDefault();th.click()}});
+amView.addEventListener("click",e=>{
+  const T=s=>e.target.closest(s);let el;
+  if(T("#amHelp")&&isCancel()){openDrawer("Help · Collateral cancellation",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Select <b>›</b> on a row to open it. The collateral's details are shown read-only.</li><li>Check the closure summary, then enter the <b>closure reason</b>. Pick a common reason to fill the box, then edit it if needed.</li><li><b>Submit</b> asks you to confirm, then sends the cancellation for approval. The collateral stays active until it is approved.</li></ol><div class="hint">A collateral with an amendment or cancellation awaiting approval can't be opened in either module.</div>`);return}
+  if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
+  if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="${isCancel()?"e.g. Customer's release request letter is attached":"e.g. Revaluation received from the valuer on 02-OCT-2026"}"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
+    $("#amCmtAdd").addEventListener("click",()=>{const v=$("#amCmt").value.trim();if(!v)return;A.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAm();toast("Comment added.")});return}
+  if(T("#amNew")&&A.view==="detail"){resetEntry();return}
+  if(T("#amNew")||T("#amClear")){A.q={cust:"",coll:""};A.qCust=null;A.filter="ALL";A.page=0;renderAm();toast("Search cleared.");return}
+  if(T("#amSubmit")){amSubmit();return}
+  if(T("#amExit")){amExit();return}
+  if(T("[data-back]")){amExit();return}
+  if(T("#amCustSearch")){openLov("Find customer",CUSTOMERS,r=>{$("#amCust").value=r.code;amFetch()},[["code","Customer no."],["name","Name"],["type","Type"]]);return}
+  if(el=T("[data-filter]")){A.filter=el.dataset.filter;A.page=0;renderAm();return}
+  if(el=T("[data-sort]")){const k=el.dataset.sort;A.sort=A.sort.k===k?{k,d:-A.sort.d}:{k,d:1};renderAm();return}
+  if(el=T("[data-page]")){const{rows}=amRows(),last=Math.ceil(rows.length/PAGE)-1;A.page={first:0,prev:A.page-1,next:A.page+1,last}[el.dataset.page];renderAm();return}
+  if(el=T("[data-open]")){openAm(el.dataset.open);return}
+  if(el=T("tr[data-row]")){openAm(el.dataset.row);return}
+  if(el=T("[data-jump]")){e.preventDefault();const x=document.getElementById(el.dataset.jump);x&&(x.scrollIntoView({block:"center"}),x.focus());return}
+  if(el=T("[data-reason]")){setReason(el.dataset.reason,true);return}
+  if(el=T("[data-viewdoc]")){toast(`${el.dataset.viewdoc} opens in the document viewer.`);return}
+  if(el=T("[data-amrm]")){A.files.splice(+el.dataset.amrm,1);renderAmRail();return}
+  if(T("#amUndoAll")){resetEntry();return}
+  if(el=T("[data-revert]")){const id=el.dataset.revert;A.values[id]=A.orig[id];if(id in A.origLookups)A.lookups[id]=A.origLookups[id];
+    const t=amTypeBy(A.type);for(const k in LOVS){if(LOVS[k].dependsOn===id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){A.values[dep.id]=A.orig[dep.id];A.lookups[dep.id]=A.origLookups[dep.id]}}}
+    renderAmForm();renderAmRail();syncSubmit();return}
+  if(el=T("#amForm [data-lov]")){
+    const t=amTypeBy(A.type),f=fieldsOf(t).find(x=>x.id===el.dataset.lov),lov=LOVS[f.lov];
+    const cols=f.lov==="account"?[["code","Account no."],["prodDesc","Product"],["ccyDesc","Currency"]]:undefined;
+    openLov(lov.title,lov.rows(A),r=>{
+      A.values[f.id]=r.code;A.lookups[f.id]=r;delete A.errors[f.id];
+      for(const k in LOVS){if(LOVS[k].dependsOn===f.id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){delete A.values[dep.id];delete A.lookups[dep.id]}}}
+      renderAmForm();renderAmRail();syncSubmit();document.getElementById(`a-${t.code}-${f.id}`)?.focus();
+    },cols);
+  }
+});
+amView.addEventListener("input",e=>{
+  if(e.target.id==="cxReasonIn"){setReason(e.target.value,false);return}
+  if(e.target.id==="amCust"){const c=custBy(e.target.value.trim().padStart(6,"0"));const ro=e.target.closest(".grid").querySelector(".ro");if(ro){ro.classList.toggle("empty",!c);ro.querySelector(".t").textContent=c?c.name:"Filled from customer number"}return}
+  const id=e.target.dataset.f;if(!id||A.view!=="detail")return;
+  A.values[id]=e.target.value;const f=fieldsOf(amTypeBy(A.type)).find(x=>x.id===id);
+  if(A.errors[id]&&String(e.target.value).trim()){delete A.errors[id];e.target.closest(".field").classList.remove("invalid");e.target.closest(".field").querySelector(".err")?.remove()}
+  refreshField(f);renderAmRail();
+});
+amView.addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k||A.view!=="detail")return;const n=parseAmt(e.target.value);if(n==null)return;
+  e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);A.values[e.target.dataset.f]=e.target.value;
+  refreshField(fieldsOf(amTypeBy(A.type)).find(x=>x.id===e.target.dataset.f));renderAmRail()});
+amView.addEventListener("change",e=>{if(e.target.id==="amFileIn"){A.files.push(...[...e.target.files].map(f=>f.name));renderAmRail()}});
+
+/* ---------- CANCELLATION: read-only type form + closure summary + reason ---------- */
+const REASONS=["Facility fully repaid","Collateral replaced by another collateral","Collateral released to the customer","Captured in error"];
+const REASON_MAX=300;
+function ccyRow(st){const c=st.type==="C01"?st.lookups.account?.ccy:st.type==="C04"?st.values.currency:"010";return LOVS.currency.rows().find(r=>r.code===c)||{code:c,desc:""}}
+/* Closure figures named after the Oracle Forms closing screen; mapping to stored columns is to be confirmed */
+function closureFigures(st){
+  const r=st.rec,cov=parseAmt(st.values.amount)||0;
+  return{est:amountOf(r),cov,avail:cov,real:r.type==="C03"?parseAmt(st.values.forcedSale):cov};
+}
+function cxDetailHtml(){
+  const r=A.rec,c=A.customer,t=amTypeBy(r.type),held=AM.filter(x=>x.cust===c.code),fg=closureFigures(A),cc=ccyRow(A);
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  return `<div class="page-head"><div><button class="back" data-back><svg class="i flip"><use href="#i-chev"/></svg>Back to search results</button>
+    <h1>Cancel collateral <span class="mono h1-no">${r.no}</span></h1><p>Review the collateral, then record why it is being cancelled. Nothing else can be changed here.</p></div>${amActionBar("detail")}</div>
+  <section class="card" aria-labelledby="cxC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="cxC">Customer</h2><p>The customer who owns this collateral.</p></div></div>
+    <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
+  <section class="card" aria-labelledby="cxS"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="cxS">Closure summary</h2><p>What the bank holds against this collateral today. These values are released when the cancellation is approved.</p></div></div>
+    <div class="card-body"><div class="figs" style="--tc:var(${t.tc})">
+      ${cell("Collateral type",`<span class="tdot"></span>${esc(t.name)} <span class="mono sub">${t.code}</span>`)}
+      ${cell("Currency",`<span class="mono">${esc(cc.code)}</span> · ${esc(cc.desc)}`)}
+      ${cell("Estimated market",fg.est!=null?fmt(fg.est):"—","num")}
+      ${cell("Coverage value",fmt(fg.cov),"num")}
+      ${cell("Available value",fmt(fg.avail),"num")}
+      ${cell("Realizability value",fg.real!=null?fmt(fg.real):"—","num")}
+    </div></div></section>
+  <div class="form-wrap"><div class="stack"><section class="card" id="amForm" style="--tc:var(${t.tc})"></section>${reasonCardHtml()}</div><aside class="rail" id="amRail"></aside></div>
+  <div class="foot-note">${icon("info")}Fields marked <span class="req">*</span> are required. The cancellation goes for approval before it takes effect.</div>`;
+}
+function reasonCardHtml(){
+  const err=A.showErrors&&!A.reason.trim();
+  return `<section class="card reason-card" id="cxReason" aria-labelledby="cxR"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="cxR">Cancellation</h2><p>The only thing you enter here. The reason goes to the approver and stays on the collateral's history.</p></div></div>
+    <div class="card-body"><div class="grid">
+      <div class="field ${err?"invalid":""}" style="--col:12" id="cxReasonField"><label for="cxReasonIn">Closure reason<span class="req">*</span></label>
+        <div class="reason-chips" role="group" aria-label="Common reasons"><span class="hint">Common reasons:</span>${REASONS.map(x=>`<button type="button" class="chip" data-reason="${esc(x)}" aria-pressed="${A.reason===x}">${esc(x)}</button>`).join("")}</div>
+        <textarea class="input" id="cxReasonIn" maxlength="${REASON_MAX}" placeholder="Say why the collateral is being cancelled, e.g. the facility it secured was fully repaid on 30-SEP-2026.">${esc(A.reason)}</textarea>
+        <div class="reason-foot"><span id="cxReasonMsg" class="${err?"err":"hint"}">${err?icon("alert")+"Enter the closure reason.":"Required. The approver sees this exactly as written."}</span><span class="hint mono" id="cxCount">${A.reason.length} / ${REASON_MAX}</span></div>
+      </div>
+      <div class="field" style="--col:4"><span class="lbl">Cancellation date<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t">${fmtDate(new Date().toISOString().slice(0,10))}</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:4"><span class="lbl">Requested by<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t mono">K.ASARE</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:4"><span class="lbl">Status after submit</span><div class="ro"><span class="t"><span class="status pending">Cancellation pending</span></span></div></div>
+    </div></div></section>`;
+}
+function setReason(v,fromChip){
+  A.reason=v.slice(0,REASON_MAX);
+  const ta=$("#cxReasonIn");if(fromChip&&ta){ta.value=A.reason;ta.focus();ta.setSelectionRange(A.reason.length,A.reason.length)}
+  $("#cxCount").textContent=`${A.reason.length} / ${REASON_MAX}`;
+  document.querySelectorAll("[data-reason]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.reason===A.reason)));
+  if(A.reason.trim()&&A.showErrors){$("#cxReasonField").classList.remove("invalid");const m=$("#cxReasonMsg");m.className="hint";m.textContent="Required. The approver sees this exactly as written."}
+  syncSubmit();
+}
+function cxSubmit(){
+  const r=A.rec,t=amTypeBy(A.type),fg=closureFigures(A);
+  if(!A.reason.trim()){A.showErrors=true;$("#cxReason").outerHTML=reasonCardHtml();$("#cxReasonIn").focus();return}
+  const acct=r.type==="C01"&&A.lookups.account?A.lookups.account.code:null;
+  openLayer(`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="cxQ" aria-describedby="cxQd" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
+    <div class="warn-ic">${icon("ban")}</div>
+    <h2 id="cxQ" style="margin:0 0 6px;font-size:18px;text-align:center">Cancel collateral <span class="mono">${r.no}</span>?</h2>
+    <p id="cxQd" class="hint" style="margin:0 0 14px;text-align:center">Once approved, this collateral is closed and no longer secures ${esc(A.customer.name)}'s facilities${acct?`, and the hold on account <span class="mono">${acct}</span> is released`:""}.</p>
+    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.title)}</b></div>
+    <div class="kv"><span>Coverage value released</span><b class="mono">${fmt(fg.cov)}</b></div>
+    <div class="kv"><span>Closure reason</span><b class="reason-q">${esc(A.reason)}</b></div>
+    </div><footer><button class="btn" data-close>Keep collateral</button><button class="btn act-red" id="cxConfirm">${icon("ban")}Submit cancellation</button></footer></div>`);
+  $("#cxConfirm").focus();
+  $("#cxConfirm").addEventListener("click",()=>{
+    r.status="Cancellation pending";r.closeReason=A.reason;
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="cxOk" style="width:min(480px,100%)"><div class="mb" style="padding:24px;text-align:center">
+      <div class="success-ic">${icon("check")}</div><h2 id="cxOk" style="margin:0;font-size:18px">Cancellation submitted for approval</h2>
+      <p class="hint" style="margin:8px 0 0">Collateral <span class="mono">${r.no}</span> now shows <b>Cancellation pending</b>. It stays active, and locked in Amendment and Cancellation, until the request is approved or rejected.</p>
+      </div><footer><button class="btn primary" id="cxOkBack">Back to search results</button></footer></div>`);
+    $("#cxOkBack").focus();$("#cxOkBack").addEventListener("click",()=>{closeLayer();backToList()});
+  });
+}
+
+/* ---------- views + router ---------- */
+function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
+const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation"})[h]||"creation";
+function go(view){
+  const am=view!=="creation";
+  $("#view-creation").hidden=am;$("#view-records").hidden=!am;if(am)A=STATES[view];
+  document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+  if(am)renderAm();else setCrumbs(["Creation"]);
+  $("#side").classList.remove("open");window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
+
+/* ---------- Initial working state: sample cash collateral, like the reference screen ---------- */
+S=fresh();
+S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
+S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
+renderAll();
+go(viewOf(location.hash));
+})();
+</script>
+</body>
+</html>
