@@ -35,20 +35,31 @@ Rules:
 | `--act-green` | `#1D7A4C` | `#3FB57A` |
 | `--act-red` | `#B42318` | `#F2867B` |
 
-## Field widths
+## Form layout: 12-column grid
 
-Controls are sized to the length of the value they hold, not stretched to fill the column. Labels and fields stay left-aligned on a two-column grid, so the edges still line up.
+Every form section is a 12-column grid. Each field spans a number of columns that matches the length of its value, and **every row adds up to exactly 12**. Fields stay proportional to their content, and the left and right edges of every row line up.
 
-| Size | Width | Used for |
-|---|---|---|
-| `xs` | 120px | Percent, number of months, number of shares |
-| `sm` | 180px | Customer number, dates, phone numbers, insurance code, folio numbers |
-| `md` | 220px | Amounts, branch (`010 · SINKOR`), currency (`010 · GHANA CEDIS`), short text |
-| `lg` | 300px | Product (`220 · SAVINGS PERSONAL`), shorter code lookups (policy type, deposit type, property type), valuer name |
-| `xl` | 420px | Long-name lookups: source account, financial institution, insurance company, share code |
-| `2xl` | 560px | Ownership name, location, comment |
+| Columns | Used for |
+|---|---|
+| 4 (one third) | Amounts, dates, codes, folio numbers, rates, counts, short lookups (policy type, currency), branch |
+| 5–7 | Paired descriptive values: ownership name / location, property type / sub-type, deposit type / collateral type |
+| 8 (two thirds) | Long-name lookups (source account, financial institution, insurance company), product, valuer name. Always paired with a 4-column field |
+| 12 (full row) | Comment |
 
-Each field type has a default size, and a field definition can override it (`w: 'sm'`). On phones the grid becomes one column; fields keep their size but never grow wider than the screen.
+Standard row patterns:
+
+| Pattern | Example |
+|---|---|
+| 8 + 4 | Source account + Source branch · Financial institution + Branch · Insurance company + Insurance code |
+| 4 + 4 + 4 | Amount considered + Review date + Expiry date (the closing row of every collateral type) · Folio number + Start + End |
+| 6 + 6 | Property type + Sub property type · Share code + Index |
+| 12 | Comment |
+
+Sections:
+- Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description.
+- When the form is wide (880px or more), section titles move into a left column and the fields sit to the right.
+- Auto-filled fields have a grey fill, a lock icon and an "Auto-filled" tag next to the label.
+- On phones every field takes the full row.
 
 ## Tokens
 

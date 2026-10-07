@@ -230,7 +230,7 @@ In Oracle Forms each type has its own canvas. In Angular, one **dynamic form** c
 interface CollateralTypeDef {
   code: 'C01' | 'C02' | 'C03' | 'C04' | 'C05' | string;
   title: string;
-  sections: { title: string; fields: FieldDef[] }[];
+  sections: { title: string; desc: string; fields: FieldDef[] }[];
   sidePanel?: 'balances';
 }
 
@@ -241,8 +241,7 @@ interface FieldDef {
   required?: boolean;
   lookup?: string;            // reference-data endpoint, e.g. 'insurance-companies'
   dependsOn?: string;         // parent field for cascading lookups
-  span?: 1 | 2;               // grid columns
-  w?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';  // control width, sized to the value length
+  col: 4 | 5 | 6 | 7 | 8 | 12;  // columns out of 12; each row totals 12
 }
 ```
 

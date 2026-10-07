@@ -120,12 +120,9 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .card-body{padding:20px}
 
 /* Fields */
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
-.grid .span2{grid-column:1/-1}
-/* Field width scale: controls are sized to the length of their values, not stretched to the column */
-.field{--w:100%}
-.field > .input,.field > .lookup-btn,.field > .ro,.field > .affix,.field > .search{width:var(--w);max-width:100%}
-.w-xs{--w:120px}.w-sm{--w:180px}.w-md{--w:220px}.w-lg{--w:300px}.w-xl{--w:420px}.w-2xl{--w:560px}.w-full{--w:100%}
+/* 12-column form grid: fields span columns in proportion to their value; every row totals 12 */
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px 16px}
+.grid > .field{grid-column:span var(--col,12)}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label,.field .lbl{font-size:12.5px;font-weight:600;color:var(--fg)}
 .req{color:var(--danger);margin-left:2px}
@@ -139,7 +136,10 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .affix .pre{left:11px}.affix .post{right:11px}
 .affix .pre + .input{padding-left:46px}
 .affix .input.has-post{padding-right:30px}
-.ro{display:flex;align-items:center;background:var(--sunken);border-color:transparent;color:var(--fg);gap:8px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ro{display:flex;align-items:center;background:var(--sunken);border-color:transparent;color:var(--fg);gap:8px;overflow:hidden;white-space:nowrap}
+.ro .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ro svg{color:var(--faint);width:14px;height:14px}
+.lbl-auto{font-weight:500;color:var(--faint);font-size:11px;margin-left:6px}
 .ro.empty{color:var(--faint)}
 .lookup-btn{display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer}
 .lookup-btn .code{font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--sunken);border-radius:4px;padding:1px 6px}
@@ -150,9 +150,15 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .hint{font-size:12px;color:var(--muted)}
 .err{font-size:12px;color:var(--danger);display:flex;gap:5px;align-items:center}
 .field.invalid .input,.field.invalid .lookup-btn{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
-.section{display:flex;flex-direction:column;gap:14px}
+.section{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+#formCard .card-body{container-type:inline-size}
+@container (min-width:880px){.section{grid-template-columns:210px minmax(0,1fr);gap:28px}}
+.section-head p{max-width:62ch}
+.section-head{display:flex;flex-direction:column;gap:4px;padding-top:2px}
+.section-head .n{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--tc,var(--primary));letter-spacing:.06em}
+.section-head p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
 .section + .section{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
-.section-title{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted);margin:0}
+.section-title{font-size:14px;font-weight:700;color:var(--fg);margin:0}
 
 /* Step 1: customer */
 .cust-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start}
@@ -270,7 +276,7 @@ tr.new td{background:var(--primary-soft)}
   .cust-row{grid-template-columns:minmax(0,1fr)}
   .user span{display:none}
 }
-@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:minmax(0,1fr)}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right{display:none}}
+@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid > .field{grid-column:1/-1}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -297,6 +303,7 @@ tr.new td{background:var(--primary-soft)}
   <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.4v.1"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></symbol>
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.6L20 16"/><path d="M20 20v-4h-4"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
 </svg>
 
@@ -426,77 +433,85 @@ const LOVS={
 };
 
 /* ---------- Collateral type schemas (same shape the Angular dynamic form would read) ---------- */
-const COLL=(o)=>[
-  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,span:o.extra?1:2},
-  ...(o.extra||[]),
-  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true},
-  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true},
-  {id:"comment",label:"Comment",type:"textarea",span:2,placeholder:"Optional notes for the approver"},
-];
+/* Layout: every section is a 12-column grid. `col` = columns the field spans, chosen from the
+   length of its value. Every row adds up to 12, so left and right edges always line up. */
+const COLL=(o)=>({title:"Collateral details",desc:o.desc||"Value the bank will rely on, and when the collateral must be reviewed.",fields:[
+  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:4},
+  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true,col:4},
+  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:4},
+  {id:"comment",label:"Comment",type:"textarea",col:12,placeholder:"Optional notes for the approver"},
+]});
 const TYPES=[
   {code:"C01",name:"Cash",title:"Cash collateral",lovDesc:"CASH COLLATERALS",tc:"--t-cash",ic:"cash",d:"Lien on the customer's own deposit account",
    sections:[
-    {title:"Account details",fields:[
-      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,span:2,w:"xl"},
-      {id:"srcBranch",label:"Source branch",type:"derived",get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`,w:"md"},
-      {id:"product",label:"Product",type:"derived",get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
-      {id:"ccy",label:"Currency",type:"derived",w:"md",get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
+    {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
+      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:8},
+      {id:"srcBranch",label:"Source branch",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`},
+      {id:"product",label:"Product",type:"derived",col:8,get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
+      {id:"ccy",label:"Currency",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
     ]},
-    {title:"Collateral details",fields:COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date"})}],
+    COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
   {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
    sections:[
-    {title:"Insurance details",fields:[
-      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,span:2,w:"xl"},
-      {id:"insCode",label:"Insurance code",type:"text",req:true,w:"sm"},
-      {id:"policyNo",label:"Policy number",type:"text",req:true},
-      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,span:2,w:"xl"},
+    {title:"Insurance details",desc:"The insurer and the policy assigned to the bank.",fields:[
+      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:8},
+      {id:"insCode",label:"Insurance code",type:"text",req:true,col:4},
+      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,col:4},
+      {id:"policyNo",label:"Policy number",type:"text",req:true,col:4},
+      {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:4},
     ]},
-    {title:"Collateral details",fields:COLL({extra:[{id:"sumAssured",label:"Sum assured",type:"amount",req:true}]})}]},
+    COLL({})]},
   {code:"C03",name:"Property",title:"Property collateral",lovDesc:"PROPERTY COLLATERAL",tc:"--t-prop",ic:"home",d:"Land or buildings under a legal charge",
    sections:[
-    {title:"Property details",fields:[
-      {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,w:"lg"},
-      {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",w:"lg"},
-      {id:"owner",label:"Ownership name",type:"text",req:true,span:2,w:"2xl"},
-      {id:"location",label:"Location",type:"text",req:true,span:2,w:"2xl"},
-      {id:"valuer",label:"Valuer name",type:"text",req:true,w:"lg"},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,placeholder:"e.g. 0302678178"},
-      {id:"valDate",label:"Valuation date",type:"date",req:true},
-      {id:"marketValue",label:"Market value",type:"amount",req:true},
-      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true},
+    {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
+      {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
+      {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
+      {id:"owner",label:"Ownership name",type:"text",req:true,col:5},
+      {id:"location",label:"Location",type:"text",req:true,col:7,placeholder:"Street, town, plot number"},
     ]},
-    {title:"Collateral details",fields:COLL({})}]},
+    {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
+      {id:"valuer",label:"Valuer name",type:"text",req:true,col:8},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:4,placeholder:"e.g. 0302678178"},
+      {id:"valDate",label:"Valuation date",type:"date",req:true,col:4},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:4},
+    ]},
+    COLL({})]},
   {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
    sections:[
-    {title:"Guarantee details",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,span:2,w:"xl"},
-      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,span:2,w:"xl"},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,w:"lg"},
-      {id:"branch",label:"Branch",type:"text",w:"lg"},
-      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,w:"lg"},
-      {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,w:"lg"},
-      {id:"rate",label:"Interest rate",type:"percent",req:true},
-      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true},
-      {id:"months",label:"Number of months",type:"int",req:true},
-      {id:"folioNo",label:"Folio number",type:"text",req:true,w:"sm"},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,w:"sm"},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,w:"sm"},
+    {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
+      {id:"branch",label:"Branch",type:"text",col:4},
+      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,col:8},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
+      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
+      {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
-    {title:"Collateral details",fields:COLL({})}]},
+    {title:"Terms and folio",desc:"Amount, rate and tenor of the guarantee, and its folio range.",fields:[
+      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:4},
+      {id:"rate",label:"Interest rate",type:"percent",req:true,col:4},
+      {id:"months",label:"Number of months",type:"int",req:true,col:4},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+    ]},
+    COLL({})]},
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
    sections:[
-    {title:"Shares / stock / security details",fields:[
-      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,span:2,w:"xl"},
-      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,span:2,w:"xl"},
-      {id:"units",label:"Number of shares / securities",type:"int",req:true},
-      {id:"secAmount",label:"Security amount",type:"amount",req:true},
-      {id:"marketValue",label:"Market value",type:"amount",req:true},
-      {id:"folioNo",label:"Folio number",type:"text",req:true,w:"sm"},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,w:"sm"},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,w:"sm"},
+    {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
+      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
+      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
+      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:4},
+      {id:"secAmount",label:"Security amount",type:"amount",req:true,col:4},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
     ]},
-    {title:"Collateral details",fields:COLL({})}]},
+    {title:"Folio",desc:"Folio reference and the certificate range pledged.",fields:[
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+    ]},
+    COLL({})]},
 ];
 const typeBy=c=>TYPES.find(t=>t.code===c);
 
@@ -549,8 +564,6 @@ function renderTypes(){
 }
 
 /* ---------- Step 3: dynamic form ---------- */
-const WIDTH={amount:"w-md",percent:"w-xs",int:"w-xs",date:"w-sm",tel:"w-sm",text:"w-md",lookup:"w-xl",derived:"w-lg",textarea:"w-2xl"};
-const wcls=f=>f.w?"w-"+f.w:WIDTH[f.type]||"w-md";
 function fieldHtml(t,f){
   const id=`f-${t.code}-${f.id}`,v=S.values[f.id]??"",err=S.showErrors&&S.errors[f.id];
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
@@ -560,8 +573,8 @@ function fieldHtml(t,f){
     const blocked=lov.dependsOn&&!S.values[lov.dependsOn];
     ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code">${esc(row.code)}</span><span class="desc">${esc(row.desc)}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
   }else if(f.type==="derived"){
-    const val=f.get(S);ctl=`<div class="ro ${val?"":"empty"}" id="${id}">${val?esc(val):"Filled from source account"}</div>`;
-    return `<div class="field ${wcls(f)} ${f.span===2?"span2":""}"><span class="lbl">${esc(f.label)}</span>${ctl}</div>`;
+    const val=f.get(S);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):"From source account"}</span>${icon("lock")}</div>`;
+    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
   }else if(f.type==="textarea"){
     ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
   }else if(f.type==="amount"){
@@ -578,7 +591,7 @@ function fieldHtml(t,f){
   let help="";
   if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
   else if(f.id==="amount"&&S.type==="C01"&&S.lookups.account)help=`<div class="hint">Available balance <span class="mono">${fmt(S.lookups.account.bal.avail)}</span></div>`;
-  return `<div class="field ${wcls(f)} ${f.span===2?"span2":""} ${err?"invalid":""}" id="wrap-${id}">${lbl}${ctl}${help}</div>`;
+  return `<div class="field ${err?"invalid":""}" style="--col:${f.col}" id="wrap-${id}">${lbl}${ctl}${help}</div>`;
 }
 const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
 
@@ -596,7 +609,7 @@ function renderForm(){
       <div class="right"><span class="mono" style="font-size:12px;color:var(--muted)">${t.code} · ${esc(t.lovDesc)}</span></div></div>
     <div class="card-body">
       ${errList.length?`<div class="alert" role="alert" id="errSummary">${icon("alert")}<div><b>${errList.length} field${errList.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errList.slice(0,6).map(([k,m])=>`<li><a href="#f-${t.code}-${k}" data-jump="f-${t.code}-${k}">${esc(m)}</a></li>`).join("")}${errList.length>6?`<li>and ${errList.length-6} more</li>`:""}</ul></div></div>`:""}
-      ${t.sections.map(sec=>`<div class="section"><h3 class="section-title">${esc(sec.title)}</h3><div class="grid">${sec.fields.map(f=>fieldHtml(t,f)).join("")}</div></div>`).join("")}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f)).join("")}</div></div>`).join("")}
     </div>`;
 }
 
