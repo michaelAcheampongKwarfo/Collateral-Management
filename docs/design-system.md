@@ -12,16 +12,17 @@ The visual rules used by the prototype, so the Angular build and later modules (
 
 ## Standard action bar
 
-Every module screen (Creation, Amendment, Cancellation, …) uses the same action bar, top right of the page header, in this order and colour:
+Every module screen (Creation, Amendment, Cancellation, …) uses the same action bar in the page header, in this order and colour. Reject comes from the Oracle Forms amendment screen and is part of the standard set, so every screen shows it in the same place:
 
 | Order | Button | Colour | Style | Action |
 |---|---|---|---|---|
 | 1 | Help | Blue | Tinted (blue border and text) | Opens the help panel for the screen |
 | 2 | Comment | Blue | Tinted | Opens the comments panel. Shows a count when comments exist |
 | — | *divider* | | | Separates the information actions from the record actions |
-| 3 | New | Blue | Tinted | Clears the screen for a new record |
-| 4 | Submit | Green | Solid (the only solid button) | Validates and saves the record |
-| 5 | Exit | Red | Tinted (red border and text) | Leaves the screen |
+| 3 | New | Blue | Tinted | Clears the screen for a new record (on a search list: clears the search) |
+| 4 | Reject | Amber | Tinted (amber border and text) | Rejects a record under evaluation. Disabled on screens that don't evaluate |
+| 5 | Submit | Green | Solid (the only solid button) | Validates and saves the record |
+| 6 | Exit | Red | Tinted (red border and text) | Leaves the screen (on a details page: back to the list, asking before discarding changes) |
 
 Rules:
 - The order, colours and icons do not change between screens. A screen that does not need an action disables it rather than removing it, so buttons never shift position.
@@ -34,6 +35,7 @@ Rules:
 | `--act-blue` | `#0B5CAD` | `#6AAEF2` |
 | `--act-green` | `#1D7A4C` | `#3FB57A` |
 | `--act-red` | `#B42318` | `#F2867B` |
+| `--act-amber` | `#9A5A00` | `#E9B15C` |
 
 ## Form layout: 12-column grid
 
@@ -63,22 +65,41 @@ Sections:
 
 ## Tokens
 
+Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, so the screen never reads as plain white. Dark mode is unchanged.
+
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--primary` | `#0B5CAD` | `#5AA2EE` | Focus ring, active nav, links |
-| `--bg` | `#F2F5F9` | `#0E1522` | Page background |
-| `--surface` | `#FFFFFF` | `#151E2E` | Cards, inputs |
-| `--sunken` | `#EEF2F7` | `#111A28` | Read-only fields, code chips |
+| `--bg` | `#E6EBF2` | `#0E1522` | Page background |
+| `--surface` | `#F9FAFC` | `#151E2E` | Cards, top bar |
+| `--surface-2` | `#F1F4F8` | `#1A2436` | Table headers, profile strip, hover |
+| `--field` | `#FFFFFF` | `#151E2E` | Editable inputs (the only pure white in light mode) |
+| `--sunken` | `#E7ECF2` | `#111A28` | Read-only fields, code chips |
+| `--side-bg` | `#0F2342` | `#0A111D` | Module sidebar (navy in both modes) |
+| `--side-active` | `#1D3B66` | `#16304F` | Active module, with a blue left marker |
+| `--primary` | `#0B5CAD` | `#5AA2EE` | Focus ring, links, selected chips |
 | `--fg` / `--muted` | `#13223A` / `#5A6A80` | `#E5ECF5` / `#9AA9BE` | Text |
 | `--danger` | `#B42318` | `#F2867B` | Required asterisk, errors |
 | `--success` | `#1D7A4C` | `#5CC892` | Completed steps, *Approved* |
-| `--warn` | `#9A5A00` | `#E9B15C` | *Pending approval*, corporate badge |
+| `--warn` | `#9A5A00` | `#E9B15C` | *Pending*, corporate badge |
+| `--chg` / `--chg-soft` | `#A35F00` / `#FFF1D6` | `#E9B15C` / `#352812` | Edited fields in Amendment |
 
-Each collateral type has an identifying colour, used only on its tile and form heading: Cash `#1D7A4C`, Insurance `#6A4BC2`, Property `#B05E0C`, Guarantee `#0B5CAD`, Shares `#0D7A84`.
+## Patterns
 
-**Type:** Public Sans for the interface, IBM Plex Mono for codes, account numbers and amounts (tabular figures so columns line up). Sizes: 24 page title, 15.5 card title, 14 body, 12.5 labels, 11.5 uppercase section labels.
+### Search list (Amendment, and later Cancellation)
 
-**Shape:** 6px radius on controls, 10px on cards. 38px control height. 16–20px grid gap.
+- A **Search criteria** card on the 12-column grid, with **Fetch** and **Clear** under the fields. Criteria are optional; blank lists everything.
+- A results card with type filter chips (with counts), sortable columns, 8 rows per page and a pager ("Showing 1–8 of 14", First, ‹, page, ›, Last).
+- Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
+- The **›** open button is the last column and stays pinned to the right edge. Clicking the row does the same.
+- Rows that can't be opened (for example *Amendment pending*) are muted and their **›** is disabled with a tooltip explaining why.
+
+### Change tracking (Amendment)
+
+- An edited field gets an amber outline, an **Edited** tag on its label and "Was *old value* · Undo" underneath.
+- A rail panel counts the changes and lists *old → new*, with **Undo all changes**.
+- **Submit** is disabled until at least one field differs from the original.
+- Leaving with unsaved changes asks "Discard your changes?" first.
+- The confirmation shows a Field / Before / After table.
 
 ## Components
 

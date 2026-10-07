@@ -5,7 +5,7 @@
 | **Module** | Collateral Management › Creation (Oracle Forms screen `Collateral Creation - LRSK`) |
 | **Target** | Angular front end (migration from Oracle Forms) |
 | **Status** | Draft for presentation. Business rules will be confirmed against the PL/SQL behind the current screen. |
-| **Prototype** | [`design/creation/index.html`](../../design/creation/index.html) (open in a browser) |
+| **Prototype** | [`design/prototype/index.html`](../../design/prototype/index.html) (open in a browser; Creation is the default view) |
 | **Reference screens** | [`screenshots/creation/`](../../screenshots/creation/) |
 
 ---
@@ -62,7 +62,7 @@ A draft flowchart is in [`flowchart.md`](flowchart.md).
 | Area | Oracle Forms | Angular design |
 |---|---|---|
 | Navigation | One window per screen | App shell with a module sidebar: **Creation** now, **Amendment** and **Cancellation** next |
-| Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
+| Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Reject (amber, disabled on Creation), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
 | Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search (Enter to fetch), next to a **customer profile strip** across the row: name and number, customer type, home branch (`010 · SINKOR`), number of collaterals held and total amount held |
 | Collateral type | Code + LOV button + description | **Step 2** card: five selectable tiles that show code, name and a one-line description. Arrow keys move between tiles. |
 | Dynamic area | Stacked canvas for the selected type | **Step 3** card built from the type's form definition, grouped into sections |
@@ -245,7 +245,7 @@ interface FieldDef {
 }
 ```
 
-The prototype already works this way (`TYPES` and `LOVS` in `design/creation/index.html`). The same definitions can move into a TypeScript constant or come from the server.
+The prototype already works this way (`TYPES` and `LOVS` in `design/prototype/index.html`). The same definitions can move into a TypeScript constant or come from the server.
 
 ### 6.2 Suggested component structure
 
