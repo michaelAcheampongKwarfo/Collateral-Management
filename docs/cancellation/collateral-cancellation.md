@@ -61,7 +61,7 @@ Rows whose status is not *Approved* (either *Amendment pending* or *Cancellation
 | Type form | The Amendment form for the collateral's type, read-only (values in grey boxes, lookups as code chip + description, amounts right-aligned) |
 | Cancellation card | Closure reason* with quick-pick chips and a character count · Cancellation date (today, auto-filled) · Requested by (current user, auto-filled) · Status after submit (*Cancellation pending*) |
 | Rail: What happens on submit | Sent for approval → locked → closed on approval (for cash: hold on the account released) |
-| Rail: Record, Account balances (cash), Documents | As Amendment. Documents are **view only** |
+| Rail: Record, Account balances (cash), Documents | As Amendment. **View documents** opens the documents modal view-only |
 | Action bar | **Help**, **Comment**, **New**, **Submit**, **Exit**. **New clears the closure reason** in case of a mistake. New and Submit switch on once a reason is entered. Exit returns to the list and asks before discarding a typed reason. |
 
 ### 5.1 Quick-pick reasons (proposal)

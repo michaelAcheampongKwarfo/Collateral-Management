@@ -77,7 +77,7 @@ Window `Collateral Registration`. Toolbar: Help, Comment, Reject (disabled), Sub
 | Amendment panel | Number of fields changed, a list of *old → new* for each, and **Undo all changes** |
 | Record panel | Collateral no., type, status, approved by, approval date |
 | Account balances (cash) | Available amount, source balance, used amount, amount considered |
-| Documents panel | Existing documents with **View** (the old *View Documents*) plus a drop zone to add new ones |
+| Documents panel | The first documents plus **Manage documents (n)**, opening the documents modal to view, add, scan or delete (the old *View Documents*) |
 | Action bar | **Help**, **Comment**, **New**, **Submit**, **Exit**. **New resets every field to its original value** in case of a mistake. New and Submit switch on once at least one field has changed. Exit returns to the list and asks before discarding unsaved changes. The Forms **Reject** button is not carried over (see Q5). |
 
 ## 5. Fields per type

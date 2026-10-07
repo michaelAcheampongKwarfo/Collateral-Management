@@ -68,7 +68,7 @@ The flowchart, built from the PL/SQL, is in [`flowchart.md`](flowchart.md).
 | Dynamic area | Stacked canvas for the selected type | **Step 3** card built from the type's form definition, grouped into sections |
 | Collateral No | Read-only green field | Shown in the **Summary** panel as "Assigned on submit", then in the confirmation dialog |
 | Balances (cash) | Panel on the right of the cash form | **Account balances** card in the right-hand panel |
-| Attach Document | Green button | **Supporting documents** drop zone with a file list |
+| Attach Document | Green button opening *Document Registration* | **Supporting documents** card with **Attach documents**, opening the documents modal (choose or scan a file, ref. no., description, expiry date, saved-documents table). See [design system](../design-system.md#supporting-documents-modal-all-modules) |
 | Other collaterals | Grid at the bottom | Table at the bottom with an added **Status** column. New submissions appear at the top as *Pending approval*. |
 | Mandatory hint | Footer bar | Red asterisk on labels, an inline message under each field and an error summary at the top of the form |
 

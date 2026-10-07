@@ -22,6 +22,7 @@ Every screen uses the same buttons, in the same order and colours. Each screen s
 | 3 | New | Blue | Tinted |
 | 4 | Submit | Green | Solid (the only solid button) |
 | 5 | Exit | Red | Tinted (red border and text) |
+| — | Reject *(Approvals only)* | Amber | Tinted (amber border and text), placed before the green Authorize |
 
 Which buttons each screen shows, and what New does there:
 
@@ -31,6 +32,8 @@ Which buttons each screen shows, and what New does there:
 | Amendment / Cancellation search list | Help, New, Exit | Clears the search and shows all collaterals |
 | Amendment details | Help, Comment, New, Submit, Exit | Resets every field to its original value. Disabled until something has changed |
 | Cancellation details | Help, Comment, New, Submit, Exit | Clears the closure reason. Disabled until a reason is entered |
+| Approvals queue | Help, New, Exit | Clears the search |
+| Approval request | Help, Comment, Reject, Authorize, Exit | Not shown. Reject and Authorize unlock once "I have checked all the details" is ticked |
 
 Rules:
 - The order and colours never change. A button a screen doesn't use is left out, not shown disabled.
@@ -44,6 +47,7 @@ Rules:
 | `--act-blue` | `#0B5CAD` | `#6AAEF2` |
 | `--act-green` | `#1D7A4C` | `#3FB57A` |
 | `--act-red` | `#B42318` | `#F2867B` |
+| `--act-amber` | `#9A5A00` | `#E9B15C` |
 
 ## Form layout: 12-column grid
 
@@ -73,7 +77,7 @@ Sections:
 
 ## Tokens
 
-Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, so the screen never reads as plain white. Dark mode is unchanged.
+Light mode uses a soft blue-grey page with off-white cards, and a smoke-white sidebar that matches the cards. Dark mode keeps its dark sidebar.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
@@ -82,8 +86,8 @@ Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, s
 | `--surface-2` | `#F1F4F8` | `#1A2436` | Table headers, profile strip, hover |
 | `--field` | `#FFFFFF` | `#151E2E` | Editable inputs (the only pure white in light mode) |
 | `--sunken` | `#E7ECF2` | `#111A28` | Read-only fields, code chips |
-| `--side-bg` | `#0F2342` | `#0A111D` | Module sidebar (navy in both modes) |
-| `--side-active` | `#1D3B66` | `#16304F` | Active module, with a blue left marker |
+| `--side-bg` | `#F5F7FA` | `#0A111D` | Module sidebar: smoke white in light mode, matching the cards |
+| `--side-active` / `--side-active-fg` | `#E3ECF8` / `#0B5CAD` | `#16304F` / `#E5ECF5` | Active module, with a blue left marker |
 | `--primary` | `#0B5CAD` | `#5AA2EE` | Focus ring, links, selected chips |
 | `--fg` / `--muted` | `#13223A` / `#5A6A80` | `#E5ECF5` / `#9AA9BE` | Text |
 | `--danger` | `#B42318` | `#F2867B` | Required asterisk, errors |
@@ -119,6 +123,22 @@ Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, s
 
 - Submit opens an `alertdialog`: a warning icon, "Cancel collateral *number*?", one sentence on what happens on approval, then the key values and the reason.
 - Buttons: **Keep collateral** (safe, neutral) and **Submit cancellation** (red, tinted). The safe choice is first.
+
+### Supporting documents modal (all modules)
+
+Replaces the Forms *Document Registration (Attach Scanned Document)* window. One modal, two modes:
+
+- **Editable** (Creation, Amendment): a form with **Choose a file** / drop zone and **Scan document**, *Scanned document ref. no.* (pre-filled with the next number, editable), *Document description** (pre-filled from the file name), *Document expiry date*, then **Save document** and **Clear**. Saved documents are stored straight away, as in Forms.
+- **View only** (Cancellation, Approvals): the table only.
+- The table lists Ref., Document (description over file name), Expiry, Posted by, Posting date, and per-row **View** and **Delete**. Delete needs a second click ("Confirm delete") instead of the Forms radio button plus Delete button. **Return** closes the modal.
+- The rail card shows the first three documents and a **Manage documents (n)** / **View documents (n)** button.
+
+### Approval request (Approvals)
+
+- The request opens on its entry screen's layout, read-only. Amendment requests highlight changed fields (**Changed** tag, amber outline, current value underneath).
+- A **Decision** card at the top of the rail holds the confirmation checkbox; it turns green when ticked and unlocks Reject and Authorize.
+- Request types have their own colours, used for badges, chips and dots: Creation blue, Amendment amber, Cancellation red.
+- The **Approvals** sidebar link shows a red count of requests waiting.
 
 ## Components
 

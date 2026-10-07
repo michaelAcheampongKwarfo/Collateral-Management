@@ -13,7 +13,7 @@
 :root{
   --bg:#E6EBF2; --surface:#F9FAFC; --surface-2:#F1F4F8; --sunken:#E7ECF2; --field:#FFFFFF;
   --line:#D5DDE8; --line-strong:#BCC8D8;
-  --side-bg:#0F2342; --side-fg:#B9C7DB; --side-muted:#7F93AF; --side-strong:#FFFFFF; --side-active:#1D3B66; --side-line:#203A5E; --brand-mark:#2F7BD1;
+  --side-bg:#F5F7FA; --side-fg:#3D4E66; --side-muted:#7A8AA0; --side-strong:#13223A; --side-active:#E3ECF8; --side-active-fg:#0B5CAD; --side-line:#D5DDE8; --brand-mark:#0B5CAD;
   --chg:#A35F00; --chg-soft:#FFF1D6;
   --fg:#13223A; --muted:#5A6A80; --faint:#8A97A8;
   --primary:#0B5CAD; --primary-hover:#094C90; --primary-ink:#FFFFFF; --primary-soft:#E7F0FA;
@@ -31,7 +31,7 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28; --field:#151E2E;
   --line:#26324A; --line-strong:#34425D;
-  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
+  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-active-fg:#E5ECF5; --side-line:#1C2638; --brand-mark:#2F7BD1;
   --chg:#E9B15C; --chg-soft:#352812;
   --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
@@ -44,7 +44,7 @@
 :root[data-theme="dark"]{
   --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28; --field:#151E2E;
   --line:#26324A; --line-strong:#34425D;
-  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
+  --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-active-fg:#E5ECF5; --side-line:#1C2638; --brand-mark:#2F7BD1;
   --chg:#E9B15C; --chg-soft:#352812;
   --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
@@ -77,7 +77,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-sm);color:var(--side-fg);text-decoration:none;font-weight:500}
 .nav{display:flex;flex-direction:column;gap:2px}
 .nav a:not(.soon):hover{background:var(--side-active);color:var(--side-strong)}
-.nav a[aria-current="page"]{background:var(--side-active);color:var(--side-strong);font-weight:600;box-shadow:inset 3px 0 0 var(--brand-mark)}
+.nav a[aria-current="page"]{background:var(--side-active);color:var(--side-active-fg);font-weight:600;box-shadow:inset 3px 0 0 var(--brand-mark)}
 .nav a.soon{cursor:default;opacity:.75}
 .nav a .tag{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--side-muted);border:1px solid var(--side-line);border-radius:99px;padding:0 7px}
 .side-foot{margin-top:auto;font-size:12px;color:var(--side-muted);padding:10px;border:1px dashed var(--side-line);border-radius:var(--r-sm)}
@@ -388,6 +388,54 @@ svg.flip{transform:scaleX(-1)}
 .reason-q{font-weight:500;font-style:italic;text-align:right}
 @media (max-width:1100px){.figs{grid-template-columns:repeat(3,minmax(0,1fr))}.figs > div:nth-child(4){border-left:0}.figs > div:nth-child(n+4){border-top:1px solid var(--line)}}
 @media (max-width:640px){.figs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs > div{border-left:0!important;border-top:1px solid var(--line)}.figs > div:nth-child(-n+2){border-top:0}.figs > div:nth-child(even){border-left:1px solid var(--line)!important}}
+
+/* ---------- Documents modal ---------- */
+.docs-modal{width:min(780px,100%);max-height:min(720px,92vh)}
+.docs-modal header p{max-width:52ch}
+.dm-form{padding:14px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);margin-bottom:18px}
+.dm-pick{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.dm-drop{flex:1 1 260px;flex-direction:row;justify-content:flex-start;padding:10px 14px;text-align:left;background:var(--field)}
+.dm-drop.has-file{border-style:solid;border-color:var(--primary);color:var(--fg)}
+.dm-pick .btn{height:auto;min-height:42px}
+.dm-actions{display:flex;justify-content:flex-end;align-items:flex-end;gap:8px;flex-wrap:wrap}
+.dm-actions .err{margin-right:auto;align-self:center}
+.dm-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dm-head h3{margin:0;font-size:14px}
+.chip-count{font-family:var(--font-mono);font-size:11.5px;font-weight:600;background:var(--sunken);border-radius:99px;padding:1px 8px;color:var(--muted)}
+.dm-table{border:1px solid var(--line);border-radius:var(--r-sm)}
+.dm-table td{vertical-align:middle}
+.dm-table .cell-name{font-weight:600}
+.dm-table .sub{font-size:11.5px;color:var(--muted)}
+.dm-row-actions{display:flex;gap:12px;justify-content:flex-end}
+.link-btn.danger{color:var(--danger)}
+.link-btn.confirm{background:var(--danger);color:var(--surface);border-radius:4px;padding:2px 6px}
+.doc-btn{width:100%;justify-content:center}
+.files .doc-ref{font-size:11px;color:var(--muted);flex:none}
+.files li.more{background:none;color:var(--muted);font-size:12px;padding-left:2px}
+@media (max-width:640px){.dm-form .field,.dm-actions{grid-column:1/-1!important}}
+
+/* ---------- Approvals ---------- */
+:root{--k-create:#0B5CAD;--k-create-soft:#E7F0FA;--k-amend:#A35F00;--k-amend-soft:#FFF1D6;--k-cancel:#B42318;--k-cancel-soft:#FDEDEB;--act-amber:#9A5A00;--act-amber-soft:#FFF4E0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--k-create:#5AA2EE;--k-create-soft:#16304F;--k-amend:#E9B15C;--k-amend-soft:#352812;--k-cancel:#F2867B;--k-cancel-soft:#3A1C1C;--act-amber:#E9B15C;--act-amber-soft:#352812}}
+:root[data-theme="dark"]{--k-create:#5AA2EE;--k-create-soft:#16304F;--k-amend:#E9B15C;--k-amend-soft:#352812;--k-cancel:#F2867B;--k-cancel-soft:#3A1C1C;--act-amber:#E9B15C;--act-amber-soft:#352812}
+.btn.act-amber{background:var(--act-amber-soft);border-color:var(--act-amber);color:var(--act-amber)}
+.btn.act-amber:hover:not(:disabled){background:var(--act-amber);color:var(--surface)}
+.kind{display:inline-block;font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.kind.k-create{background:var(--k-create-soft);color:var(--k-create)}.kind.k-amend{background:var(--k-amend-soft);color:var(--k-amend)}.kind.k-cancel{background:var(--k-cancel-soft);color:var(--k-cancel)}
+.kdot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.kdot.k-create{background:var(--k-create)}.kdot.k-amend{background:var(--k-amend)}.kdot.k-cancel{background:var(--k-cancel)}
+.grid-table td.ask{white-space:normal;min-width:160px;max-width:240px;color:var(--muted);font-size:12.5px}
+.nav a .tag.count{background:var(--danger);border-color:var(--danger);color:#FFFFFF;font-family:var(--font-mono)}
+.decision{border-color:var(--act-amber)}
+.decision.ok{border-color:var(--success)}
+.tick{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:12px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line)}
+.tick input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--success);flex:none}
+.decision.ok .tick{border-color:var(--success);background:var(--success-soft)}
+.maker-note{display:flex;gap:8px;font-size:12px;color:var(--warn);margin:10px 0 0}
+.maker-note svg{width:16px;height:16px}
+.field.changed .ro-view{border-color:var(--chg);box-shadow:0 0 0 3px var(--chg-soft)}
+.reason-quote{margin:0;padding:12px 16px;border-left:3px solid var(--act-red);background:var(--surface-2);border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:15px;font-style:italic}
+.warn-ic.amber{background:var(--act-amber-soft);color:var(--act-amber)}
 </style>
 </head>
 <body>
@@ -415,6 +463,7 @@ svg.flip{transform:scaleX(-1)}
   <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.3 4.6L20 16"/><path d="M20 20v-4h-4"/></symbol>
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
 </svg>
 
@@ -426,6 +475,7 @@ svg.flip{transform:scaleX(-1)}
       <a href="#creation" data-view="creation" aria-current="page"><svg class="i"><use href="#i-plus"/></svg>Creation</a>
       <a href="#amendment" data-view="amendment"><svg class="i"><use href="#i-edit"/></svg>Amendment</a>
       <a href="#cancellation" data-view="cancellation"><svg class="i"><use href="#i-ban"/></svg>Cancellation</a>
+      <a href="#approvals" data-view="approvals"><svg class="i"><use href="#i-check"/></svg>Approvals<span class="tag count" id="apCount">0</span></a>
     </nav>
     <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
   </aside>
@@ -498,6 +548,7 @@ svg.flip{transform:scaleX(-1)}
       <div class="foot-note"><svg class="i"><use href="#i-info"/></svg>Fields marked <span class="req">*</span> are required.</div>
     </main>
     <main class="page" id="view-records" hidden></main>
+    <main class="page" id="view-approvals" hidden></main>
   </div>
 </div>
 
@@ -637,7 +688,7 @@ const OTHER={
 
 /* ---------- State ---------- */
 let S;
-function fresh(){return{customer:null,loading:false,custError:"",type:null,values:{},lookups:{},files:[],errors:{},showErrors:false,comments:[],newRows:[]}}
+function fresh(){return{customer:null,loading:false,custError:"",type:null,values:{},lookups:{},docs:[],errors:{},showErrors:false,comments:[],newRows:[]}}
 
 /* ---------- Step 1: customer ---------- */
 function renderCustomer(){
@@ -686,7 +737,8 @@ function fieldHtml(t,f,st=S){
     const lk=f.type==="lookup"&&st.lookups[f.id];
     const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
     const body=empty?"—":lk?`<span class="code">${esc(lk.code)}</span><span class="t">${esc(lk.desc)}</span>`:`<span class="t">${esc(val)}</span>`;
-    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}</span><div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${body}</div></div>`;
+    const chg=st.orig&&isChanged(f,st);
+    return `<div class="field ${chg?"changed":""}" style="--col:${f.col}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span><div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${body}</div>${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
   }
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
   let ctl="";
@@ -763,10 +815,8 @@ function renderRail(){
       <div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}<button class="link-btn" data-detail="block">Details</button></span></div></div>`
       :`<div class="hint">Select a source account to see its balances.</div>`}</div></div>`;
   }
-  html+=`<div class="card"><div class="card-body"><h3>Supporting documents</h3>
-    <label class="drop" id="drop" for="fileIn">${icon("upload")}<span><b>Attach documents</b><br>Drop files here or browse</span><span class="hint">Valuation report, title deed, policy, certificate…</span></label>
-    <input type="file" id="fileIn" multiple class="sr">
-    ${S.files.length?`<ul class="files">${S.files.map((n,i)=>`<li>${icon("clip")}<span>${esc(n)}</span><button aria-label="Remove ${esc(n)}" data-rm="${i}">${icon("x")}</button></li>`).join("")}</ul>`:""}
+  html+=`<div class="card"><div class="card-body"><h3>Supporting documents</h3>${docsMini(S.docs)}
+    <button class="btn act-blue doc-btn" data-docs="creation">${icon("clip")}${S.docs.length?`Manage documents (${S.docs.length})`:"Attach documents"}</button>
     </div></div>`;
   rail.innerHTML=html;
 }
@@ -811,6 +861,63 @@ function openLayer(html,cls=""){lastFocus=document.activeElement;$("#layer").inn
 function closeLayer(){$("#layer").innerHTML="";lastFocus&&lastFocus.focus&&lastFocus.focus()}
 let toastT;
 function toast(msg){clearTimeout(toastT);let el=$("#toast");if(!el){el=document.createElement("div");el.id="toast";el.className="toast";el.setAttribute("role","status");document.body.appendChild(el)}el.textContent=msg;el.hidden=false;toastT=setTimeout(()=>el.hidden=true,2800)}
+
+/* ---------- Supporting documents modal (replaces Forms "Document Registration") ----------
+   o = {docs: array (edited in place), editable, sub, onChange}. Documents save straight to the list, as in Forms. */
+const todayIso=()=>new Date().toISOString().slice(0,10);
+let DOCSEQ=4101;
+const nextRef=()=>`DOC-${DOCSEQ++}`;
+function docsMini(list){
+  if(!list.length)return `<p class="hint" style="margin:0 0 10px">No documents yet. Valuation report, title deed, policy, certificate…</p>`;
+  return `<ul class="files" style="margin:0 0 10px">${list.slice(0,3).map(d=>`<li>${icon("clip")}<span>${esc(d.desc)}</span><span class="mono doc-ref">${esc(d.ref)}</span></li>`).join("")}${list.length>3?`<li class="more">and ${list.length-3} more</li>`:""}</ul>`;
+}
+function openDocs(o){
+  let pending=null;
+  openLayer(`<div class="modal docs-modal" role="dialog" aria-modal="true" aria-labelledby="dmT"><header><div><h2 id="dmT">Supporting documents</h2><p class="hint" style="margin:2px 0 0">${esc(o.sub)}</p></div><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb" id="dmBody"></div>
+    <footer><span class="hint" style="margin-right:auto">${o.editable?"Saved documents are stored against the collateral straight away.":"View only."}</span><button class="btn" data-close>Return</button></footer></div>`);
+  const body=$("#dmBody");
+  const draw=()=>{
+    body.innerHTML=(o.editable?`<form id="dmForm" class="grid dm-form" novalidate autocomplete="off">
+      <div class="field" style="--col:12"><span class="lbl">Document<span class="req">*</span></span>
+        <div class="dm-pick"><label class="drop dm-drop ${pending?"has-file":""}" for="dmFile" id="dmDrop">${icon(pending?"clip":"upload")}<span>${pending?`<b>${esc(pending)}</b> · choose another`:"<b>Choose a file</b> or drop it here"}</span></label><input type="file" id="dmFile" class="sr">
+        <button type="button" class="btn" id="dmScan">${icon("scan")}Scan document</button></div></div>
+      <div class="field" style="--col:4"><label for="dmRef">Scanned document ref. no.</label><input class="input mono" id="dmRef" value="${nextRefPeek()}"></div>
+      <div class="field" style="--col:8"><label for="dmDesc">Document description<span class="req">*</span></label><input class="input" id="dmDesc" placeholder="e.g. Valuation report from CSSD, September 2026"></div>
+      <div class="field" style="--col:4"><label for="dmExp">Document expiry date</label><input class="input" type="date" id="dmExp"></div>
+      <div class="dm-actions" style="grid-column:span 8"><span class="err" id="dmErr" hidden></span><button type="button" class="btn ghost" id="dmClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("check")}Save document</button></div>
+    </form>`:"")+
+    `<div class="dm-head"><h3>Saved documents</h3><span class="chip-count">${o.docs.length}</span></div>
+    ${o.docs.length?`<div class="table-wrap dm-table"><table><thead><tr><th>Ref.</th><th>Document</th><th>Expiry</th><th>Posted by</th><th>Posting date</th><th><span class="sr">Actions</span></th></tr></thead><tbody>
+      ${o.docs.map((d,i)=>`<tr><td class="mono">${esc(d.ref)}</td><td><div class="cell-name">${esc(d.desc)}</div><div class="sub">${esc(d.name)}</div></td><td>${d.expiry?fmtDate(d.expiry):"—"}</td><td class="mono">${esc(d.by)}</td><td>${esc(d.date)}</td>
+        <td><div class="dm-row-actions"><button class="link-btn" data-dmview="${i}">View</button>${o.editable?`<button class="link-btn danger" data-dmdel="${i}">Delete</button>`:""}</div></td></tr>`).join("")}
+    </tbody></table></div>`:`<div class="empty-state" style="padding:22px">${icon("clip")}<b>No documents saved yet</b>${o.editable?"<span>Choose or scan a file above, describe it, then select Save document.</span>":""}</div>`}`;
+  };
+  const nextRefPeek=()=>`DOC-${DOCSEQ}`;
+  const setFile=n=>{pending=n;const desc=$("#dmDesc")?.value,ref=$("#dmRef")?.value,exp=$("#dmExp")?.value;draw();$("#dmDesc").value=desc||n.replace(/\.[a-z0-9]+$/i,"").replace(/[_-]+/g," ");$("#dmRef").value=ref||nextRefPeek();$("#dmExp").value=exp||"";$("#dmDesc").focus()};
+  draw();(o.editable?$("#dmDrop"):$("[data-close]"))?.focus();
+  body.addEventListener("change",e=>{if(e.target.id==="dmFile"&&e.target.files[0])setFile(e.target.files[0].name)});
+  body.addEventListener("dragover",e=>{const d=e.target.closest("#dmDrop");if(d){e.preventDefault();d.classList.add("over")}});
+  body.addEventListener("dragleave",e=>{e.target.closest("#dmDrop")?.classList.remove("over")});
+  body.addEventListener("drop",e=>{const d=e.target.closest("#dmDrop");if(!d)return;e.preventDefault();const f=e.dataTransfer.files[0];if(f)setFile(f.name)});
+  body.addEventListener("submit",e=>{e.preventDefault();
+    const desc=$("#dmDesc").value.trim(),err=$("#dmErr");
+    if(!pending||!desc){err.hidden=false;err.innerHTML=icon("alert")+(!pending?"Choose or scan a file first.":"Enter a description for the document.");(pending?$("#dmDesc"):$("#dmDrop")).focus();return}
+    const ref=$("#dmRef").value.trim()||nextRefPeek();if(ref===nextRefPeek())DOCSEQ++;
+    o.docs.unshift({ref,name:pending,desc,expiry:$("#dmExp").value||null,by:"K.ASARE",date:fmtDate(todayIso())});
+    pending=null;draw();o.onChange&&o.onChange();toast("Document saved.");$("#dmDrop").focus();
+  });
+  body.addEventListener("click",e=>{
+    const T=x=>e.target.closest(x);let el;
+    if(T("#dmScan")){setFile(`SCAN-${todayIso().replace(/-/g,"")}-${String(DOCSEQ).slice(-3)}.pdf`);toast("Page scanned (simulated). The Angular app talks to the branch scanner here.");return}
+    if(T("#dmClear")){pending=null;draw();$("#dmDrop").focus();return}
+    if(el=T("[data-dmview]")){toast(`${o.docs[+el.dataset.dmview].name} opens in the document viewer.`);return}
+    if(el=T("[data-dmdel]")){
+      if(!el.classList.contains("confirm")){el.classList.add("confirm");el.textContent="Confirm delete";setTimeout(()=>{if(el.isConnected){el.classList.remove("confirm");el.textContent="Delete"}},3500);return}
+      const d=o.docs.splice(+el.dataset.dmdel,1)[0];draw();o.onChange&&o.onChange();toast(`${d.desc} deleted.`);
+    }
+  });
+}
 
 function openLov(title,rows,onPick,cols){
   cols=cols||[["code","Code"],["desc","Description"]];
@@ -857,16 +964,17 @@ $("#formCard").addEventListener("click",e=>{
 
 document.addEventListener("click",e=>{
   if(e.target.closest("[data-close]")||e.target.id==="scrim"){closeLayer();return}
-  const rm=e.target.closest("[data-rm]");if(rm){S.files.splice(+rm.dataset.rm,1);renderRail();return}
+  const dc=e.target.closest("[data-docs]");if(dc){openDocsFor(dc.dataset.docs);return}
   const d=e.target.closest("[data-detail]");
   if(d){const a=S.lookups.account;const rows=d.dataset.detail==="block"?[{code:"BLK-2209",desc:"Standing order guarantee",amt:fmt(a.bal.block)}]:a.bal.uncleared?[{code:"CHQ-88120",desc:"Inward clearing cheque",amt:fmt(a.bal.uncleared)}]:[];
     openLov(d.dataset.detail==="block"?"Blocked amounts":"Uncleared items",rows,()=>{},[["code","Reference"],["desc","Description"],["amt","Amount"]]);}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#scrim"))closeLayer()});
-document.addEventListener("change",e=>{if(e.target.id==="fileIn"){S.files.push(...[...e.target.files].map(f=>f.name));renderRail()}});
-document.addEventListener("dragover",e=>{const d=e.target.closest&&e.target.closest("#drop");if(d){e.preventDefault();d.classList.add("over")}});
-document.addEventListener("dragleave",e=>{const d=e.target.closest&&e.target.closest("#drop");d&&d.classList.remove("over")});
-document.addEventListener("drop",e=>{const d=e.target.closest&&e.target.closest("#drop");if(!d)return;e.preventDefault();S.files.push(...[...e.dataTransfer.files].map(f=>f.name));renderRail()});
+function openDocsFor(ctx){
+  if(ctx==="creation")openDocs({docs:S.docs,editable:true,sub:`New ${typeBy(S.type)?.name.toLowerCase()||""} collateral for ${S.customer?.name||"the customer"}`,onChange:renderRail});
+  else if(ctx==="record")openDocs({docs:A.rec.docs,editable:!isCancel(),sub:`Collateral ${A.rec.no} · ${A.customer.name}`,onChange:renderAmRail});
+  else if(ctx==="approval")openDocs({docs:P.item.docs,editable:false,sub:`Collateral ${P.item.no} · ${custBy(P.item.cust).name}`});
+}
 
 $("#newBtn").addEventListener("click",()=>{S=fresh();$("#custNo").value="";renderAll();$("#custNo").focus();toast("Form cleared. Ready for a new collateral.")});
 $("#exitBtn").addEventListener("click",()=>toast("Exit returns to the Collateral Management home in the Angular app."));
@@ -892,17 +1000,18 @@ $("#submitBtn").addEventListener("click",()=>{
   const no=`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}${String(Math.floor(Math.random()*1e7)).padStart(7,"0")}`;
   const amt=parseAmt(S.values.amount);
   S.newRows.unshift({no,type:t.code,desc:t.lovDesc,amt,avail:null,date:null,status:"Pending approval",isNew:true});
+  queueRequest({kind:"create",no,cust:S.customer.code,type:t.code,by:"K.ASARE",values:{...S.values},lookups:{...S.lookups},docs:[...S.docs]});
   openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="okT" style="width:min(460px,100%)"><div class="mb" style="text-align:center;padding:24px">
     <div class="success-ic">${icon("check")}</div><h2 id="okT" style="margin:0;font-size:18px">Collateral submitted for approval</h2>
     <div class="coll-no">${no}</div>
     <div style="text-align:left"><div class="kv"><span>Customer</span><b>${esc(S.customer.name)} · <span class="mono">${S.customer.code}</span></b></div>
     <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.title)}</b></div>
     <div class="kv"><span>${t.code==="C01"?"Collateral amount":"Amount considered"}</span><b class="mono">${fmt(amt)}</b></div>
-    <div class="kv"><span>Documents</span><b>${S.files.length||"None"}</b></div>
+    <div class="kv"><span>Documents</span><b>${S.docs.length||"None"}</b></div>
     <div class="kv"><span>Status</span><b><span class="status pending">Pending approval</span></b></div></div></div>
     <footer><button class="btn" id="okClose">Back to customer</button><button class="btn primary" id="okNew">Capture another</button></footer></div>`);
   $("#okNew").focus();
-  $("#okClose").addEventListener("click",()=>{closeLayer();S.type=null;S.values={};S.lookups={};S.files=[];S.errors={};S.showErrors=false;renderAll();$("#otherWrap").scrollIntoView({block:"center"})});
+  $("#okClose").addEventListener("click",()=>{closeLayer();S.type=null;S.values={};S.lookups={};S.docs=[];S.errors={};S.showErrors=false;renderAll();$("#otherWrap").scrollIntoView({block:"center"})});
   $("#okNew").addEventListener("click",()=>{closeLayer();$("#newBtn").click()});
 });
 
@@ -995,6 +1104,8 @@ const AM=[
 const amountOf=r=>({C01:()=>r.lookups.account?.bal.cleared,C02:()=>parseAmt(r.values.sumAssured),C03:()=>parseAmt(r.values.collAmount),C04:()=>parseAmt(r.values.guarAmount),C05:()=>parseAmt(r.values.marketValue)})[r.type]();
 const custBy=code=>CUSTOMERS.find(c=>c.code===code);
 const DOCS={C01:["Lien letter.pdf","Account mandate.pdf"],C02:["Policy schedule.pdf","Deed of assignment.pdf"],C03:["Valuation report.pdf","Title deed.pdf"],C04:["Guarantee letter.pdf"],C05:["Share certificate.pdf","Pledge form.pdf"]};
+const seedDocs=r=>(DOCS[r.type]||[]).map((n,i)=>({ref:`DOC-${r.no.slice(-4)}${i+1}`,name:n.replace(/ /g,"_"),desc:n.replace(".pdf",""),expiry:null,by:r.by,date:r.appr}));
+AM.forEach(r=>r.docs=seedDocs(r));
 
 /* ---------- change tracking ---------- */
 const NUMERIC=["amount","percent","int"];
@@ -1029,7 +1140,7 @@ let A=STATES.amendment;
 const isCancel=()=>A.mod.kind==="cancel";
 
 function amRows(){
-  let rows=AM.filter(r=>(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll)));
+  let rows=AM.filter(r=>r.status!=="Cancelled"&&(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll)));
   const counts={ALL:rows.length};TYPES.forEach(t=>counts[t.code]=rows.filter(r=>r.type===t.code).length);
   if(A.filter!=="ALL")rows=rows.filter(r=>r.type===A.filter);
   const key={no:r=>r.no,name:r=>custBy(r.cust).name,type:r=>r.type,amount:r=>amountOf(r)||0,considered:r=>parseAmt(r.values.amount)||0,review:r=>r.values.reviewDate,expiry:r=>r.values.expiryDate,by:r=>r.by}[A.sort.k];
@@ -1156,9 +1267,8 @@ function renderAmRail(){
       <div style="margin-top:8px"><div class="bal-row"><span>Source balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
       <div class="bal-row"><span>Used amount</span><span class="v">${fmt(a.bal.block)}</span></div>
       <div class="bal-row"><span>Amount considered</span><span class="v">${A.values.amount||"—"}</span></div></div></div></div>`;}
-  h+=`<div class="card"><div class="card-body"><h3>Documents</h3><ul class="files">${(DOCS[r.type]||[]).map(n=>`<li>${icon("clip")}<span>${esc(n)}</span><button class="link-btn" data-viewdoc="${esc(n)}">View</button></li>`).join("")}
-    ${A.files.map((n,i)=>`<li class="new-doc">${icon("upload")}<span>${esc(n)}</span><button aria-label="Remove ${esc(n)}" data-amrm="${i}">${icon("x")}</button></li>`).join("")}</ul>
-    ${isCancel()?`<p class="hint" style="margin:10px 0 0">View only. Documents can't be added while cancelling.</p>`:`<label class="drop" for="amFileIn" style="margin-top:10px">${icon("upload")}<span><b>Add documents</b><br>Drop files here or browse</span></label><input type="file" id="amFileIn" multiple class="sr">`}</div></div>`;
+  h+=`<div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(r.docs)}
+    <button class="btn act-blue doc-btn" data-docs="record">${icon("clip")}${isCancel()?"View documents":"Manage documents"} (${r.docs.length})</button></div></div>`;
   $("#amRail").innerHTML=h;
 }
 
@@ -1204,6 +1314,7 @@ function amSubmit(){
   const r=A.rec,t=amTypeBy(A.type);
   const rows=ch.map(f=>`<tr><td>${esc(f.label)}</td><td class="o">${esc(origDisplay(f,A))}</td><td class="nv">${esc(showVal(f,A.values,A.lookups))}</td></tr>`).join("");
   r.status="Amendment pending";
+  queueRequest({kind:"amend",no:r.no,cust:r.cust,type:r.type,by:"K.ASARE",rec:r,values:{...A.values},lookups:{...A.lookups},orig:{...A.orig},origLookups:{...A.origLookups},docs:r.docs});
   openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amOk" style="width:min(560px,100%)"><div class="mb" style="padding:24px">
     <div class="success-ic">${icon("check")}</div><h2 id="amOk" style="margin:0;font-size:18px;text-align:center">Amendment submitted for approval</h2>
     <p class="hint" style="text-align:center;margin:6px 0 16px">${t.code} · ${esc(t.title)} <span class="mono">${r.no}</span> for ${esc(A.customer.name)}. The current values stay in force until the amendment is approved.</p>
@@ -1249,7 +1360,6 @@ amView.addEventListener("click",e=>{
   if(el=T("[data-jump]")){e.preventDefault();const x=document.getElementById(el.dataset.jump);x&&(x.scrollIntoView({block:"center"}),x.focus());return}
   if(el=T("[data-reason]")){setReason(el.dataset.reason,true);return}
   if(el=T("[data-viewdoc]")){toast(`${el.dataset.viewdoc} opens in the document viewer.`);return}
-  if(el=T("[data-amrm]")){A.files.splice(+el.dataset.amrm,1);renderAmRail();return}
   if(T("#amUndoAll")){resetEntry();return}
   if(el=T("[data-revert]")){const id=el.dataset.revert;A.values[id]=A.orig[id];if(id in A.origLookups)A.lookups[id]=A.origLookups[id];
     const t=amTypeBy(A.type);for(const k in LOVS){if(LOVS[k].dependsOn===id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){A.values[dep.id]=A.orig[dep.id];A.lookups[dep.id]=A.origLookups[dep.id]}}}
@@ -1275,7 +1385,6 @@ amView.addEventListener("input",e=>{
 amView.addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k||A.view!=="detail")return;const n=parseAmt(e.target.value);if(n==null)return;
   e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);A.values[e.target.dataset.f]=e.target.value;
   refreshField(fieldsOf(amTypeBy(A.type)).find(x=>x.id===e.target.dataset.f));renderAmRail()});
-amView.addEventListener("change",e=>{if(e.target.id==="amFileIn"){A.files.push(...[...e.target.files].map(f=>f.name));renderAmRail()}});
 
 /* ---------- CANCELLATION: read-only type form + closure summary + reason ---------- */
 const REASONS=["Facility fully repaid","Collateral replaced by another collateral","Collateral released to the customer","Captured in error"];
@@ -1342,6 +1451,7 @@ function cxSubmit(){
   $("#cxConfirm").focus();
   $("#cxConfirm").addEventListener("click",()=>{
     r.status="Cancellation pending";r.closeReason=A.reason;
+    queueRequest({kind:"cancel",no:r.no,cust:r.cust,type:r.type,by:"K.ASARE",rec:r,values:{...r.values},lookups:{...r.lookups},reason:A.reason,docs:r.docs});
     openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="cxOk" style="width:min(480px,100%)"><div class="mb" style="padding:24px;text-align:center">
       <div class="success-ic">${icon("check")}</div><h2 id="cxOk" style="margin:0;font-size:18px">Cancellation submitted for approval</h2>
       <p class="hint" style="margin:8px 0 0">Collateral <span class="mono">${r.no}</span> now shows <b>Cancellation pending</b>. It stays active, and locked in Amendment and Cancellation, until the request is approved or rejected.</p>
@@ -1350,14 +1460,187 @@ function cxSubmit(){
   });
 }
 
+/* =====================================================================
+   APPROVALS: one queue for creation, amendment and cancellation requests.
+   Each request opens its entry screen read-only; the approver ticks
+   "I have checked all the details", then authorizes or rejects.
+   ===================================================================== */
+const KIND={create:{label:"Creation",cls:"k-create",verb:"creation"},amend:{label:"Amendment",cls:"k-amend",verb:"amendment"},cancel:{label:"Cancellation",cls:"k-cancel",verb:"cancellation"}};
+const QUEUE=[];
+let QSEQ=1;
+const nowStamp=()=>fmtDate(todayIso());
+function queueRequest(o){QUEUE.unshift(Object.assign({id:QSEQ++,on:nowStamp(),docs:[]},o));updateApBadge()}
+const recBy=no=>AM.find(r=>r.no===no);
+/* sample requests waiting today */
+(function seedQueue(){
+  const mk=(kind,base)=>Object.assign({id:QSEQ++,kind},base);
+  const c1v={propType:"03",propSub:"032",owner:"ROSE T. NYEMAH",location:"Plot 7, Weija, Accra",valuer:"Tesy Valuation Consult",valuerTel:"0245678945",valDate:"2026-06-30",marketValue:F(180000),forcedSale:F(150000),amount:F(150000),reviewDate:"2026-06-30",expiryDate:"2027-06-30",comment:"Title deed verified at the Lands Commission."};
+  const c1l={propType:LOVS.propType.rows().find(r=>r.code==="03"),propSub:LOVS.propSub.rows({values:{propType:"03"}}).find(r=>r.code==="032")};
+  QUEUE.push(mk("create",{no:"2606304232",cust:"046378",type:"C03",by:"E.QUAYE",on:"06-OCT-2026",values:c1v,lookups:c1l,docs:[{ref:"DOC-4090",name:"Valuation_report_Weija.pdf",desc:"Valuation report, Weija plot",expiry:"2027-06-30",by:"E.QUAYE",date:"06-OCT-2026"},{ref:"DOC-4091",name:"Title_deed_Weija.pdf",desc:"Title deed",expiry:null,by:"E.QUAYE",date:"06-OCT-2026"}]}));
+  const acc=ACCOUNTS.find(a=>a.code==="00515002203914");
+  QUEUE.push(mk("create",{no:"202610063104477",cust:"061104",type:"C01",by:"E.QUAYE",on:"06-OCT-2026",values:{account:acc.code,amount:F(5000),reviewDate:"2027-04-06",expiryDate:"2027-10-06",comment:""},lookups:{account:Object.assign({},acc,{desc:acc.desc+" · "+acc.prodDesc})},docs:[]}));
+  const amend=(no,by,on,chg)=>{const r=recBy(no);const v={...r.values,...chg};r.status="Amendment pending";return mk("amend",{no,cust:r.cust,type:r.type,by,on,rec:r,values:v,lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},docs:r.docs})};
+  QUEUE.push(amend("2506303783","E.QUAYE","05-OCT-2026",{sumAssured:F(275000),amount:F(220000),expiryDate:"2028-06-27"}));
+  QUEUE.push(amend("2310024084","K.ASARE","04-OCT-2026",{valuer:"Meridian Property Consult (re-valuation)",valDate:"2026-09-20",forcedSale:F(900000)}));
+  const cancel=(no,by,on,reason)=>{const r=recBy(no);r.status="Cancellation pending";return mk("cancel",{no,cust:r.cust,type:r.type,by,on,rec:r,values:{...r.values},lookups:{...r.lookups},reason,docs:r.docs})};
+  QUEUE.push(cancel("2603300457","E.QUAYE","06-OCT-2026","Facility fully repaid on 30-SEP-2026. Customer requested release of the lien."));
+  QUEUE.push(cancel("2511093318","K.ASARE","03-OCT-2026","Collateral replaced by another collateral (property 2310024084)."));
+})();
+
+const P={view:"list",q:"",filter:"ALL",item:null,ticked:false,comments:[]};
+const apView=$("#view-approvals");
+const apType=it=>it.kind==="create"?typeBy(it.type):amTypeBy(it.type);
+const apState=it=>({readonly:true,pfx:"p",type:it.type,customer:custBy(it.cust),values:it.values,lookups:it.lookups,orig:it.kind==="amend"?it.orig:null,origLookups:it.origLookups||{},rec:it.rec||{type:it.type,values:it.values,lookups:it.lookups}});
+const apChanges=it=>it.kind==="amend"?changesOf(apState(it)):[];
+function updateApBadge(){const b=$("#apCount");if(b){b.textContent=QUEUE.length;b.hidden=!QUEUE.length}}
+
+function apActionBar(mode){
+  const help=`<button class="btn act-blue" id="apHelp">${icon("help")}Help</button>`,exit=`<button class="btn act-red" id="apExit">${icon("close")}Exit</button>`,sep=`<span class="sep" aria-hidden="true"></span>`;
+  if(mode!=="detail")return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${sep}<button class="btn act-blue" id="apNew" title="Clear the search and show all requests">${icon("plus")}New</button>${exit}</div>`;
+  const off=P.ticked?"":`disabled title="Tick 'I have checked all the details' first."`;
+  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>(${P.comments.length})</span>`:""}</button>${sep}
+    <button class="btn act-amber" id="apReject" ${off}>${icon("ban")}Reject</button>
+    <button class="btn act-green" id="apAuth" ${off}>${icon("check")}Authorize</button>${exit}</div>`;
+}
+function apRows(){
+  const q=P.q.trim().toLowerCase();
+  let rows=QUEUE.filter(it=>!q||it.no.includes(q)||it.cust.includes(q.padStart(6,"0"))||custBy(it.cust).name.toLowerCase().includes(q));
+  const counts={ALL:rows.length,create:0,amend:0,cancel:0};rows.forEach(it=>counts[it.kind]++);
+  if(P.filter!=="ALL")rows=rows.filter(it=>it.kind===P.filter);
+  return{rows,counts};
+}
+const kindBadge=k=>`<span class="kind ${KIND[k].cls}">${KIND[k].label}</span>`;
+function apListHtml(){
+  const{rows,counts}=apRows();
+  return `<div class="page-head"><div><h1>Approvals</h1><p>Requests waiting for authorization. Open one to check it, then authorize or reject it.</p></div>${apActionBar("list")}</div>
+  <section class="card" aria-labelledby="apS1"><div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="apS1">Search requests</h2><p>Filter by customer name, customer number or collateral number.</p></div></div>
+    <div class="card-body"><div class="grid"><div class="field" style="--col:6"><label for="apQ">Customer or collateral</label><input class="input" id="apQ" placeholder="e.g. Nyemah, 046378 or 2606304232" value="${esc(P.q)}"></div></div></div></section>
+  <section class="card" aria-labelledby="apS2"><div class="card-head wrap"><div><h2 id="apS2">Pending requests</h2><p>${rows.length} request${rows.length===1?"":"s"} waiting. Oldest requests are at the bottom.</p></div>
+    <div class="right chips" role="group" aria-label="Filter by request type">
+      <button class="chip" data-apfilter="ALL" aria-pressed="${P.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
+      ${Object.keys(KIND).map(k=>`<button class="chip" data-apfilter="${k}" aria-pressed="${P.filter===k}"><span class="kdot ${KIND[k].cls}"></span>${KIND[k].label} <span class="n">${counts[k]}</span></button>`).join("")}
+    </div></div>
+    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>What's asked</th><th>Submitted</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+      ${rows.map(it=>{const c=custBy(it.cust),t=typeBy(it.type);const ask=it.kind==="create"?"New collateral":it.kind==="amend"?`${apChanges(it).length} field${apChanges(it).length===1?"":"s"} changed`:`Close: ${esc(it.reason.length>34?it.reason.slice(0,34)+"…":it.reason)}`;
+        return `<tr data-aprow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
+        <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="num">${fmt(parseAmt(it.values.amount)||0)}</td>
+        <td class="ask">${ask}</td><td><div>${it.on}</div><div class="sub">by <span class="mono">${it.by}</span>${it.by==="K.ASARE"?" (you)":""}</div></td>
+        <td class="sticky-r"><button class="open-btn" data-apopen="${it.id}" aria-label="Open ${KIND[it.kind].verb} request for ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
+    </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>${QUEUE.length?"No requests match your search":"Nothing waiting for approval"}</b><span>${QUEUE.length?"Clear the search to see every request.":"New requests from Creation, Amendment and Cancellation appear here."}</span></div>`}</div>
+  </section>`;
+}
+function apDetailHtml(){
+  const it=P.item,c=custBy(it.cust),t=apType(it),st=apState(it),held=AM.filter(x=>x.cust===c.code&&x.status!=="Cancelled"),ch=apChanges(it);
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  const extra=it.kind==="create"?cell("Collateral no.",`<span class="mono">${it.no}</span>`):it.kind==="amend"?cell("Fields changed",String(ch.length),"num"):cell("Coverage released",fmt(closureFigures(st).cov),"num");
+  const lead={create:"Check the new collateral against its documents, then authorize it or reject it.",amend:"Changed fields are highlighted with their current value underneath. Check each change, then decide.",cancel:"Check the collateral and the reason for closing it, then decide."}[it.kind];
+  return `<div class="page-head"><div><button class="back" data-apback><svg class="i flip"><use href="#i-chev"/></svg>Back to approvals</button>
+    <h1>${KIND[it.kind].label} approval <span class="mono h1-no">${it.no}</span></h1><p>${lead}</p></div>${apActionBar("detail")}</div>
+  <section class="card" aria-labelledby="apR"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="apR">Request</h2><p>Who asked for what, and when.</p></div></div>
+    <div class="card-body"><div class="figs" style="--tc:var(${t.tc})">
+      ${cell("Request",kindBadge(it.kind))}${cell("Submitted by",`<span class="mono">${it.by}</span>`)}${cell("Submitted on",it.on)}
+      ${cell("Collateral type",`<span class="tdot"></span>${esc(t.name)} <span class="mono sub">${t.code}</span>`)}${cell("Amount considered",fmt(parseAmt(it.values.amount)||0),"num")}${extra}
+    </div></div></section>
+  <section class="card" aria-labelledby="apC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="apC">Customer</h2><p>The customer who owns this collateral.</p></div></div>
+    <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
+  ${it.kind==="cancel"?`<section class="card reason-card ro-reason" aria-labelledby="apX"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="apX">Closure reason</h2><p>As entered by <span class="mono">${it.by}</span> on ${it.on}.</p></div></div><div class="card-body"><blockquote class="reason-quote">${esc(it.reason)}</blockquote></div></section>`:""}
+  <div class="form-wrap"><section class="card" id="apForm" style="--tc:var(${t.tc})"></section><aside class="rail" id="apRail"></aside></div>
+  <div class="foot-note">${icon("info")}Every field is read only. Tick the confirmation, then authorize or reject the request.</div>`;
+}
+function renderApForm(){
+  const it=P.item,t=apType(it),st=apState(it);
+  $("#apForm").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div>
+      <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only${it.kind==="amend"?". Edited fields are highlighted.":"."}</p></div>
+      <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${it.no}</b></div></div>
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,st)).join("")}</div></div>`).join("")}</div>`;
+}
+function renderApRail(){
+  const it=P.item,st=apState(it),ch=apChanges(it);
+  let h=`<div class="card decision ${P.ticked?"ok":""}"><div class="card-body"><h3>Decision</h3>
+    <label class="tick" for="apTick"><input type="checkbox" id="apTick" ${P.ticked?"checked":""}><span><b>I have checked all the details</b><br><span class="hint">Reject and Authorize unlock once this is ticked.</span></span></label>
+    ${it.by==="K.ASARE"?`<p class="maker-note">${icon("info")}<span>You submitted this request. In production a different officer must authorize it (maker-checker). Allowed here for the demo.</span></p>`:""}
+  </div></div>`;
+  if(ch.length)h+=`<div class="card"><div class="card-body"><h3>Requested changes</h3><div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
+    <ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,st))}</span> → <span class="nv">${esc(showVal(f,st.values,st.lookups))}</span></li>`).join("")}</ul></div></div>`;
+  if(it.type==="C01"&&it.lookups.account){const a=it.lookups.account;
+    h+=`<div class="card"><div class="card-body"><h3>Account balances</h3><div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
+      <div style="margin-top:8px"><div class="bal-row"><span>Cleared balance</span><span class="v">${fmt(a.bal.cleared)}</span></div><div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}</span></div><div class="bal-row"><span>Amount considered</span><span class="v">${it.values.amount}</span></div></div></div></div>`;}
+  h+=`<div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(it.docs)}<button class="btn act-blue doc-btn" data-docs="approval">${icon("clip")}View documents (${it.docs.length})</button></div></div>`;
+  $("#apRail").innerHTML=h;
+}
+function renderAp(){
+  if(P.view==="list"){setCrumbs(["Approvals"]);apView.innerHTML=apListHtml();}
+  else{setCrumbs(["Approvals",P.item.no]);apView.innerHTML=apDetailHtml();renderApForm();renderApRail();}
+}
+function apOpen(id){P.item=QUEUE.find(x=>x.id===+id);if(!P.item)return;P.view="detail";P.ticked=false;P.comments=[];renderAp();window.scrollTo(0,0)}
+function apBack(){P.view="list";P.item=null;renderAp();window.scrollTo(0,0)}
+function syncApActions(){["#apReject","#apAuth"].forEach(id=>{const b=$(id);if(b){b.disabled=!P.ticked;b.title=P.ticked?"":"Tick 'I have checked all the details' first."}});$(".decision")?.classList.toggle("ok",P.ticked)}
+
+/* apply the decision everywhere the record appears */
+function decide(it,approved,reason){
+  QUEUE.splice(QUEUE.indexOf(it),1);updateApBadge();
+  const row=S.newRows.find(r=>r.no===it.no);
+  if(it.kind==="create"){
+    if(approved){const v={...it.values};if(it.type==="C03"){v.collAmount=v.marketValue;delete v.marketValue}if(it.type==="C05"){v.stockAmount=v.secAmount;delete v.secAmount}
+      AM.unshift({no:it.no,cust:it.cust,type:it.type,by:"K.ASARE",appr:nowStamp(),values:v,lookups:{...it.lookups},status:"Approved",docs:it.docs});}
+    if(row){row.status=approved?"Approved":"Rejected";row.date=approved?nowStamp():null}
+  }else if(it.kind==="amend"){
+    if(approved){it.rec.values={...it.values};it.rec.lookups={...it.lookups};it.rec.appr=nowStamp();it.rec.by="K.ASARE"}
+    it.rec.status="Approved";
+  }else{it.rec.status=approved?"Cancelled":"Approved";if(approved)it.rec.closeReason=it.reason}
+}
+const RESULT={create:["Collateral created","is now approved and appears in Amendment and Cancellation."],amend:["Amendment applied","now carries the new values."],cancel:["Collateral cancelled","is closed and no longer secures the customer's facilities."]};
+function apAuthorize(){
+  const it=P.item;decide(it,true);
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="apOk" style="width:min(460px,100%)"><div class="mb" style="padding:24px;text-align:center">
+    <div class="success-ic">${icon("check")}</div><h2 id="apOk" style="margin:0;font-size:18px">${RESULT[it.kind][0]}</h2>
+    <p class="hint" style="margin:8px 0 0">Collateral <span class="mono">${it.no}</span> for ${esc(custBy(it.cust).name)} ${RESULT[it.kind][1]}</p></div>
+    <footer><button class="btn primary" id="apOkBack">Back to approvals</button></footer></div>`);
+  $("#apOkBack").focus();$("#apOkBack").addEventListener("click",()=>{closeLayer();apBack()});
+}
+function apReject(){
+  const it=P.item;
+  openLayer(`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="apRj" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
+    <h2 id="apRj" style="margin:0 0 6px;font-size:18px">Reject this ${KIND[it.kind].verb} request?</h2>
+    <p class="hint" style="margin:0 0 14px">${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values and becomes available again."} <span class="mono">${it.by}</span> sees your reason.</p>
+    <div class="field" id="apRjField"><label for="apRjIn">Rejection reason<span class="req">*</span></label><textarea class="input" id="apRjIn" maxlength="300" placeholder="e.g. Valuation report is older than 12 months. Attach a current one and resubmit."></textarea><span class="hint" id="apRjMsg">Required.</span></div>
+    </div><footer><button class="btn" data-close>Back</button><button class="btn act-amber" id="apRjGo">${icon("ban")}Reject request</button></footer></div>`);
+  $("#apRjIn").focus();
+  $("#apRjGo").addEventListener("click",()=>{
+    const v=$("#apRjIn").value.trim();
+    if(!v){$("#apRjField").classList.add("invalid");const m=$("#apRjMsg");m.className="err";m.innerHTML=icon("alert")+"Enter the reason for rejecting.";$("#apRjIn").focus();return}
+    decide(it,false,v);
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="apRd" style="width:min(460px,100%)"><div class="mb" style="padding:24px;text-align:center">
+      <div class="warn-ic amber">${icon("ban")}</div><h2 id="apRd" style="margin:0;font-size:18px">Request rejected</h2>
+      <p class="hint" style="margin:8px 0 0">The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> was returned to <span class="mono">${it.by}</span> with your reason.</p></div>
+      <footer><button class="btn primary" id="apRdBack">Back to approvals</button></footer></div>`);
+    $("#apRdBack").focus();$("#apRdBack").addEventListener("click",()=>{closeLayer();apBack()});
+  });
+}
+apView.addEventListener("input",e=>{if(e.target.id==="apQ"){P.q=e.target.value;const pos=e.target.selectionStart;renderAp();const q=$("#apQ");q.focus();q.setSelectionRange(pos,pos)}});
+apView.addEventListener("change",e=>{if(e.target.id==="apTick"){P.ticked=e.target.checked;syncApActions()}});
+apView.addEventListener("click",e=>{
+  const T=x=>e.target.closest(x);let el;
+  if(T("#apHelp")){openDrawer("Help · Approvals",`<ol><li>The queue lists every request waiting for authorization: new collaterals, amendments and cancellations. Filter by request type or search by customer or collateral.</li><li>Select <b>›</b> to open a request. Everything is read only. Amendments highlight each changed field with its current value underneath. Cancellations show the closure reason.</li><li>Check the details and documents, then tick <b>I have checked all the details</b>.</li><li><b>Authorize</b> applies the request. <b>Reject</b> asks for a reason and returns it to the person who submitted it.</li></ol>`);return}
+  if(T("#apComment")){openDrawer("Comments",`<div class="field"><label for="apCmt">Add a comment</label><textarea class="input" id="apCmt" placeholder="e.g. Called the valuer to confirm the forced sale value"></textarea></div><div><button class="btn primary" id="apCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${P.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
+    $("#apCmtAdd").addEventListener("click",()=>{const v=$("#apCmt").value.trim();if(!v)return;P.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();const t=P.ticked;renderAp();P.ticked=t;syncApActions();toast("Comment added.")});return}
+  if(T("#apNew")){P.q="";P.filter="ALL";renderAp();toast("Search cleared.");return}
+  if(T("#apExit")||T("[data-apback]")){if(P.view==="detail")apBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("#apAuth")){if(P.ticked)apAuthorize();return}
+  if(T("#apReject")){if(P.ticked)apReject();return}
+  if(el=T("[data-apfilter]")){P.filter=el.dataset.apfilter;renderAp();return}
+  if(el=T("[data-apopen]")){apOpen(el.dataset.apopen);return}
+  if(el=T("tr[data-aprow]")){apOpen(el.dataset.aprow);return}
+});
+
 /* ---------- views + router ---------- */
 function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
-const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation"})[h]||"creation";
+const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals"})[h]||"creation";
 function go(view){
-  const am=view!=="creation";
-  $("#view-creation").hidden=am;$("#view-records").hidden=!am;if(am)A=STATES[view];
+  const am=view==="amendment"||view==="cancellation",ap=view==="approvals";
+  $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;if(am)A=STATES[view];if(ap)renderAp();
   document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  if(am)renderAm();else setCrumbs(["Creation"]);
+  if(am)renderAm();else if(!ap){setCrumbs(["Creation"]);renderAll();}
   $("#side").classList.remove("open");window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
@@ -1367,6 +1650,7 @@ S=fresh();
 S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
 S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
 renderAll();
+updateApBadge();
 go(viewOf(location.hash));
 })();
 </script>
