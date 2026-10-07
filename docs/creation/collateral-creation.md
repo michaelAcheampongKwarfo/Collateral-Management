@@ -62,7 +62,7 @@ A draft flowchart is in [`flowchart.md`](flowchart.md).
 | Area | Oracle Forms | Angular design |
 |---|---|---|
 | Navigation | One window per screen | App shell with a module sidebar: **Creation** now, **Amendment** and **Cancellation** next |
-| Toolbar | Help, Comment, New, Submit, Exit buttons | Same actions in the page header. **Submit** is the primary button. Help and Comment open side panels. |
+| Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
 | Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search, Enter to fetch, customer card with name, type badge and home branch |
 | Collateral type | Code + LOV button + description | **Step 2** card: five selectable tiles that show code, name and a one-line description. Arrow keys move between tiles. |
 | Dynamic area | Stacked canvas for the selected type | **Step 3** card built from the type's form definition, grouped into sections |
@@ -92,7 +92,7 @@ Legend: **Req** = mandatory (red asterisk in Forms). **LOV** = picked from a loo
 | Field | Kind | Req | Notes |
 |---|---|---|---|
 | Source account | LOV | Yes | The customer's accounts. Shows the account name |
-| Source branch | RO | | From the account |
+| Source branch | RO | | Code + name from the account, e.g. `010 SINKOR` |
 | Product | RO | | Code + description, e.g. `220 SAVINGS PERSONAL` |
 | Currency | RO | | Code + description, e.g. `010 GHANA CEDIS` |
 
@@ -242,6 +242,7 @@ interface FieldDef {
   lookup?: string;            // reference-data endpoint, e.g. 'insurance-companies'
   dependsOn?: string;         // parent field for cascading lookups
   span?: 1 | 2;               // grid columns
+  w?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';  // control width, sized to the value length
 }
 ```
 

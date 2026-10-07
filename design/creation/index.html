@@ -18,6 +18,7 @@
   --danger:#B42318; --danger-soft:#FDEDEB;
   --success:#1D7A4C; --success-soft:#E4F3EB;
   --warn:#9A5A00; --warn-soft:#FFF4E0;
+  --act-blue:#0B5CAD; --act-blue-soft:#E7F0FA; --act-green:#1D7A4C; --act-green-ink:#FFFFFF; --act-red:#B42318; --act-red-soft:#FDEDEB;
   --t-cash:#1D7A4C; --t-ins:#6A4BC2; --t-prop:#B05E0C; --t-guar:#0B5CAD; --t-shares:#0D7A84;
   --shadow:0 1px 2px rgba(19,34,58,.06),0 4px 16px rgba(19,34,58,.05);
   --overlay:rgba(12,22,38,.42);
@@ -32,6 +33,7 @@
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
   --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
   --warn:#E9B15C; --warn-soft:#352812;
+  --act-blue:#6AAEF2; --act-blue-soft:#16304F; --act-green:#3FB57A; --act-green-ink:#06180E; --act-red:#F2867B; --act-red-soft:#3A1C1C;
   --t-cash:#5CC892; --t-ins:#A890F0; --t-prop:#E6A25A; --t-guar:#5AA2EE; --t-shares:#4CC3CC;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(3,7,14,.6);
   color-scheme:dark}}
@@ -42,6 +44,7 @@
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
   --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
   --warn:#E9B15C; --warn-soft:#352812;
+  --act-blue:#6AAEF2; --act-blue-soft:#16304F; --act-green:#3FB57A; --act-green-ink:#06180E; --act-red:#F2867B; --act-red-soft:#3A1C1C;
   --t-cash:#5CC892; --t-ins:#A890F0; --t-prop:#E6A25A; --t-guar:#5AA2EE; --t-shares:#4CC3CC;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); --overlay:rgba(3,7,14,.6);
   color-scheme:dark}
@@ -90,6 +93,16 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .btn:hover{background:var(--surface-2)}
 .btn.primary{background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
 .btn.primary:hover{background:var(--primary-hover)}
+/* Standard action bar (same on every module screen): Help, Comment, New = blue · Submit = green · Exit = red */
+.actionbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.actionbar .sep{width:1px;height:24px;background:var(--line-strong);margin:0 4px}
+.btn.act-blue{background:var(--act-blue-soft);border-color:var(--act-blue);color:var(--act-blue)}
+.btn.act-blue:hover{background:var(--act-blue);color:var(--surface)}
+.btn.act-green{background:var(--act-green);border-color:var(--act-green);color:var(--act-green-ink)}
+.btn.act-green:hover{filter:brightness(1.08)}
+.btn.act-red{background:var(--act-red-soft);border-color:var(--act-red);color:var(--act-red)}
+.btn.act-red:hover{background:var(--act-red);color:var(--surface)}
+.actionbar .btn{min-width:104px;justify-content:center}
 .btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
 .btn.ghost:hover{background:var(--sunken);color:var(--fg)}
 .btn.icon{padding:0;width:36px;justify-content:center}
@@ -109,6 +122,10 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 /* Fields */
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 20px}
 .grid .span2{grid-column:1/-1}
+/* Field width scale: controls are sized to the length of their values, not stretched to the column */
+.field{--w:100%}
+.field > .input,.field > .lookup-btn,.field > .ro,.field > .affix,.field > .search{width:var(--w);max-width:100%}
+.w-xs{--w:120px}.w-sm{--w:180px}.w-md{--w:220px}.w-lg{--w:300px}.w-xl{--w:420px}.w-2xl{--w:560px}.w-full{--w:100%}
 .field{display:flex;flex-direction:column;gap:6px;min-width:0}
 .field label,.field .lbl{font-size:12.5px;font-weight:600;color:var(--fg)}
 .req{color:var(--danger);margin-left:2px}
@@ -138,7 +155,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .section-title{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted);margin:0}
 
 /* Step 1: customer */
-.cust-row{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:20px;align-items:start}
+.cust-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:start}
 .search{display:flex;gap:0}
 .search .input{border-top-right-radius:0;border-bottom-right-radius:0;font-family:var(--font-mono);letter-spacing:.04em}
 .search .btn{border-top-left-radius:0;border-bottom-left-radius:0;border-left:0;height:38px}
@@ -253,7 +270,7 @@ tr.new td{background:var(--primary-soft)}
   .cust-row{grid-template-columns:minmax(0,1fr)}
   .user span{display:none}
 }
-@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:minmax(0,1fr)}.page-head .actions{width:100%}.page-head .actions .btn.primary{margin-left:auto}.sample-pill{display:none}.card-head .right{display:none}}
+@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:minmax(0,1fr)}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -311,12 +328,13 @@ tr.new td{background:var(--primary-soft)}
           <h1>Capture customer collateral</h1>
           <p>Find the customer, choose a collateral type, then complete its details for approval.</p>
         </div>
-        <div class="actions">
-          <button class="btn ghost" id="helpBtn"><svg class="i"><use href="#i-help"/></svg>Help</button>
-          <button class="btn ghost" id="commentBtn"><svg class="i"><use href="#i-msg"/></svg>Comment <span id="commentCount"></span></button>
-          <button class="btn" id="newBtn"><svg class="i"><use href="#i-refresh"/></svg>New</button>
-          <button class="btn ghost" id="exitBtn"><svg class="i"><use href="#i-close"/></svg>Exit</button>
-          <button class="btn primary" id="submitBtn"><svg class="i"><use href="#i-check"/></svg>Submit</button>
+        <div class="actionbar" role="toolbar" aria-label="Screen actions">
+          <button class="btn act-blue" id="helpBtn"><svg class="i"><use href="#i-help"/></svg>Help</button>
+          <button class="btn act-blue" id="commentBtn"><svg class="i"><use href="#i-msg"/></svg>Comment<span id="commentCount"></span></button>
+          <span class="sep" aria-hidden="true"></span>
+          <button class="btn act-blue" id="newBtn"><svg class="i"><use href="#i-plus"/></svg>New</button>
+          <button class="btn act-green" id="submitBtn"><svg class="i"><use href="#i-check"/></svg>Submit</button>
+          <button class="btn act-red" id="exitBtn"><svg class="i"><use href="#i-close"/></svg>Exit</button>
         </div>
       </div>
 
@@ -325,13 +343,13 @@ tr.new td{background:var(--primary-soft)}
         <div class="card-head"><div class="step" id="step1">1</div><div><h2 id="s1">Customer</h2><p>Enter the customer number or search for the customer.</p></div></div>
         <div class="card-body">
           <div class="cust-row">
-            <div class="field" id="fld-customer">
+            <div class="field w-sm" id="fld-customer">
               <label for="custNo">Customer number<span class="req">*</span></label>
               <div class="search">
                 <input class="input" id="custNo" inputmode="numeric" autocomplete="off" placeholder="e.g. 056719" maxlength="10">
                 <button class="btn" id="custSearch" type="button" aria-label="Search customers"><svg class="i"><use href="#i-search"/></svg></button>
               </div>
-              <div class="hint" id="custHint">Press Enter to fetch the customer.</div>
+              <div class="hint" id="custHint" style="max-width:220px">Press Enter to fetch the customer.</div>
             </div>
             <div class="field">
               <span class="lbl">Customer details</span>
@@ -379,17 +397,17 @@ const parseAmt=v=>{const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n
 
 /* ---------- Sample reference data (stands in for the Oracle LOVs) ---------- */
 const CUSTOMERS=[
-  {code:"056719",name:"ABENA MENSAH",type:"INDIVIDUAL",branch:"SINKOR"},
-  {code:"048213",name:"KOFI BOATENG ENTERPRISES",type:"CORPORATE",branch:"SINKOR"},
-  {code:"061104",name:"EFUA ASANTE",type:"INDIVIDUAL",branch:"CONGO TOWN"},
-  {code:"072530",name:"RIVERSIDE TRADERS LTD",type:"CORPORATE",branch:"BROAD STREET"},
+  {code:"056719",name:"ABENA MENSAH",type:"INDIVIDUAL",branch:"SINKOR",brCode:"010"},
+  {code:"048213",name:"KOFI BOATENG ENTERPRISES",type:"CORPORATE",branch:"SINKOR",brCode:"010"},
+  {code:"061104",name:"EFUA ASANTE",type:"INDIVIDUAL",branch:"CONGO TOWN",brCode:"012"},
+  {code:"072530",name:"RIVERSIDE TRADERS LTD",type:"CORPORATE",branch:"BROAD STREET",brCode:"015"},
 ];
 const ACCOUNTS=[
-  {code:"00422004346801",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:1220.78,cleared:1542.78,uncleared:0,od:0,block:322.00}},
-  {code:"00422001198320",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",prod:"310",prodDesc:"FIXED DEPOSIT 12M",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:25000,cleared:25000,uncleared:0,od:0,block:0}},
-  {code:"00431007712055",desc:"KOFI BOATENG ENTERPRISES",cust:"048213",branch:"SINKOR",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"020",ccyDesc:"US DOLLAR",bal:{avail:84310.5,cleared:90110.5,uncleared:5800,od:0,block:0}},
-  {code:"00515002203914",desc:"EFUA ASANTE",cust:"061104",branch:"CONGO TOWN",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:6420,cleared:6420,uncleared:0,od:0,block:0}},
-  {code:"00608009934117",desc:"RIVERSIDE TRADERS LTD",cust:"072530",branch:"BROAD STREET",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:142800,cleared:150000,uncleared:7200,od:0,block:0}},
+  {code:"00422004346801",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",brCode:"010",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:1220.78,cleared:1542.78,uncleared:0,od:0,block:322.00}},
+  {code:"00422001198320",desc:"ABENA MENSAH",cust:"056719",branch:"SINKOR",brCode:"010",prod:"310",prodDesc:"FIXED DEPOSIT 12M",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:25000,cleared:25000,uncleared:0,od:0,block:0}},
+  {code:"00431007712055",desc:"KOFI BOATENG ENTERPRISES",cust:"048213",branch:"SINKOR",brCode:"010",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"020",ccyDesc:"US DOLLAR",bal:{avail:84310.5,cleared:90110.5,uncleared:5800,od:0,block:0}},
+  {code:"00515002203914",desc:"EFUA ASANTE",cust:"061104",branch:"CONGO TOWN",brCode:"012",prod:"220",prodDesc:"SAVINGS PERSONAL",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:6420,cleared:6420,uncleared:0,od:0,block:0}},
+  {code:"00608009934117",desc:"RIVERSIDE TRADERS LTD",cust:"072530",branch:"BROAD STREET",brCode:"015",prod:"110",prodDesc:"CURRENT CORPORATE",ccy:"010",ccyDesc:"GHANA CEDIS",bal:{avail:142800,cleared:150000,uncleared:7200,od:0,block:0}},
 ];
 const L=(code,desc,extra)=>Object.assign({code,desc},extra||{});
 const LOVS={
@@ -409,7 +427,7 @@ const LOVS={
 
 /* ---------- Collateral type schemas (same shape the Angular dynamic form would read) ---------- */
 const COLL=(o)=>[
-  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true},
+  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,span:o.extra?1:2},
   ...(o.extra||[]),
   {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true},
   {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true},
@@ -419,30 +437,30 @@ const TYPES=[
   {code:"C01",name:"Cash",title:"Cash collateral",lovDesc:"CASH COLLATERALS",tc:"--t-cash",ic:"cash",d:"Lien on the customer's own deposit account",
    sections:[
     {title:"Account details",fields:[
-      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,span:2},
-      {id:"srcBranch",label:"Source branch",type:"derived",get:s=>s.lookups.account?.branch},
+      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,span:2,w:"xl"},
+      {id:"srcBranch",label:"Source branch",type:"derived",get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`,w:"md"},
       {id:"product",label:"Product",type:"derived",get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
-      {id:"ccy",label:"Currency",type:"derived",get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
+      {id:"ccy",label:"Currency",type:"derived",w:"md",get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
     ]},
     {title:"Collateral details",fields:COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date"})}],
    rail:"balances"},
   {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
    sections:[
     {title:"Insurance details",fields:[
-      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,span:2},
-      {id:"insCode",label:"Insurance code",type:"text",req:true},
+      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,span:2,w:"xl"},
+      {id:"insCode",label:"Insurance code",type:"text",req:true,w:"sm"},
       {id:"policyNo",label:"Policy number",type:"text",req:true},
-      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,span:2},
+      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,span:2,w:"xl"},
     ]},
     {title:"Collateral details",fields:COLL({extra:[{id:"sumAssured",label:"Sum assured",type:"amount",req:true}]})}]},
   {code:"C03",name:"Property",title:"Property collateral",lovDesc:"PROPERTY COLLATERAL",tc:"--t-prop",ic:"home",d:"Land or buildings under a legal charge",
    sections:[
     {title:"Property details",fields:[
-      {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true},
-      {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub"},
-      {id:"owner",label:"Ownership name",type:"text",req:true,span:2},
-      {id:"location",label:"Location",type:"text",req:true,span:2},
-      {id:"valuer",label:"Valuer name",type:"text",req:true},
+      {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,w:"lg"},
+      {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",w:"lg"},
+      {id:"owner",label:"Ownership name",type:"text",req:true,span:2,w:"2xl"},
+      {id:"location",label:"Location",type:"text",req:true,span:2,w:"2xl"},
+      {id:"valuer",label:"Valuer name",type:"text",req:true,w:"lg"},
       {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,placeholder:"e.g. 0302678178"},
       {id:"valDate",label:"Valuation date",type:"date",req:true},
       {id:"marketValue",label:"Market value",type:"amount",req:true},
@@ -452,31 +470,31 @@ const TYPES=[
   {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
    sections:[
     {title:"Guarantee details",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,span:2},
-      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,span:2},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true},
-      {id:"branch",label:"Branch",type:"text"},
-      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true},
-      {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true},
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,span:2,w:"xl"},
+      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,span:2,w:"xl"},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,w:"lg"},
+      {id:"branch",label:"Branch",type:"text",w:"lg"},
+      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,w:"lg"},
+      {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,w:"lg"},
       {id:"rate",label:"Interest rate",type:"percent",req:true},
       {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true},
       {id:"months",label:"Number of months",type:"int",req:true},
-      {id:"folioNo",label:"Folio number",type:"text",req:true},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,w:"sm"},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,w:"sm"},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,w:"sm"},
     ]},
     {title:"Collateral details",fields:COLL({})}]},
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
    sections:[
     {title:"Shares / stock / security details",fields:[
-      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,span:2},
-      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,span:2},
+      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,span:2,w:"xl"},
+      {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,span:2,w:"xl"},
       {id:"units",label:"Number of shares / securities",type:"int",req:true},
       {id:"secAmount",label:"Security amount",type:"amount",req:true},
       {id:"marketValue",label:"Market value",type:"amount",req:true},
-      {id:"folioNo",label:"Folio number",type:"text",req:true},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,w:"sm"},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,w:"sm"},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,w:"sm"},
     ]},
     {title:"Collateral details",fields:COLL({})}]},
 ];
@@ -505,7 +523,7 @@ function renderCustomer(){
   if(S.loading){card.innerHTML=`<div class="cust-card"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px"><div class="skeleton" style="width:55%"></div><div class="skeleton" style="width:35%"></div></div></div>`;return}
   if(!c){card.innerHTML=`<div class="cust-card empty">${icon("search")}Customer name and type appear here once the number is found.</div>`;return}
   const ini=c.name.split(" ").slice(0,2).map(w=>w[0]).join("");
-  card.innerHTML=`<div class="cust-card"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="meta"><span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span><span class="mono">${esc(c.code)}</span><span>Home branch · ${esc(c.branch)}</span></div></div></div>`;
+  card.innerHTML=`<div class="cust-card"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="meta"><span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span><span class="mono">${esc(c.code)}</span><span>Home branch · <span class="mono">${esc(c.brCode)}</span> ${esc(c.branch)}</span></div></div></div>`;
 }
 function fetchCustomer(code){
   code=String(code||"").trim();
@@ -531,6 +549,8 @@ function renderTypes(){
 }
 
 /* ---------- Step 3: dynamic form ---------- */
+const WIDTH={amount:"w-md",percent:"w-xs",int:"w-xs",date:"w-sm",tel:"w-sm",text:"w-md",lookup:"w-xl",derived:"w-lg",textarea:"w-2xl"};
+const wcls=f=>f.w?"w-"+f.w:WIDTH[f.type]||"w-md";
 function fieldHtml(t,f){
   const id=`f-${t.code}-${f.id}`,v=S.values[f.id]??"",err=S.showErrors&&S.errors[f.id];
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
@@ -541,7 +561,7 @@ function fieldHtml(t,f){
     ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code">${esc(row.code)}</span><span class="desc">${esc(row.desc)}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
   }else if(f.type==="derived"){
     const val=f.get(S);ctl=`<div class="ro ${val?"":"empty"}" id="${id}">${val?esc(val):"Filled from source account"}</div>`;
-    return `<div class="field ${f.span===2?"span2":""}"><span class="lbl">${esc(f.label)}</span>${ctl}</div>`;
+    return `<div class="field ${wcls(f)} ${f.span===2?"span2":""}"><span class="lbl">${esc(f.label)}</span>${ctl}</div>`;
   }else if(f.type==="textarea"){
     ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
   }else if(f.type==="amount"){
@@ -558,7 +578,7 @@ function fieldHtml(t,f){
   let help="";
   if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
   else if(f.id==="amount"&&S.type==="C01"&&S.lookups.account)help=`<div class="hint">Available balance <span class="mono">${fmt(S.lookups.account.bal.avail)}</span></div>`;
-  return `<div class="field ${f.span===2?"span2":""} ${err?"invalid":""}" id="wrap-${id}">${lbl}${ctl}${help}</div>`;
+  return `<div class="field ${wcls(f)} ${f.span===2?"span2":""} ${err?"invalid":""}" id="wrap-${id}">${lbl}${ctl}${help}</div>`;
 }
 const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
 
