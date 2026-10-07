@@ -15,7 +15,6 @@
   --line:#D5DDE8; --line-strong:#BCC8D8;
   --side-bg:#0F2342; --side-fg:#B9C7DB; --side-muted:#7F93AF; --side-strong:#FFFFFF; --side-active:#1D3B66; --side-line:#203A5E; --brand-mark:#2F7BD1;
   --chg:#A35F00; --chg-soft:#FFF1D6;
-  --act-amber:#9A5A00; --act-amber-soft:#FFF4E0;
   --fg:#13223A; --muted:#5A6A80; --faint:#8A97A8;
   --primary:#0B5CAD; --primary-hover:#094C90; --primary-ink:#FFFFFF; --primary-soft:#E7F0FA;
   --danger:#B42318; --danger-soft:#FDEDEB;
@@ -34,7 +33,6 @@
   --line:#26324A; --line-strong:#34425D;
   --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
   --chg:#E9B15C; --chg-soft:#352812;
-  --act-amber:#E9B15C; --act-amber-soft:#352812;
   --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
   --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
@@ -48,7 +46,6 @@
   --line:#26324A; --line-strong:#34425D;
   --side-bg:#0A111D; --side-fg:#A7B5C9; --side-muted:#6E7D93; --side-strong:#E5ECF5; --side-active:#16304F; --side-line:#1C2638; --brand-mark:#2F7BD1;
   --chg:#E9B15C; --chg-soft:#352812;
-  --act-amber:#E9B15C; --act-amber-soft:#352812;
   --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93;
   --primary:#5AA2EE; --primary-hover:#7BB5F2; --primary-ink:#081322; --primary-soft:#16304F;
   --danger:#F2867B; --danger-soft:#3A1C1C; --success:#5CC892; --success-soft:#14321F;
@@ -115,8 +112,6 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .btn.act-green:hover{filter:brightness(1.08)}
 .btn.act-red{background:var(--act-red-soft);border-color:var(--act-red);color:var(--act-red)}
 .btn.act-red:hover{background:var(--act-red);color:var(--surface)}
-.btn.act-amber{background:var(--act-amber-soft);border-color:var(--act-amber);color:var(--act-amber)}
-.btn.act-amber:hover:not(:disabled){background:var(--act-amber);color:var(--surface)}
 .btn:disabled:hover{background:inherit;color:inherit}
 .actionbar .btn:disabled{filter:grayscale(.6)}
 .actionbar .btn{min-width:104px;justify-content:center}
@@ -456,7 +451,6 @@ svg.flip{transform:scaleX(-1)}
           <button class="btn act-blue" id="commentBtn"><svg class="i"><use href="#i-msg"/></svg>Comment<span id="commentCount"></span></button>
           <span class="sep" aria-hidden="true"></span>
           <button class="btn act-blue" id="newBtn"><svg class="i"><use href="#i-plus"/></svg>New</button>
-          <button class="btn act-amber" id="rejectBtn" disabled title="Reject is used when evaluating an amendment. Not available on Creation."><svg class="i"><use href="#i-ban"/></svg>Reject</button>
           <button class="btn act-green" id="submitBtn"><svg class="i"><use href="#i-check"/></svg>Submit</button>
           <button class="btn act-red" id="exitBtn"><svg class="i"><use href="#i-close"/></svg>Exit</button>
         </div>
@@ -1044,16 +1038,23 @@ function amRows(){
 }
 
 function amActionBar(mode){
-  const d=mode==="detail",n=d?(isCancel()?A.reason.trim().length:changesOf(A).length):0;
-  const why=isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment.";
-  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">
-    <button class="btn act-blue" id="amHelp">${icon("help")}Help</button>
-    <button class="btn act-blue" id="amComment" ${d?"":"disabled title=\"Open a collateral to add a comment.\""}>${icon("msg")}Comment${A.comments.length&&d?`<span>(${A.comments.length})</span>`:""}</button>
-    <span class="sep" aria-hidden="true"></span>
-    <button class="btn act-blue" id="amNew" ${d?`disabled title="New is not used while ${isCancel()?"cancelling":"amending"} a record."`:"title=\"Clear the search and show all collaterals\""}>${icon("plus")}New</button>
-    <button class="btn act-amber" id="amReject" disabled title="Reject is used when evaluating a request awaiting approval.">${icon("ban")}Reject</button>
-    <button class="btn act-green" id="amSubmit" ${d&&n?"":`disabled title="${d?why:`Open a collateral to ${A.mod.verb} it.`}"`}>${icon("check")}Submit</button>
-    <button class="btn act-red" id="amExit">${icon("close")}Exit</button></div>`;
+  const help=`<button class="btn act-blue" id="amHelp">${icon("help")}Help</button>`,
+        exit=`<button class="btn act-red" id="amExit">${icon("close")}Exit</button>`,sep=`<span class="sep" aria-hidden="true"></span>`;
+  if(mode!=="detail")return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${sep}
+    <button class="btn act-blue" id="amNew" title="Clear the search and show all collaterals">${icon("plus")}New</button>${exit}</div>`;
+  const dirty=isDirty();
+  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}
+    <button class="btn act-blue" id="amComment">${icon("msg")}Comment${A.comments.length?`<span>(${A.comments.length})</span>`:""}</button>${sep}
+    <button class="btn act-blue" id="amNew" ${dirty?`title="${newTitle()}"`:`disabled title="Nothing to reset yet."`}>${icon("plus")}New</button>
+    <button class="btn act-green" id="amSubmit" ${dirty?"":`disabled title="${submitWhy()}"`}>${icon("check")}Submit</button>${exit}</div>`;
+}
+/* "Dirty" = something the user entered that New would reset and Submit would send */
+const isDirty=()=>isCancel()?!!A.reason.trim():changesOf(A).length>0;
+const submitWhy=()=>isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment.";
+const newTitle=()=>isCancel()?"Clear the closure reason":"Reset every field to its original value";
+function resetEntry(){
+  if(isCancel()){A.reason="";A.showErrors=false;$("#cxReason").outerHTML=reasonCardHtml();syncSubmit();$("#cxReasonIn").focus();toast("Closure reason cleared.");return}
+  A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};A.showErrors=false;renderAmForm();renderAmRail();syncSubmit();toast("All fields reset to their original values.");
 }
 
 function profileHtml(c,count,total){
@@ -1162,7 +1163,7 @@ function renderAmRail(){
 }
 
 /* refresh one field's edited state without re-rendering its input (keeps focus) */
-function syncSubmit(){const sub=$("#amSubmit");if(!sub)return;const n=isCancel()?A.reason.trim().length:changesOf(A).length;sub.disabled=!n;sub.title=n?"":isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment."}
+function syncSubmit(){const sub=$("#amSubmit"),nw=$("#amNew");if(!sub)return;const d=isDirty();sub.disabled=!d;sub.title=d?"":submitWhy();if(nw){nw.disabled=!d;nw.title=d?newTitle():"Nothing to reset yet."}}
 function refreshField(f){
   syncSubmit();
   const t=amTypeBy(A.type),wrap=document.getElementById(`wrap-a-${t.code}-${f.id}`);if(!wrap)return;
@@ -1234,6 +1235,7 @@ amView.addEventListener("click",e=>{
   if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
   if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="${isCancel()?"e.g. Customer's release request letter is attached":"e.g. Revaluation received from the valuer on 02-OCT-2026"}"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
     $("#amCmtAdd").addEventListener("click",()=>{const v=$("#amCmt").value.trim();if(!v)return;A.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAm();toast("Comment added.")});return}
+  if(T("#amNew")&&A.view==="detail"){resetEntry();return}
   if(T("#amNew")||T("#amClear")){A.q={cust:"",coll:""};A.qCust=null;A.filter="ALL";A.page=0;renderAm();toast("Search cleared.");return}
   if(T("#amSubmit")){amSubmit();return}
   if(T("#amExit")){amExit();return}
@@ -1248,7 +1250,7 @@ amView.addEventListener("click",e=>{
   if(el=T("[data-reason]")){setReason(el.dataset.reason,true);return}
   if(el=T("[data-viewdoc]")){toast(`${el.dataset.viewdoc} opens in the document viewer.`);return}
   if(el=T("[data-amrm]")){A.files.splice(+el.dataset.amrm,1);renderAmRail();return}
-  if(T("#amUndoAll")){A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};renderAmForm();renderAmRail();syncSubmit();toast("All changes undone.");return}
+  if(T("#amUndoAll")){resetEntry();return}
   if(el=T("[data-revert]")){const id=el.dataset.revert;A.values[id]=A.orig[id];if(id in A.origLookups)A.lookups[id]=A.origLookups[id];
     const t=amTypeBy(A.type);for(const k in LOVS){if(LOVS[k].dependsOn===id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){A.values[dep.id]=A.orig[dep.id];A.lookups[dep.id]=A.origLookups[dep.id]}}}
     renderAmForm();renderAmRail();syncSubmit();return}

@@ -12,20 +12,29 @@ The visual rules used by the prototype, so the Angular build and later modules (
 
 ## Standard action bar
 
-Every module screen (Creation, Amendment, Cancellation, …) uses the same action bar in the page header, in this order and colour. Reject comes from the Oracle Forms amendment screen and is part of the standard set, so every screen shows it in the same place:
+Every screen uses the same buttons, in the same order and colours. Each screen shows only the buttons it uses, so nothing on the bar is a dead control.
 
-| Order | Button | Colour | Style | Action |
-|---|---|---|---|---|
-| 1 | Help | Blue | Tinted (blue border and text) | Opens the help panel for the screen |
-| 2 | Comment | Blue | Tinted | Opens the comments panel. Shows a count when comments exist |
-| — | *divider* | | | Separates the information actions from the record actions |
-| 3 | New | Blue | Tinted | Clears the screen for a new record (on a search list: clears the search) |
-| 4 | Reject | Amber | Tinted (amber border and text) | Rejects a record under evaluation. Disabled on screens that don't evaluate |
-| 5 | Submit | Green | Solid (the only solid button) | Validates and saves the record |
-| 6 | Exit | Red | Tinted (red border and text) | Leaves the screen (on a details page: back to the list, asking before discarding changes) |
+| Order | Button | Colour | Style |
+|---|---|---|---|
+| 1 | Help | Blue | Tinted (blue border and text) |
+| 2 | Comment | Blue | Tinted |
+| — | *divider* | | Separates the information actions from the record actions |
+| 3 | New | Blue | Tinted |
+| 4 | Submit | Green | Solid (the only solid button) |
+| 5 | Exit | Red | Tinted (red border and text) |
+
+Which buttons each screen shows, and what New does there:
+
+| Screen | Buttons | New |
+|---|---|---|
+| Creation | Help, Comment, New, Submit, Exit | Clears the whole screen for a new collateral |
+| Amendment / Cancellation search list | Help, New, Exit | Clears the search and shows all collaterals |
+| Amendment details | Help, Comment, New, Submit, Exit | Resets every field to its original value. Disabled until something has changed |
+| Cancellation details | Help, Comment, New, Submit, Exit | Clears the closure reason. Disabled until a reason is entered |
 
 Rules:
-- The order, colours and icons do not change between screens. A screen that does not need an action disables it rather than removing it, so buttons never shift position.
+- The order and colours never change. A button a screen doesn't use is left out, not shown disabled.
+- On details pages, **New** and **Submit** switch on together: as soon as there is something to reset, there is also something to submit.
 - Buttons share a minimum width (104px) so the bar looks the same whatever the label.
 - Submit is the only solid button on the page, which makes it the primary action.
 - On narrow screens the buttons wrap and stretch to fill the row, keeping the same order.
@@ -35,7 +44,6 @@ Rules:
 | `--act-blue` | `#0B5CAD` | `#6AAEF2` |
 | `--act-green` | `#1D7A4C` | `#3FB57A` |
 | `--act-red` | `#B42318` | `#F2867B` |
-| `--act-amber` | `#9A5A00` | `#E9B15C` |
 
 ## Form layout: 12-column grid
 
@@ -97,7 +105,7 @@ Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, s
 
 - An edited field gets an amber outline, an **Edited** tag on its label and "Was *old value* · Undo" underneath.
 - A rail panel counts the changes and lists *old → new*, with **Undo all changes**.
-- **Submit** is disabled until at least one field differs from the original.
+- **New** and **Submit** are disabled until at least one field differs from the original. New then resets every field.
 - Leaving with unsaved changes asks "Discard your changes?" first.
 - The confirmation shows a Field / Before / After table.
 

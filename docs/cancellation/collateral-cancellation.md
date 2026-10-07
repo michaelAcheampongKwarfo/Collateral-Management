@@ -47,7 +47,7 @@ A draft flowchart is in [`flowchart.md`](flowchart.md).
 
 ## 4. Screen 1: Search list
 
-The same component as Amendment ([amendment spec §3.2](../amendment/collateral-amendment.md#32-angular-design)), with Cancellation wording ("Cancel a collateral", "Select › to open one to cancel it").
+The same component as Amendment ([amendment spec §3.2](../amendment/collateral-amendment.md#32-angular-design)), with the action bar Help, New (clear search), Exit and Cancellation wording ("Cancel a collateral", "Select › to open one to cancel it").
 
 Rows whose status is not *Approved* (either *Amendment pending* or *Cancellation pending*) are muted and cannot be opened, in either module.
 
@@ -62,7 +62,7 @@ Rows whose status is not *Approved* (either *Amendment pending* or *Cancellation
 | Cancellation card | Closure reason* with quick-pick chips and a character count · Cancellation date (today, auto-filled) · Requested by (current user, auto-filled) · Status after submit (*Cancellation pending*) |
 | Rail: What happens on submit | Sent for approval → locked → closed on approval (for cash: hold on the account released) |
 | Rail: Record, Account balances (cash), Documents | As Amendment. Documents are **view only** |
-| Action bar | Help, Comment enabled. New disabled. Reject disabled (see Q6). **Submit enabled only once a reason is entered.** Exit returns to the list and asks before discarding a typed reason. |
+| Action bar | **Help**, **Comment**, **New**, **Submit**, **Exit**. **New clears the closure reason** in case of a mistake. New and Submit switch on once a reason is entered. Exit returns to the list and asks before discarding a typed reason. |
 
 ### 5.1 Quick-pick reasons (proposal)
 
@@ -102,7 +102,7 @@ The labels come from the Forms closing screen. How the prototype fills them with
 | Q3 | Is the closure reason free text only, or should it be a coded list for reporting? |
 | Q4 | Where do Estimated Market, Coverage, Available and Realizability values come from? |
 | Q5 | In Forms, *Estimated Market* and *Review Date* look editable at closure. Should they be? (The design shows them read-only.) |
-| Q6 | Is **Reject** used on this screen by an approver? |
+| Q6 | Approval of cancellations happens outside this screen (no Reject button). Confirm where approvers review them. |
 | Q7 | For cash collateral, is the lien or hold on the pledged account released automatically on approval? |
 | Q8 | Is a closed collateral kept (status *Closed*) or deleted from `TB_COLLATERAL`? |
 

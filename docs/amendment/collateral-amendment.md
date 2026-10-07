@@ -48,7 +48,7 @@ Window `Collateral Amendment/Evaluat. - LRRU`.
 
 | Area | Design |
 |---|---|
-| Action bar | Standard bar. **Help** and **Exit** enabled. **New** clears the search (the old *Refresh*). Comment, Reject and Submit are shown but disabled, so the bar never changes shape. |
+| Action bar | **Help**, **New**, **Exit**. New clears the search (the old *Refresh*). |
 | Search criteria card | Customer number (search + LOV) · Customer name (auto-filled) · Collateral number, on the 12-column grid (3 + 5 + 4). **Fetch** (the old toolbar Fetch) and **Clear** sit under the fields. Both criteria are optional; blank lists everything. |
 | Type filter | Chips: All, Cash, Insurance, Property, Guarantee, Shares, each with a count |
 | Results table | Collateral no. · Customer (name, number below) · Collateral type (colour dot, name, code) · Amount · Considered · Review / expiry (stacked) · Status (pill, *by* approver below) · **›** |
@@ -78,7 +78,7 @@ Window `Collateral Registration`. Toolbar: Help, Comment, Reject (disabled), Sub
 | Record panel | Collateral no., type, status, approved by, approval date |
 | Account balances (cash) | Available amount, source balance, used amount, amount considered |
 | Documents panel | Existing documents with **View** (the old *View Documents*) plus a drop zone to add new ones |
-| Action bar | Help, Comment enabled. New disabled. Reject disabled (see Q5). **Submit enabled only once at least one field has changed.** Exit returns to the list and asks before discarding unsaved changes. |
+| Action bar | **Help**, **Comment**, **New**, **Submit**, **Exit**. **New resets every field to its original value** in case of a mistake. New and Submit switch on once at least one field has changed. Exit returns to the list and asks before discarding unsaved changes. The Forms **Reject** button is not carried over (see Q5). |
 
 ## 5. Fields per type
 
@@ -167,7 +167,7 @@ Forms calls it *Stock Amount* here and *Security Amount* on Creation. See Q3.
 | Q2 | What does the **Amount** column hold for each type? |
 | Q3 | Field naming: is property *Collateral amount* the same as *Market value* on Creation? Is shares *Stock amount* the same as *Security amount*? |
 | Q4 | Can the guarantee *Account number* and *Collateral type* be amended? Can the cash *Source account* be changed, or only the amount and dates? |
-| Q5 | When is **Reject** enabled? The window title "Amendment/**Evaluation**" suggests the same screen is used by an approver to evaluate amendments. |
+| Q5 | The Forms screen has a **Reject** button, left out of the new design. If approvers evaluate amendments on this screen (the title says "Amendment/**Evaluation**"), that belongs on a separate approval screen. Confirm. |
 | Q6 | Does an amendment need its own approval, and does the old value stay in force until then? (The design assumes yes.) |
 | Q7 | Is a reason for the amendment required (for audit), or is *Comments* enough? |
 | Q8 | Can a record with a pending amendment be amended again, or must the first one be approved or rejected? (The design blocks it.) |
@@ -185,5 +185,5 @@ Forms calls it *Stock Amount* here and *Security Amount* on Creation. See Q3.
 | `GET` | `/collaterals?customerNo=&collateralNo=&type=&sort=&page=` | Fetch / grid query |
 | `GET` | `/collaterals/{no}` | `>` button, details page load |
 | `POST` | `/collaterals/{no}/amendments` | Submit (body: changed fields only, with old and new values) |
-| `POST` | `/collaterals/{no}/amendments/{id}/reject` | Reject (approver) |
+| `POST` | `/collaterals/{no}/amendments/{id}/reject` | Reject (future approval screen, not this module) |
 | `GET` | `/collaterals/{no}/documents` | View Documents |
