@@ -307,7 +307,7 @@ tr.new td{background:var(--primary-soft)}
   .cust-row{grid-template-columns:minmax(0,1fr)}
   .user span{display:none}
 }
-@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid > .field{grid-column:1/-1}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right{display:none}}
+@media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid > .field{grid-column:1/-1}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right:not(.chips){display:none}.card-head .chips{width:100%}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- Amendment ---------- */
@@ -367,6 +367,32 @@ svg.flip{transform:scaleX(-1)}
 .diff{border:1px solid var(--line);border-radius:var(--r-sm)}
 .diff td,.diff th{white-space:normal}
 @media (max-width:640px){.coll-no-chip{display:none}.grid > .search-actions{justify-content:stretch}.search-actions .btn{flex:1;justify-content:center}}
+
+/* ---------- Cancellation ---------- */
+.stack{display:flex;flex-direction:column;gap:18px;min-width:0}
+.figs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2)}
+.figs > div{padding:12px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.figs > div + div{border-left:1px solid var(--line)}
+.figs .k{font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figs .v{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.figs .v.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.figs .sub{font-size:11.5px;color:var(--muted)}
+.ro.ro-view{background:var(--surface-2);border-color:var(--line);color:var(--fg)}
+.ro.ro-view .code{font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--sunken);border-radius:4px;padding:1px 6px;flex:none}
+.ro.num{justify-content:flex-end;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.ro.ro-multi{height:auto;min-height:60px;align-items:flex-start;padding-block:9px;white-space:normal}
+.ro.empty.ro-view{color:var(--faint)}
+.reason-card{border-color:var(--act-red);box-shadow:var(--shadow),inset 3px 0 0 var(--act-red)}
+.reason-card .step.active{background:var(--act-red);color:var(--surface)}
+.reason-chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.reason-chips .hint{margin-right:2px}
+.reason-foot{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.next-steps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.warn-ic{width:52px;height:52px;border-radius:50%;background:var(--danger-soft);color:var(--danger);display:grid;place-items:center;margin:4px auto 12px}
+.warn-ic svg{width:24px;height:24px}
+.reason-q{font-weight:500;font-style:italic;text-align:right}
+@media (max-width:1100px){.figs{grid-template-columns:repeat(3,minmax(0,1fr))}.figs > div:nth-child(4){border-left:0}.figs > div:nth-child(n+4){border-top:1px solid var(--line)}}
+@media (max-width:640px){.figs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs > div{border-left:0!important;border-top:1px solid var(--line)}.figs > div:nth-child(-n+2){border-top:0}.figs > div:nth-child(even){border-left:1px solid var(--line)!important}}
 </style>
 </head>
 <body>
@@ -404,7 +430,7 @@ svg.flip{transform:scaleX(-1)}
       <div class="nav-label">Modules</div>
       <a href="#creation" data-view="creation" aria-current="page"><svg class="i"><use href="#i-plus"/></svg>Creation</a>
       <a href="#amendment" data-view="amendment"><svg class="i"><use href="#i-edit"/></svg>Amendment</a>
-      <a href="#" class="soon" aria-disabled="true"><svg class="i"><use href="#i-ban"/></svg>Cancellation<span class="tag">Next</span></a>
+      <a href="#cancellation" data-view="cancellation"><svg class="i"><use href="#i-ban"/></svg>Cancellation</a>
     </nav>
     <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
   </aside>
@@ -477,7 +503,7 @@ svg.flip{transform:scaleX(-1)}
 
       <div class="foot-note"><svg class="i"><use href="#i-info"/></svg>Fields marked <span class="req">*</span> are required.</div>
     </main>
-    <main class="page" id="view-amendment" hidden></main>
+    <main class="page" id="view-records" hidden></main>
   </div>
 </div>
 
@@ -662,6 +688,12 @@ function ccyOf(st){const c=st.type==="C01"?st.lookups.account?.ccy:st.type==="C0
 function fieldHtml(t,f,st=S){
   const P=st.pfx||"f";
   const id=`${P}-${t.code}-${f.id}`,v=st.values[f.id]??"",err=st.showErrors&&st.errors[f.id];
+  if(st.readonly){
+    const lk=f.type==="lookup"&&st.lookups[f.id];
+    const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
+    const body=empty?"—":lk?`<span class="code">${esc(lk.code)}</span><span class="t">${esc(lk.desc)}</span>`:`<span class="t">${esc(val)}</span>`;
+    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}</span><div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${body}</div></div>`;
+  }
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
   let ctl="";
   if(f.type==="lookup"){
@@ -991,8 +1023,16 @@ const changesOf=st=>fieldsOf(amTypeBy(st.type)).filter(f=>isChanged(f,st));
 
 /* ---------- state ---------- */
 const PAGE=8;
-const A={view:"list",q:{cust:"",coll:""},qCust:null,filter:"ALL",sort:{k:"no",d:1},page:0,rec:null,pfx:"a",
-  type:null,customer:null,values:{},lookups:{},orig:null,origLookups:{},errors:{},showErrors:false,comments:[],files:[]};
+/* Amendment and Cancellation share the search list and record engine; the module decides wording and what is editable */
+const MODS={
+  amendment:{kind:"amend",label:"Amendment",title:"Amend a collateral",sub:"Search for an approved collateral, then open it to update its details.",openFor:"for amendment",verb:"amend"},
+  cancellation:{kind:"cancel",label:"Cancellation",title:"Cancel a collateral",sub:"Search for an approved collateral, then open it to review it and record why it is being cancelled.",openFor:"to cancel it",verb:"cancel"},
+};
+const newState=(mod,pfx)=>({mod,view:"list",q:{cust:"",coll:""},qCust:null,filter:"ALL",sort:{k:"no",d:1},page:0,rec:null,pfx,readonly:mod.kind==="cancel",
+  type:null,customer:null,values:{},lookups:{},orig:null,origLookups:{},errors:{},showErrors:false,comments:[],files:[],reason:""});
+const STATES={amendment:newState(MODS.amendment,"a"),cancellation:newState(MODS.cancellation,"c")};
+let A=STATES.amendment;
+const isCancel=()=>A.mod.kind==="cancel";
 
 function amRows(){
   let rows=AM.filter(r=>(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll)));
@@ -1004,14 +1044,15 @@ function amRows(){
 }
 
 function amActionBar(mode){
-  const d=mode==="detail",n=d?changesOf(A).length:0;
+  const d=mode==="detail",n=d?(isCancel()?A.reason.trim().length:changesOf(A).length):0;
+  const why=isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment.";
   return `<div class="actionbar" role="toolbar" aria-label="Screen actions">
     <button class="btn act-blue" id="amHelp">${icon("help")}Help</button>
     <button class="btn act-blue" id="amComment" ${d?"":"disabled title=\"Open a collateral to add a comment.\""}>${icon("msg")}Comment${A.comments.length&&d?`<span>(${A.comments.length})</span>`:""}</button>
     <span class="sep" aria-hidden="true"></span>
-    <button class="btn act-blue" id="amNew" ${d?"disabled title=\"New is not used while amending a record.\"":"title=\"Clear the search and show all collaterals\""}>${icon("plus")}New</button>
-    <button class="btn act-amber" id="amReject" disabled title="Reject is used when evaluating an amendment awaiting approval.">${icon("ban")}Reject</button>
-    <button class="btn act-green" id="amSubmit" ${d&&n?"":`disabled title="${d?"Change at least one field to submit an amendment.":"Open a collateral to amend it."}"`}>${icon("check")}Submit</button>
+    <button class="btn act-blue" id="amNew" ${d?`disabled title="New is not used while ${isCancel()?"cancelling":"amending"} a record."`:"title=\"Clear the search and show all collaterals\""}>${icon("plus")}New</button>
+    <button class="btn act-amber" id="amReject" disabled title="Reject is used when evaluating a request awaiting approval.">${icon("ban")}Reject</button>
+    <button class="btn act-green" id="amSubmit" ${d&&n?"":`disabled title="${d?why:`Open a collateral to ${A.mod.verb} it.`}"`}>${icon("check")}Submit</button>
     <button class="btn act-red" id="amExit">${icon("close")}Exit</button></div>`;
 }
 
@@ -1026,9 +1067,9 @@ function profileHtml(c,count,total){
 }
 
 function renderAm(){
-  const v=$("#view-amendment");
-  if(A.view==="list"){setCrumbs(["Amendment"]);v.innerHTML=amListHtml();}
-  else{setCrumbs(["Amendment",A.rec.no]);v.innerHTML=amDetailHtml();renderAmForm();renderAmRail();}
+  const v=$("#view-records");
+  if(A.view==="list"){setCrumbs([A.mod.label]);v.innerHTML=amListHtml();}
+  else{setCrumbs([A.mod.label,A.rec.no]);v.innerHTML=isCancel()?cxDetailHtml():amDetailHtml();renderAmForm();renderAmRail();}
 }
 
 function amListHtml(){
@@ -1037,7 +1078,7 @@ function amListHtml(){
   const shown=rows.slice(A.page*PAGE,A.page*PAGE+PAGE);
   const th=(k,l,cls="")=>`<th class="${cls}" data-sort="${k}" ${A.sort.k===k?`aria-sort="${A.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${l} <span class="arr">${A.sort.k===k&&A.sort.d<0?"↓":"↑"}</span></th>`;
   const qc=A.qCust;
-  return `<div class="page-head"><div><h1>Amend a collateral</h1><p>Search for an approved collateral, then open it to update its details.</p></div>${amActionBar("list")}</div>
+  return `<div class="page-head"><div><h1>${A.mod.title}</h1><p>${A.mod.sub}</p></div>${amActionBar("list")}</div>
   <section class="card" aria-labelledby="amS1">
     <div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="amS1">Search criteria</h2><p>Search by customer, collateral number or both. Leave both blank to list every approved collateral.</p></div></div>
     <div class="card-body"><form id="amSearch" class="grid" autocomplete="off">
@@ -1049,7 +1090,7 @@ function amListHtml(){
     </form></div>
   </section>
   <section class="card" aria-labelledby="amS2">
-    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll?" match your search":""}. Select <b>›</b> to open one for amendment.</p></div>
+    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
       <div class="right chips" role="group" aria-label="Filter by collateral type">
         <button class="chip" data-filter="ALL" aria-pressed="${A.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
         ${TYPES.map(t=>`<button class="chip" data-filter="${t.code}" aria-pressed="${A.filter===t.code}" style="--tc:var(${t.tc})"><span class="tdot"></span>${t.name} <span class="n">${counts[t.code]}</span></button>`).join("")}
@@ -1063,7 +1104,7 @@ function amListHtml(){
         <td class="num">${fmt(parseAmt(r.values.amount))}</td>
         <td><div>${fmtDate(r.values.reviewDate)}</div><div class="sub">to ${fmtDate(r.values.expiryDate)}</div></td>
         <td><span class="status ${pend?"pending":""}">${r.status}</span><div class="sub">by <span class="mono">${r.by}</span></div></td>
-        <td class="sticky-r"><button class="open-btn" data-open="${r.no}" aria-label="Open collateral ${r.no} for amendment" ${pend?"disabled title=\"An amendment is already awaiting approval.\"":""}>${icon("chev")}</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="open-btn" data-open="${r.no}" aria-label="Open collateral ${r.no} ${A.mod.openFor}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${icon("chev")}</button></td></tr>`}).join("")}
       </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collaterals match your search</b><span>Check the customer or collateral number, or clear the search to see all records.</span></div>`}</div>
     <div class="pager"><span>Showing <b>${rows.length?A.page*PAGE+1:0}–${Math.min(rows.length,(A.page+1)*PAGE)}</b> of <b>${rows.length}</b></span>
       <div class="pg"><button class="btn" data-page="first" ${A.page?"":"disabled"}>First</button><button class="btn icon" data-page="prev" aria-label="Previous page" ${A.page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button><span class="pg-n">Page ${A.page+1} of ${pages}</span><button class="btn icon" data-page="next" aria-label="Next page" ${A.page<pages-1?"":"disabled"}>${icon("chev")}</button><button class="btn" data-page="last" ${A.page<pages-1?"":"disabled"}>Last</button></div></div>
@@ -1082,8 +1123,8 @@ function amDetailHtml(){
 
 function renderAmForm(){
   const t=amTypeBy(A.type),errs=A.showErrors?Object.entries(A.errors):[];
-  $("#amForm").innerHTML=`<div class="card-head"><div class="step active">${icon("edit")}</div>
-      <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2></div>
+  $("#amForm").innerHTML=`<div class="card-head"><div class="step ${A.readonly?"done":"active"}">${icon(A.readonly?"lock":"edit")}</div>
+      <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2>${A.readonly?`<p>Read only. These details can't be changed while cancelling.</p>`:""}</div>
       <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${A.rec.no}</b></div></div>
     <div class="card-body">
       ${errs.length?`<div class="alert" role="alert" id="amErr">${icon("alert")}<div><b>${errs.length} field${errs.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errs.map(([k,m])=>`<li><a href="#a-${t.code}-${k}" data-jump="a-${t.code}-${k}">${esc(m)}</a></li>`).join("")}</ul></div></div>`:""}
@@ -1093,12 +1134,16 @@ function renderAmForm(){
 
 function renderAmRail(){
   const t=amTypeBy(A.type),ch=changesOf(A),r=A.rec;
-  let h=`<div class="card"><div class="card-body"><h3>Amendment</h3>
+  let h=isCancel()?`<div class="card"><div class="card-body"><h3>What happens on submit</h3><ol class="next-steps">
+    <li><b>Sent for approval.</b> The collateral stays active until it is approved.</li>
+    <li><b>Locked.</b> It shows <i>Cancellation pending</i> and can't be amended or cancelled again meanwhile.</li>
+    <li><b>Closed on approval.</b> It no longer secures the customer's facilities${r.type==="C01"?". The hold on the source account is released (to confirm)":""}.</li></ol></div></div>`:`<div class="card"><div class="card-body"><h3>Amendment</h3>
     <div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
     ${ch.length?`<ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,A))}</span> → <span class="nv">${esc(showVal(f,A.values,A.lookups))}</span></li>`).join("")}</ul>
       <button class="link-btn" id="amUndoAll" style="margin-top:10px">Undo all changes</button>`
     :`<p class="hint" style="margin:6px 0 0">No changes yet. Edit any field to start an amendment. Submit stays off until something changes.</p>`}
-  </div></div>
+  </div></div>`;
+  h+=`
   <div class="card"><div class="card-body"><h3>Record</h3>
     <div class="kv"><span>Collateral no.</span><b class="mono">${r.no}</b></div>
     <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
@@ -1112,12 +1157,12 @@ function renderAmRail(){
       <div class="bal-row"><span>Amount considered</span><span class="v">${A.values.amount||"—"}</span></div></div></div></div>`;}
   h+=`<div class="card"><div class="card-body"><h3>Documents</h3><ul class="files">${(DOCS[r.type]||[]).map(n=>`<li>${icon("clip")}<span>${esc(n)}</span><button class="link-btn" data-viewdoc="${esc(n)}">View</button></li>`).join("")}
     ${A.files.map((n,i)=>`<li class="new-doc">${icon("upload")}<span>${esc(n)}</span><button aria-label="Remove ${esc(n)}" data-amrm="${i}">${icon("x")}</button></li>`).join("")}</ul>
-    <label class="drop" for="amFileIn" style="margin-top:10px">${icon("upload")}<span><b>Add documents</b><br>Drop files here or browse</span></label><input type="file" id="amFileIn" multiple class="sr"></div></div>`;
+    ${isCancel()?`<p class="hint" style="margin:10px 0 0">View only. Documents can't be added while cancelling.</p>`:`<label class="drop" for="amFileIn" style="margin-top:10px">${icon("upload")}<span><b>Add documents</b><br>Drop files here or browse</span></label><input type="file" id="amFileIn" multiple class="sr">`}</div></div>`;
   $("#amRail").innerHTML=h;
 }
 
 /* refresh one field's edited state without re-rendering its input (keeps focus) */
-function syncSubmit(){const sub=$("#amSubmit");if(!sub)return;const n=changesOf(A).length;sub.disabled=!n;sub.title=n?"":"Change at least one field to submit an amendment."}
+function syncSubmit(){const sub=$("#amSubmit");if(!sub)return;const n=isCancel()?A.reason.trim().length:changesOf(A).length;sub.disabled=!n;sub.title=n?"":isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment."}
 function refreshField(f){
   syncSubmit();
   const t=amTypeBy(A.type),wrap=document.getElementById(`wrap-a-${t.code}-${f.id}`);if(!wrap)return;
@@ -1130,8 +1175,8 @@ function refreshField(f){
 
 function openAm(no){
   const r=AM.find(x=>x.no===no);if(!r)return;
-  if(r.status!=="Approved"){toast("This collateral already has an amendment awaiting approval.");return}
-  Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[]});
+  if(r.status!=="Approved"){toast(`${r.status}. This collateral can't be opened until that request is approved or rejected.`);return}
+  Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[],reason:""});
   renderAm();window.scrollTo(0,0);
 }
 function backToList(){A.view="list";A.rec=null;A.orig=null;renderAm();window.scrollTo(0,0)}
@@ -1151,6 +1196,7 @@ function amValidate(){
   return !Object.keys(A.errors).length;
 }
 function amSubmit(){
+  if(isCancel()){cxSubmit();return}
   const ch=changesOf(A);if(!ch.length)return;
   A.showErrors=true;
   if(!amValidate()){renderAmForm();$("#amErr").scrollIntoView({block:"center"});return}
@@ -1166,7 +1212,12 @@ function amSubmit(){
   $("#amOkBack").addEventListener("click",()=>{closeLayer();backToList()});
 }
 function amExit(){
-  if(A.view==="detail"&&changesOf(A).length){
+  if(A.view==="detail"&&isCancel()&&A.reason.trim()){
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amDx" style="width:min(440px,100%)"><div class="mb" style="padding:22px"><h2 id="amDx" style="margin:0 0 8px;font-size:17px">Discard this cancellation?</h2><p class="hint" style="margin:0">The reason you entered for collateral <span class="mono">${A.rec.no}</span> hasn't been submitted. Leaving now discards it.</p></div>
+      <footer><button class="btn" data-close>Keep editing</button><button class="btn act-red" id="amDiscard">Discard and leave</button></footer></div>`);
+    $("#amDiscard").addEventListener("click",()=>{closeLayer();backToList()});return;
+  }
+  if(A.view==="detail"&&!isCancel()&&changesOf(A).length){
     openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amDx" style="width:min(440px,100%)"><div class="mb" style="padding:22px"><h2 id="amDx" style="margin:0 0 8px;font-size:17px">Discard your changes?</h2><p class="hint" style="margin:0">You have ${changesOf(A).length} unsaved change${changesOf(A).length>1?"s":""} on collateral <span class="mono">${A.rec.no}</span>. Leaving now discards them.</p></div>
       <footer><button class="btn" data-close>Keep editing</button><button class="btn act-red" id="amDiscard">Discard and leave</button></footer></div>`);
     $("#amDiscard").addEventListener("click",()=>{closeLayer();backToList()});return;
@@ -1174,13 +1225,14 @@ function amExit(){
   if(A.view==="detail")backToList();else toast("Exit returns to the Collateral Management home in the Angular app.");
 }
 
-const amView=$("#view-amendment");
+const amView=$("#view-records");
 amView.addEventListener("submit",e=>{if(e.target.id==="amSearch"){e.preventDefault();amFetch()}});
 amView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-sort]");if(th&&(e.key==="Enter"||e.key===" ")){e.preventDefault();th.click()}});
 amView.addEventListener("click",e=>{
   const T=s=>e.target.closest(s);let el;
+  if(T("#amHelp")&&isCancel()){openDrawer("Help · Collateral cancellation",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Select <b>›</b> on a row to open it. The collateral's details are shown read-only.</li><li>Check the closure summary, then enter the <b>closure reason</b>. Pick a common reason to fill the box, then edit it if needed.</li><li><b>Submit</b> asks you to confirm, then sends the cancellation for approval. The collateral stays active until it is approved.</li></ol><div class="hint">A collateral with an amendment or cancellation awaiting approval can't be opened in either module.</div>`);return}
   if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
-  if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="e.g. Revaluation received from the valuer on 02-OCT-2026"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
+  if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="${isCancel()?"e.g. Customer's release request letter is attached":"e.g. Revaluation received from the valuer on 02-OCT-2026"}"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
     $("#amCmtAdd").addEventListener("click",()=>{const v=$("#amCmt").value.trim();if(!v)return;A.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAm();toast("Comment added.")});return}
   if(T("#amNew")||T("#amClear")){A.q={cust:"",coll:""};A.qCust=null;A.filter="ALL";A.page=0;renderAm();toast("Search cleared.");return}
   if(T("#amSubmit")){amSubmit();return}
@@ -1193,6 +1245,7 @@ amView.addEventListener("click",e=>{
   if(el=T("[data-open]")){openAm(el.dataset.open);return}
   if(el=T("tr[data-row]")){openAm(el.dataset.row);return}
   if(el=T("[data-jump]")){e.preventDefault();const x=document.getElementById(el.dataset.jump);x&&(x.scrollIntoView({block:"center"}),x.focus());return}
+  if(el=T("[data-reason]")){setReason(el.dataset.reason,true);return}
   if(el=T("[data-viewdoc]")){toast(`${el.dataset.viewdoc} opens in the document viewer.`);return}
   if(el=T("[data-amrm]")){A.files.splice(+el.dataset.amrm,1);renderAmRail();return}
   if(T("#amUndoAll")){A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};renderAmForm();renderAmRail();syncSubmit();toast("All changes undone.");return}
@@ -1210,6 +1263,7 @@ amView.addEventListener("click",e=>{
   }
 });
 amView.addEventListener("input",e=>{
+  if(e.target.id==="cxReasonIn"){setReason(e.target.value,false);return}
   if(e.target.id==="amCust"){const c=custBy(e.target.value.trim().padStart(6,"0"));const ro=e.target.closest(".grid").querySelector(".ro");if(ro){ro.classList.toggle("empty",!c);ro.querySelector(".t").textContent=c?c.name:"Filled from customer number"}return}
   const id=e.target.dataset.f;if(!id||A.view!=="detail")return;
   A.values[id]=e.target.value;const f=fieldsOf(amTypeBy(A.type)).find(x=>x.id===id);
@@ -1221,23 +1275,97 @@ amView.addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k||A.vi
   refreshField(fieldsOf(amTypeBy(A.type)).find(x=>x.id===e.target.dataset.f));renderAmRail()});
 amView.addEventListener("change",e=>{if(e.target.id==="amFileIn"){A.files.push(...[...e.target.files].map(f=>f.name));renderAmRail()}});
 
+/* ---------- CANCELLATION: read-only type form + closure summary + reason ---------- */
+const REASONS=["Facility fully repaid","Collateral replaced by another collateral","Collateral released to the customer","Captured in error"];
+const REASON_MAX=300;
+function ccyRow(st){const c=st.type==="C01"?st.lookups.account?.ccy:st.type==="C04"?st.values.currency:"010";return LOVS.currency.rows().find(r=>r.code===c)||{code:c,desc:""}}
+/* Closure figures named after the Oracle Forms closing screen; mapping to stored columns is to be confirmed */
+function closureFigures(st){
+  const r=st.rec,cov=parseAmt(st.values.amount)||0;
+  return{est:amountOf(r),cov,avail:cov,real:r.type==="C03"?parseAmt(st.values.forcedSale):cov};
+}
+function cxDetailHtml(){
+  const r=A.rec,c=A.customer,t=amTypeBy(r.type),held=AM.filter(x=>x.cust===c.code),fg=closureFigures(A),cc=ccyRow(A);
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  return `<div class="page-head"><div><button class="back" data-back><svg class="i flip"><use href="#i-chev"/></svg>Back to search results</button>
+    <h1>Cancel collateral <span class="mono h1-no">${r.no}</span></h1><p>Review the collateral, then record why it is being cancelled. Nothing else can be changed here.</p></div>${amActionBar("detail")}</div>
+  <section class="card" aria-labelledby="cxC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="cxC">Customer</h2><p>The customer who owns this collateral.</p></div></div>
+    <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
+  <section class="card" aria-labelledby="cxS"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="cxS">Closure summary</h2><p>What the bank holds against this collateral today. These values are released when the cancellation is approved.</p></div></div>
+    <div class="card-body"><div class="figs" style="--tc:var(${t.tc})">
+      ${cell("Collateral type",`<span class="tdot"></span>${esc(t.name)} <span class="mono sub">${t.code}</span>`)}
+      ${cell("Currency",`<span class="mono">${esc(cc.code)}</span> · ${esc(cc.desc)}`)}
+      ${cell("Estimated market",fg.est!=null?fmt(fg.est):"—","num")}
+      ${cell("Coverage value",fmt(fg.cov),"num")}
+      ${cell("Available value",fmt(fg.avail),"num")}
+      ${cell("Realizability value",fg.real!=null?fmt(fg.real):"—","num")}
+    </div></div></section>
+  <div class="form-wrap"><div class="stack"><section class="card" id="amForm" style="--tc:var(${t.tc})"></section>${reasonCardHtml()}</div><aside class="rail" id="amRail"></aside></div>
+  <div class="foot-note">${icon("info")}Fields marked <span class="req">*</span> are required. The cancellation goes for approval before it takes effect.</div>`;
+}
+function reasonCardHtml(){
+  const err=A.showErrors&&!A.reason.trim();
+  return `<section class="card reason-card" id="cxReason" aria-labelledby="cxR"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="cxR">Cancellation</h2><p>The only thing you enter here. The reason goes to the approver and stays on the collateral's history.</p></div></div>
+    <div class="card-body"><div class="grid">
+      <div class="field ${err?"invalid":""}" style="--col:12" id="cxReasonField"><label for="cxReasonIn">Closure reason<span class="req">*</span></label>
+        <div class="reason-chips" role="group" aria-label="Common reasons"><span class="hint">Common reasons:</span>${REASONS.map(x=>`<button type="button" class="chip" data-reason="${esc(x)}" aria-pressed="${A.reason===x}">${esc(x)}</button>`).join("")}</div>
+        <textarea class="input" id="cxReasonIn" maxlength="${REASON_MAX}" placeholder="Say why the collateral is being cancelled, e.g. the facility it secured was fully repaid on 30-SEP-2026.">${esc(A.reason)}</textarea>
+        <div class="reason-foot"><span id="cxReasonMsg" class="${err?"err":"hint"}">${err?icon("alert")+"Enter the closure reason.":"Required. The approver sees this exactly as written."}</span><span class="hint mono" id="cxCount">${A.reason.length} / ${REASON_MAX}</span></div>
+      </div>
+      <div class="field" style="--col:4"><span class="lbl">Cancellation date<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t">${fmtDate(new Date().toISOString().slice(0,10))}</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:4"><span class="lbl">Requested by<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t mono">K.ASARE</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:4"><span class="lbl">Status after submit</span><div class="ro"><span class="t"><span class="status pending">Cancellation pending</span></span></div></div>
+    </div></div></section>`;
+}
+function setReason(v,fromChip){
+  A.reason=v.slice(0,REASON_MAX);
+  const ta=$("#cxReasonIn");if(fromChip&&ta){ta.value=A.reason;ta.focus();ta.setSelectionRange(A.reason.length,A.reason.length)}
+  $("#cxCount").textContent=`${A.reason.length} / ${REASON_MAX}`;
+  document.querySelectorAll("[data-reason]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.reason===A.reason)));
+  if(A.reason.trim()&&A.showErrors){$("#cxReasonField").classList.remove("invalid");const m=$("#cxReasonMsg");m.className="hint";m.textContent="Required. The approver sees this exactly as written."}
+  syncSubmit();
+}
+function cxSubmit(){
+  const r=A.rec,t=amTypeBy(A.type),fg=closureFigures(A);
+  if(!A.reason.trim()){A.showErrors=true;$("#cxReason").outerHTML=reasonCardHtml();$("#cxReasonIn").focus();return}
+  const acct=r.type==="C01"&&A.lookups.account?A.lookups.account.code:null;
+  openLayer(`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="cxQ" aria-describedby="cxQd" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
+    <div class="warn-ic">${icon("ban")}</div>
+    <h2 id="cxQ" style="margin:0 0 6px;font-size:18px;text-align:center">Cancel collateral <span class="mono">${r.no}</span>?</h2>
+    <p id="cxQd" class="hint" style="margin:0 0 14px;text-align:center">Once approved, this collateral is closed and no longer secures ${esc(A.customer.name)}'s facilities${acct?`, and the hold on account <span class="mono">${acct}</span> is released`:""}.</p>
+    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.title)}</b></div>
+    <div class="kv"><span>Coverage value released</span><b class="mono">${fmt(fg.cov)}</b></div>
+    <div class="kv"><span>Closure reason</span><b class="reason-q">${esc(A.reason)}</b></div>
+    </div><footer><button class="btn" data-close>Keep collateral</button><button class="btn act-red" id="cxConfirm">${icon("ban")}Submit cancellation</button></footer></div>`);
+  $("#cxConfirm").focus();
+  $("#cxConfirm").addEventListener("click",()=>{
+    r.status="Cancellation pending";r.closeReason=A.reason;
+    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="cxOk" style="width:min(480px,100%)"><div class="mb" style="padding:24px;text-align:center">
+      <div class="success-ic">${icon("check")}</div><h2 id="cxOk" style="margin:0;font-size:18px">Cancellation submitted for approval</h2>
+      <p class="hint" style="margin:8px 0 0">Collateral <span class="mono">${r.no}</span> now shows <b>Cancellation pending</b>. It stays active, and locked in Amendment and Cancellation, until the request is approved or rejected.</p>
+      </div><footer><button class="btn primary" id="cxOkBack">Back to search results</button></footer></div>`);
+    $("#cxOkBack").focus();$("#cxOkBack").addEventListener("click",()=>{closeLayer();backToList()});
+  });
+}
+
 /* ---------- views + router ---------- */
 function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
+const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation"})[h]||"creation";
 function go(view){
-  const am=view==="amendment";
-  $("#view-creation").hidden=am;$("#view-amendment").hidden=!am;
+  const am=view!=="creation";
+  $("#view-creation").hidden=am;$("#view-records").hidden=!am;if(am)A=STATES[view];
   document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   if(am)renderAm();else setCrumbs(["Creation"]);
   $("#side").classList.remove("open");window.scrollTo(0,0);
 }
-window.addEventListener("hashchange",()=>go(location.hash==="#amendment"?"amendment":"creation"));
+window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
 
 /* ---------- Initial working state: sample cash collateral, like the reference screen ---------- */
 S=fresh();
 S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
 S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
 renderAll();
-go(location.hash==="#amendment"?"amendment":"creation");
+go(viewOf(location.hash));
 })();
 </script>
 </body>

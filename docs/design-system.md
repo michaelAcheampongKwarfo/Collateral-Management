@@ -85,13 +85,13 @@ Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, s
 
 ## Patterns
 
-### Search list (Amendment, and later Cancellation)
+### Search list (Amendment and Cancellation)
 
 - A **Search criteria** card on the 12-column grid, with **Fetch** and **Clear** under the fields. Criteria are optional; blank lists everything.
 - A results card with type filter chips (with counts), sortable columns, 8 rows per page and a pager ("Showing 1–8 of 14", First, ‹, page, ›, Last).
 - Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
 - The **›** open button is the last column and stays pinned to the right edge. Clicking the row does the same.
-- Rows that can't be opened (for example *Amendment pending*) are muted and their **›** is disabled with a tooltip explaining why.
+- Rows that can't be opened (*Amendment pending* or *Cancellation pending*) are muted and their **›** is disabled with a tooltip explaining why. A pending request in either module locks the record in **both**.
 
 ### Change tracking (Amendment)
 
@@ -100,6 +100,17 @@ Light mode uses a soft blue-grey page with off-white cards and a navy sidebar, s
 - **Submit** is disabled until at least one field differs from the original.
 - Leaving with unsaved changes asks "Discard your changes?" first.
 - The confirmation shows a Field / Before / After table.
+
+### Read-only record view (Cancellation)
+
+- The type form is rendered with the same 12-column layout, but values sit in grey boxes with no input border. Lookups show a code chip and description; amounts are right-aligned in mono.
+- The form header says "Read only" and shows a lock instead of an edit icon.
+- The single editable input lives in its own card with a red left edge, so the eye goes straight to it.
+
+### Destructive confirmation (Cancellation)
+
+- Submit opens an `alertdialog`: a warning icon, "Cancel collateral *number*?", one sentence on what happens on approval, then the key values and the reason.
+- Buttons: **Keep collateral** (safe, neutral) and **Submit cancellation** (red, tinted). The safe choice is first.
 
 ## Components
 
