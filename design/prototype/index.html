@@ -6,6 +6,8 @@
 <title>Collateral Management Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Layout: app shell (module sidebar + workspace). Workspace = page header, two step cards,
@@ -1888,12 +1890,27 @@ function renderEnq(){
 function enqOpen(no){const x=enqRecords().find(r=>r.no===no);if(!x)return;Object.assign(E(),{view:"detail",item:x});renderEnq();window.scrollTo(0,0)}
 function enqBack(){E().view="list";E().item=null;renderEnq();window.scrollTo(0,0)}
 function readFilters(){enqView.querySelectorAll("[data-ff]").forEach(i=>E().f[i.dataset.ff]=i.value.trim())}
+/* Hand a generated file to the viewer: the artifact viewer's downloads capability when present, a normal download otherwise */
+async function offerFile(filename,data){
+  let dl=null;try{dl=await window.claude?.use?.("downloads")}catch(e){}
+  if(dl){try{await dl.save({filename,data});toast(`Saved ${filename}.`)}catch(e){toast(e&&e.code==="declined"?"Download cancelled.":`${filename} couldn't be saved here.`)}return}
+  try{const a=document.createElement("a");a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));a.download=filename;document.body.appendChild(a);a.click();a.remove();toast(`Downloading ${filename}.`)}catch(e){toast(`${filename} couldn't be downloaded here.`)}
+}
 function exportRows(kind){
   const rows=enqRows(),cols=COLS[EK],strip=h=>String(h).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
-  if(kind==="pdf"){toast(`PDF: ${rows.length} rows. In the Angular app this generates the ${ENQ_KINDS[EK].label.toLowerCase()} report.`);return}
-  const csv=[cols.map(c=>c[1]),...rows.map(r=>cols.map(c=>strip(c[2](r))))].map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
-  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download=`collateral-${EK}-enquiry.csv`;document.body.appendChild(a);a.click();a.remove()}catch(e){}
-  toast(`Excel: exporting ${rows.length} rows as collateral-${EK}-enquiry.csv.`);
+  const head=cols.map(c=>c[1]),body=rows.map(r=>cols.map(c=>strip(c[2](r)))),name=`collateral-${EK}-enquiry`;
+  if(!rows.length){toast("There are no rows to export.");return}
+  if(kind==="pdf"){
+    const J=window.jspdf;if(!J||!J.jsPDF){toast("The PDF library didn't load. Check the connection and try again.");return}
+    const doc=new J.jsPDF({orientation:"landscape",unit:"pt",format:"a4"});
+    doc.setFontSize(14);doc.text(`${ENQ_KINDS[EK].title}`,40,40);
+    doc.setFontSize(9);doc.setTextColor(90);doc.text(`${rows.length} records · ${activeChips().map(c=>FILTER_LABELS[c[0]]+": "+c[1]).join(" · ")||"No filters"} · Generated ${nowStamp()} by K.ASARE`,40,56);
+    doc.autoTable({head:[head],body,startY:68,styles:{fontSize:7.5,cellPadding:4},headStyles:{fillColor:[15,35,66]},
+      columnStyles:Object.fromEntries(cols.map((c,i)=>[i,c[4]?{halign:"right"}:{}])),margin:{left:40,right:40}});
+    offerFile(`${name}.pdf`,doc.output("blob"));return;
+  }
+  const csv=[head,...body].map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  offerFile(`${name}.csv`,"﻿"+csv);
 }
 enqView.addEventListener("input",e=>{if(e.target.id==="enQ"){E().q=e.target.value;E().page=0;const pos=e.target.selectionStart;readFilters();renderEnq();const q=$("#enQ");q.focus();q.setSelectionRange(pos,pos)}});
 enqView.addEventListener("submit",e=>{if(e.target.id==="enForm"){e.preventDefault();readFilters();E().applied={...E().f};E().page=0;E().open=false;renderEnq();toast(`${enqRows().length} record${enqRows().length===1?"":"s"} found.`)}});

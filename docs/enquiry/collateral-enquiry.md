@@ -61,7 +61,7 @@ Enquiry is read-only. It lets staff find any collateral and see its value, cover
 - Collateral type and currency sit under the description, so each grid fits a normal laptop screen without scrolling sideways.
 - Every column sorts. 8 rows per page.
 - **Excel** exports the rows currently shown (search and filters applied). In the prototype this is a CSV file; the Angular app should produce `.xlsx`.
-- **PDF** produces the same rows as a report (server-side in the Angular app).
+- **PDF** exports the same rows as a landscape A4 report: title, record count, the active filters, date and user, then the table. The prototype builds it in the browser with jsPDF; the Angular app can do the same or generate it server-side.
 - *Pending* creations appear in **All** with status *Pending*. **Running** shows only *Active* collateral. Closed collateral appears only in **All**.
 
 ## 5. Details page
