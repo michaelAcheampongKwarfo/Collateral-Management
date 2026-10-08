@@ -14,6 +14,8 @@ The visual rules used by the prototype, so the Angular build and later modules (
 
 Every screen uses the same buttons, in the same order and colours. Each screen shows only the buttons it uses, so nothing on the bar is a dead control.
 
+The bar always sits **on the left, directly under the page title**, on every screen (entry, list, details, approval, enquiry), so the buttons are always in the same place.
+
 | Order | Button | Colour | Style |
 |---|---|---|---|
 | 1 | Help | Blue | Tinted (blue border and text) |
@@ -109,7 +111,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Quick search with funnel (Enquiry)
 
-- One search box (customer name or number, collateral number, description, status) that filters as you type, with a solid blue **funnel** button beside it.
+- One search box, about 360px wide (customer name or number, collateral number, description, status), that filters as you type, with a solid blue **funnel** button beside it.
 - The funnel opens an **Advanced filters** panel inside the same card, laid out on the 12-column grid (three fields per row; ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
 - Applied filters appear as chips under the search box, each with its own ×, plus **Clear all**. The funnel shows a red count of active filters.
 

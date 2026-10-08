@@ -95,7 +95,8 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .menu-btn{display:none}
 
 .page{padding:24px 28px 40px;max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+/* Title, then the action bar on its own row, always left-aligned so it never moves between screens */
+.page-head{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .page-head h1{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
 .page-head p{margin:4px 0 0;color:var(--muted)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -448,7 +449,7 @@ svg.flip{transform:scaleX(-1)}
 .seg a.on{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
 .seg a:hover:not(.on){color:var(--fg)}
 .quick{display:flex;gap:8px;align-items:stretch}
-.quick-in{position:relative;flex:1;min-width:0;max-width:640px}
+.quick-in{position:relative;flex:0 1 360px;min-width:0}
 .quick-in svg{position:absolute;left:12px;top:11px;color:var(--faint)}
 .quick-in .input{padding-left:38px;height:40px}
 .btn.funnel{width:40px;height:40px;position:relative;background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
@@ -1831,7 +1832,7 @@ function enqListHtml(){
   return `<div class="page-head"><div><h1>${K.title}</h1><p>${K.sub}</p></div>${enqActionBar("list")}</div>
   <div class="seg" role="tablist" aria-label="Enquiry type">${Object.entries(ENQ_KINDS).map(([k,v])=>`<a role="tab" href="${v.hash}" aria-selected="${k===EK}" class="${k===EK?"on":""}">${v.label}</a>`).join("")}</div>
   <section class="card search-card"><div class="card-body">
-    <div class="quick"><div class="quick-in">${icon("search")}<input class="input" id="enQ" placeholder="Search by customer name or number, collateral number, description or status" value="${esc(S_.q)}" aria-label="Search collateral"></div>
+    <div class="quick"><div class="quick-in">${icon("search")}<input class="input" id="enQ" placeholder="Search customer, collateral no., description…" title="Search by customer name or number, collateral number, description or status" value="${esc(S_.q)}" aria-label="Search collateral"></div>
       <button class="btn icon funnel ${S_.open?"on":""}" id="enFunnel" aria-expanded="${S_.open}" aria-controls="enFilters" title="Advanced filters">${icon("funnel")}${chips.length?`<span class="fbadge">${chips.length}</span>`:""}</button></div>
     ${chips.length?`<div class="fchips">${chips.map(([k,t])=>`<span class="fchip"><b>${FILTER_LABELS[k]}:</b> ${esc(t)}<button aria-label="Remove ${FILTER_LABELS[k]} filter" data-unf="${k}">${icon("x")}</button></span>`).join("")}<button class="link-btn" id="enClearAll">Clear all</button></div>`
       :`<p class="hint" style="margin:10px 0 0">Type to search, or use the funnel for advanced filters.</p>`}
