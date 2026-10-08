@@ -33,6 +33,8 @@ Which buttons each screen shows, and what New does there:
 | Amendment details | Help, Comment, New, Submit, Exit | Resets every field to its original value. Disabled until something has changed |
 | Cancellation details | Help, Comment, New, Submit, Exit | Clears the closure reason. Disabled until a reason is entered |
 | Approvals queue | Help, New, Exit | Clears the search |
+| Enquiry grids | Help, New, Exit | Clears the search and every filter |
+| Enquiry details | Help, Exit | Not shown (read only, as in Forms) |
 | Approval request | Help, Comment, Reject, Authorize, Exit | Not shown. Reject and Authorize unlock once "I have checked all the details" is ticked |
 
 Rules:
@@ -104,6 +106,21 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 - Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
 - The **›** open button is the last column and stays pinned to the right edge. Clicking the row does the same.
 - Rows that can't be opened (*Amendment pending* or *Cancellation pending*) are muted and their **›** is disabled with a tooltip explaining why. A pending request in either module locks the record in **both**.
+
+### Quick search with funnel (Enquiry)
+
+- One search box (customer name or number, collateral number, description, status) that filters as you type, with a solid blue **funnel** button beside it.
+- The funnel opens an **Advanced filters** panel inside the same card, laid out on the 12-column grid (three fields per row; ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
+- Applied filters appear as chips under the search box, each with its own ×, plus **Clear all**. The funnel shows a red count of active filters.
+
+### Data grid toolbar (Enquiry)
+
+- Title, a record-count pill and **Refresh** on the left; **PDF** and **Excel** on the right. Exports use the rows currently shown.
+- Long tables keep to the screen width: column headers may wrap to two lines, and secondary facts (type, currency) sit under the description.
+
+### Module sub-navigation (Enquiry)
+
+- A module with several screens gets an indented sub-list in the sidebar (All collateral, Running collateral, Used collateral) and a matching tab switcher at the top of the page. Both link to the same routes.
 
 ### Change tracking (Amendment)
 

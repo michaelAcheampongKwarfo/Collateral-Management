@@ -436,6 +436,65 @@ svg.flip{transform:scaleX(-1)}
 .field.changed .ro-view{border-color:var(--chg);box-shadow:0 0 0 3px var(--chg-soft)}
 .reason-quote{margin:0;padding:12px 16px;border-left:3px solid var(--act-red);background:var(--surface-2);border-radius:0 var(--r-sm) var(--r-sm) 0;font-size:15px;font-style:italic}
 .warn-ic.amber{background:var(--act-amber-soft);color:var(--act-amber)}
+
+/* ---------- Enquiry ---------- */
+.subnav{display:flex;flex-direction:column;margin:0 0 4px 21px;padding-left:12px;border-left:1px solid var(--side-line)}
+.subnav a{padding:5px 10px;font-size:13px;font-weight:500}
+.subnav a[aria-current="page"]{box-shadow:none;background:none;color:var(--side-active-fg);font-weight:600}
+.seg{display:inline-flex;gap:4px;padding:4px;background:var(--sunken);border-radius:10px;align-self:flex-start;flex-wrap:wrap}
+.seg a{padding:7px 14px;border-radius:7px;color:var(--muted);text-decoration:none;font-weight:600;font-size:13px}
+.seg a.on{background:var(--surface);color:var(--fg);box-shadow:var(--shadow)}
+.seg a:hover:not(.on){color:var(--fg)}
+.quick{display:flex;gap:8px;align-items:stretch}
+.quick-in{position:relative;flex:1;min-width:0;max-width:640px}
+.quick-in svg{position:absolute;left:12px;top:11px;color:var(--faint)}
+.quick-in .input{padding-left:38px;height:40px}
+.btn.funnel{width:40px;height:40px;position:relative;background:var(--primary);border-color:var(--primary);color:var(--primary-ink)}
+.btn.funnel:hover{background:var(--primary-hover)}
+.btn.funnel.on{box-shadow:0 0 0 3px var(--primary-soft)}
+.fbadge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:99px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 4px;font-family:var(--font-mono)}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.fchip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;background:var(--primary-soft);color:var(--primary);border-radius:99px;padding:3px 4px 3px 10px}
+.fchip b{font-weight:600}
+.fchip button{border:0;background:none;color:inherit;cursor:pointer;display:grid;place-items:center;width:20px;height:20px;border-radius:50%}
+.fchip button:hover{background:var(--primary);color:var(--primary-ink)}
+.fchip svg{width:12px;height:12px}
+.filter-panel{margin-top:14px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);padding:14px 16px 16px}
+.fp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:var(--fg)}
+.fp-head > span{display:flex;gap:8px;align-items:center;color:var(--primary)}
+.fp-head .link-btn{display:flex;gap:4px;align-items:center;color:var(--muted)}
+.fp-head .link-btn svg{width:14px;height:14px}
+.range{display:flex;align-items:center;gap:8px}
+.range .input{min-width:0}
+.range span{color:var(--muted);font-size:12.5px}
+select.input{appearance:auto}
+.rec-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.rec-title h2{margin:0}
+.btn.sm{height:32px;padding:0 12px;font-size:13px}
+.exports{display:flex;gap:8px}
+.enq-table .desc-cell{display:block;white-space:normal;min-width:170px;max-width:230px;font-size:12.5px;font-weight:500}
+.enq-table .desc-sub{display:block;margin-top:2px}
+.enq-table .desc-sub .tdot{margin-right:5px}
+.enq-table th,.enq-table td{padding-inline:12px}
+.enq-table th{white-space:normal;line-height:1.25;vertical-align:bottom;min-width:64px}
+.enq-table th.num{text-align:right}
+.enq-table .cell-name{white-space:normal;min-width:130px;max-width:180px}
+.enq-table .desc-cell{min-width:150px}
+.enq-table .link{color:var(--primary);font-weight:600}
+.avail.zero{color:var(--faint)}
+.status.closed{background:var(--sunken);color:var(--muted)}
+.figs.figs-12 > div:nth-child(n+7){border-top:1px solid var(--line)}
+.figs.figs-12 > div:nth-child(7){border-left:0}
+.risk{font-size:12px;font-weight:700;border-radius:99px;padding:2px 9px}
+.risk.r-low{background:var(--success-soft);color:var(--success)}.risk.r-medium{background:var(--warn-soft);color:var(--warn)}.risk.r-high{background:var(--danger-soft);color:var(--danger)}
+.usage-bar{height:12px;border-radius:99px;background:var(--success-soft);overflow:hidden}
+.usage-bar i{display:block;height:100%;background:var(--primary);border-radius:99px}
+.usage-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--muted)}
+.usage-legend b{color:var(--fg)}
+.usage-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:0}
+.u-used{background:var(--primary)}.u-avail{background:var(--success-soft);border:1px solid var(--success)}
+@media (max-width:1100px){.figs.figs-12 > div{border-left:1px solid var(--line)}.figs.figs-12 > div:nth-child(3n+1){border-left:0}.figs.figs-12 > div:nth-child(n+4){border-top:1px solid var(--line)}}
+@media (max-width:640px){.quick-in{max-width:none}.exports .btn{flex:1}}
 </style>
 </head>
 <body>
@@ -464,6 +523,9 @@ svg.flip{transform:scaleX(-1)}
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
   <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></symbol>
+  <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
 </svg>
 
@@ -475,6 +537,8 @@ svg.flip{transform:scaleX(-1)}
       <a href="#creation" data-view="creation" aria-current="page"><svg class="i"><use href="#i-plus"/></svg>Creation</a>
       <a href="#amendment" data-view="amendment"><svg class="i"><use href="#i-edit"/></svg>Amendment</a>
       <a href="#cancellation" data-view="cancellation"><svg class="i"><use href="#i-ban"/></svg>Cancellation</a>
+      <a href="#enquiry-all" data-view="enquiry"><svg class="i"><use href="#i-search"/></svg>Enquiry</a>
+      <div class="subnav" aria-label="Enquiry types"><a href="#enquiry-all" data-ek="all">All collateral</a><a href="#enquiry-running" data-ek="running">Running collateral</a><a href="#enquiry-used" data-ek="used">Used collateral</a></div>
       <a href="#approvals" data-view="approvals"><svg class="i"><use href="#i-check"/></svg>Approvals<span class="tag count" id="apCount">0</span></a>
     </nav>
     <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
@@ -549,6 +613,7 @@ svg.flip{transform:scaleX(-1)}
     </main>
     <main class="page" id="view-records" hidden></main>
     <main class="page" id="view-approvals" hidden></main>
+    <main class="page" id="view-enquiry" hidden></main>
   </div>
 </div>
 
@@ -973,6 +1038,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#scrim"))closeLa
 function openDocsFor(ctx){
   if(ctx==="creation")openDocs({docs:S.docs,editable:true,sub:`New ${typeBy(S.type)?.name.toLowerCase()||""} collateral for ${S.customer?.name||"the customer"}`,onChange:renderRail});
   else if(ctx==="record")openDocs({docs:A.rec.docs,editable:!isCancel(),sub:`Collateral ${A.rec.no} · ${A.customer.name}`,onChange:renderAmRail});
+  else if(ctx==="enquiry")openDocs({docs:E().item.r.docs||[],editable:false,sub:`Collateral ${E().item.no} · ${E().item.cust.name}`});
   else if(ctx==="approval")openDocs({docs:P.item.docs,editable:false,sub:`Collateral ${P.item.no} · ${custBy(P.item.cust).name}`});
 }
 
@@ -1633,14 +1699,235 @@ apView.addEventListener("click",e=>{
   if(el=T("tr[data-aprow]")){apOpen(el.dataset.aprow);return}
 });
 
+/* =====================================================================
+   ENQUIRY: All collateral · Running collateral · Used (loan) collateral.
+   One search box + funnel for advanced filters, export to PDF / Excel,
+   and a read-only details page built from the collateral's type form.
+   ===================================================================== */
+const BRANCHES=[{code:"010",desc:"SINKOR"},{code:"012",desc:"CONGO TOWN"},{code:"015",desc:"BROAD STREET"}];
+/* loan accounts drawing on each collateral (sample data) */
+const LOANS={
+  "2609184352":[{acct:"004000499701",used:2500000,posted:"20-SEP-2025"}],
+  "2310024084":[{acct:"015001972701",used:600000,posted:"05-NOV-2024"}],
+  "202509272578252":[{acct:"012003655101",used:50000,posted:"27-SEP-2025"}],
+  "202509272579098":[{acct:"010000862601",used:1200,posted:"27-SEP-2025"}],
+  "202509272617913":[{acct:"015002926501",used:60000,posted:"27-SEP-2025"}],
+  "202509272613905":[{acct:"012004693701",used:350,posted:"27-SEP-2025"}],
+  "2506303783":[{acct:"015002348301",used:150000,posted:"02-JUL-2025"},{acct:"015002348302",used:30000,posted:"15-JAN-2026"}],
+  "2511093318":[{acct:"014004821301",used:500000,posted:"05-NOV-2024"}],
+  "2603273966":[{acct:"012004637801",used:25000,posted:"30-MAR-2025"}],
+  "2601187735":[{acct:"010005671901",used:20000,posted:"20-MAR-2025"}],
+};
+const RISK={C01:"LOW",C02:"MEDIUM",C03:"MEDIUM",C04:"LOW",C05:"HIGH"};
+function collDesc(r){
+  const v=r.values,l=r.lookups;
+  return ({C01:()=>`CASH COLLATERAL - ${l.account?.prodDesc||""}`,C02:()=>`${l.policyType?.desc||"POLICY"} - ${v.policyNo||""}`,
+    C03:()=>`${l.propType?.desc||"PROPERTY"} - ${(v.location||"").split(",").slice(-1)[0].trim().toUpperCase()}`,
+    C04:()=>`${l.depositType?.desc||"GUARANTEE"} - ${l.finInst?.desc||""}`,C05:()=>`${l.shareCode?.desc||"SHARES"} - ${v.units||0} UNITS`})[r.type]();
+}
+/* every collateral the bank knows about, with the figures the Forms enquiry shows */
+function enqRecords(){
+  const recs=AM.map(r=>({r,src:"rec",status:r.status==="Approved"?"Active":r.status==="Cancelled"?"Closed":"Pending",pendingWhat:r.status}));
+  QUEUE.filter(q=>q.kind==="create").forEach(q=>recs.push({r:{no:q.no,cust:q.cust,type:q.type,values:q.values,lookups:q.lookups,by:q.by,appr:null,docs:q.docs,isNew:true},src:"queue",status:"Pending",pendingWhat:"Creation pending"}));
+  return recs.map(x=>{
+    const r=x.r,st={type:r.type,values:r.values,lookups:r.lookups};
+    const v=r.isNew&&r.type==="C03"?{...r.values,collAmount:r.values.marketValue}:r.values;
+    const market=r.isNew?(r.type==="C01"?r.lookups.account?.bal.cleared:parseAmt(r.values.marketValue||r.values.sumAssured||r.values.guarAmount||r.values.amount)):amountOf(r);
+    const cov=parseAmt(v.amount)||0,loans=LOANS[r.no]||[],used=loans.reduce((a,l)=>a+l.used,0);
+    const fsv=r.type==="C03"?parseAmt(v.forcedSale):Math.round((market||0)*({C01:1,C02:.8,C04:.9,C05:.7})[r.type]*100)/100;
+    const c=custBy(r.cust),cc=ccyRow(st);
+    return{...x,no:r.no,cust:c,type:r.type,desc:collDesc(r),ccy:CCY[cc.code]||"GHS",ccyRow:cc,market:market||0,cov,used,avail:Math.max(cov-used,0),
+      realiz:market?cov/market*100:0,fsv,fsvRate:market?fsv/market*100:0,loans,review:r.values.reviewDate,expiry:r.values.expiryDate,branch:c.brCode,
+      risk:RISK[r.type],perfection:x.status==="Active"?"PERFECTED":x.status==="Closed"?"RELEASED":"PENDING",stamp:Math.round((market||0)*.005*100)/100};
+  });
+}
+const ENQ_KINDS={
+  all:{label:"All collateral",title:"Collateral enquiry",sub:"Every collateral on record, whatever its status.",hash:"#enquiry-all",
+    filters:["cust","branch","coll","type","status","cov","review","expiry"]},
+  running:{label:"Running collateral",title:"Running collateral enquiry",sub:"Active collateral with its coverage, how much of it is used and what is still available.",hash:"#enquiry-running",
+    filters:["cust","branch","coll","type","cov","review","expiry"]},
+  used:{label:"Used collateral",title:"Used collateral enquiry",sub:"Collateral drawn on by loan accounts. One row per loan account.",hash:"#enquiry-used",
+    filters:["cust","branch","coll","type","cov","posted"]},
+};
+const emptyF=()=>({cust:"",branch:"",coll:"",type:"",status:"",covFrom:"",covTo:"",reviewFrom:"",reviewTo:"",expiryFrom:"",expiryTo:"",postedFrom:"",postedTo:""});
+const ENQ={all:null,running:null,used:null};
+Object.keys(ENQ).forEach(k=>ENQ[k]={kind:k,view:"list",q:"",open:false,f:emptyF(),applied:emptyF(),sort:{k:"no",d:1},page:0,item:null});
+let EK="all";const E=()=>ENQ[EK];
+const enqView=$("#view-enquiry");
+const STATUS_CLS={Active:"",Pending:"pending",Closed:"closed"};
+/* description with type and currency underneath keeps the grids narrow enough to fit */
+const descCell=r=>`<span class="desc-cell">${esc(r.desc)}</span><span class="sub desc-sub" style="--tc:var(${typeBy(r.type).tc})"><span class="tdot"></span><span class="mono">${r.type}</span> · ${esc(typeBy(r.type).name)} · <span class="mono">${r.ccy}</span></span>`;
+const dmy=s=>{if(!s)return"";const[d,m,y]=s.split("-");return `${y}-${String(MON.indexOf(m)+1).padStart(2,"0")}-${d}`};
+
+/* columns per enquiry, from the Forms grids */
+const COLS={
+  all:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
+    ["desc","Description",descCell],
+    ["market","Market value",r=>fmt(r.market),null,1],["used","Value used",r=>fmt(r.used),null,1],["cov","Amount considered",r=>fmt(r.cov),null,1],
+    ["review","Review date",r=>fmtDate(r.review)],["status","Status",r=>`<span class="status ${STATUS_CLS[r.status]}" title="${esc(r.pendingWhat)}">${r.status}</span>`]],
+  running:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
+    ["desc","Description",descCell],["market","Market value",r=>fmt(r.market),null,1],["cov","Coverage value",r=>fmt(r.cov),null,1],
+    ["realiz","Realiz. rate %",r=>r.realiz.toFixed(2),null,1],["used","Value used",r=>fmt(r.used),null,1],
+    ["avail","Avail. value",r=>`<span class="avail ${r.avail?"":"zero"}">${fmt(r.avail)}</span>`,null,1],["review","Review date",r=>fmtDate(r.review)]],
+  used:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
+    ["desc","Description",descCell],
+    ["cov","Amt considered",r=>fmt(r.cov),null,1],["coverage","Coverage value",r=>fmt(r.cov),r=>r.cov,1],["lused","Value used",r=>fmt(r.loan.used),r=>r.loan.used,1],
+    ["acct","Loan account",r=>`<span class="mono">${r.loan.acct}</span>`,r=>r.loan.acct],["posted","Posted date",r=>r.loan.posted,r=>dmy(r.loan.posted)]],
+};
+function enqRows(){
+  const S_=E(),a=S_.applied,q=S_.q.trim().toLowerCase();
+  let rows=enqRecords();
+  if(EK==="running")rows=rows.filter(r=>r.status==="Active");
+  if(EK==="used")rows=rows.filter(r=>r.status!=="Closed").flatMap(r=>r.loans.map(l=>({...r,loan:l})));
+  const inRange=(v,lo,hi)=>(!lo||v>=lo)&&(!hi||v<=hi);
+  rows=rows.filter(r=>(!q||[r.no,r.cust.code,r.cust.name,r.desc,r.status].some(x=>String(x).toLowerCase().includes(q)))
+    &&(!a.cust||r.cust.code===a.cust.padStart(6,"0"))&&(!a.branch||r.branch===a.branch)&&(!a.coll||r.no.includes(a.coll))&&(!a.type||r.type===a.type)&&(!a.status||r.status===a.status)
+    &&inRange(r.cov,parseAmt(a.covFrom),parseAmt(a.covTo))&&inRange(r.review,a.reviewFrom,a.reviewTo)&&inRange(r.expiry,a.expiryFrom,a.expiryTo)
+    &&(!r.loan||inRange(dmy(r.loan.posted),a.postedFrom,a.postedTo)));
+  const col=COLS[EK].find(c=>c[0]===S_.sort.k)||COLS[EK][0];
+  const key=col[3]||(r=>r[col[0]]);
+  return [...rows].sort((x,y)=>{const p=key(x),q2=key(y);return(p>q2?1:p<q2?-1:0)*S_.sort.d});
+}
+const FILTER_LABELS={cust:"Customer",branch:"Branch",coll:"Collateral no.",type:"Type",status:"Status",cov:"Coverage",review:"Review date",expiry:"Expiry date",posted:"Posted date"};
+function activeChips(){
+  const a=E().applied,out=[],rng=(x,y,f=v=>v)=>x&&y?`${f(x)} – ${f(y)}`:x?`from ${f(x)}`:`to ${f(y)}`;
+  if(a.cust)out.push(["cust",`${a.cust.padStart(6,"0")} · ${custBy(a.cust.padStart(6,"0"))?.name||"unknown"}`]);
+  if(a.branch)out.push(["branch",`${a.branch} · ${BRANCHES.find(b=>b.code===a.branch)?.desc}`]);
+  if(a.coll)out.push(["coll",a.coll]);if(a.type)out.push(["type",`${a.type} · ${typeBy(a.type).name}`]);if(a.status)out.push(["status",a.status]);
+  if(a.covFrom||a.covTo)out.push(["cov",rng(a.covFrom,a.covTo)]);
+  for(const k of ["review","expiry","posted"])if(a[k+"From"]||a[k+"To"])out.push([k,rng(a[k+"From"],a[k+"To"],fmtDate)]);
+  return out;
+}
+function enqActionBar(mode){
+  const help=`<button class="btn act-blue" id="enHelp">${icon("help")}Help</button>`,exit=`<button class="btn act-red" id="enExit">${icon("close")}Exit</button>`;
+  return mode==="detail"?`<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<span class="sep" aria-hidden="true"></span>${exit}</div>`
+    :`<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<span class="sep" aria-hidden="true"></span><button class="btn act-blue" id="enNew" title="Clear the search and filters">${icon("plus")}New</button>${exit}</div>`;
+}
+function filterPanelHtml(){
+  const f=E().f,has=k=>ENQ_KINDS[EK].filters.includes(k);
+  const field=(col,lbl,ctl)=>`<div class="field" style="--col:${col}"><label>${lbl}</label>${ctl}</div>`;
+  const rng=(k,type,ph)=>`<div class="range"><input class="input ${type==="amount"?"amount":""}" type="${type==="amount"?"text":"date"}" ${type==="amount"?'inputmode="decimal"':""} data-ff="${k}From" value="${esc(f[k+"From"])}" aria-label="${FILTER_LABELS[k]} from" placeholder="${ph?"From":""}"><span>to</span><input class="input ${type==="amount"?"amount":""}" type="${type==="amount"?"text":"date"}" ${type==="amount"?'inputmode="decimal"':""} data-ff="${k}To" value="${esc(f[k+"To"])}" aria-label="${FILTER_LABELS[k]} to" placeholder="${ph?"To":""}"></div>`;
+  const parts=[];
+  if(has("cust"))parts.push(field(4,"Customer ID",`<div class="search"><input class="input" data-ff="cust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(f.cust)}"><button class="btn" type="button" id="enCustLov" aria-label="Search customers">${icon("search")}</button></div>`));
+  if(has("branch"))parts.push(field(4,"Branch",`<select class="input" data-ff="branch"><option value="">Any branch</option>${BRANCHES.map(b=>`<option value="${b.code}" ${f.branch===b.code?"selected":""}>${b.code} · ${b.desc}</option>`).join("")}</select>`));
+  if(has("coll"))parts.push(field(4,"Collateral no.",`<input class="input mono" data-ff="coll" placeholder="e.g. 2609184352" value="${esc(f.coll)}">`));
+  if(has("type"))parts.push(field(4,"Collateral type",`<select class="input" data-ff="type"><option value="">Any type</option>${TYPES.map(t=>`<option value="${t.code}" ${f.type===t.code?"selected":""}>${t.code} · ${t.name}</option>`).join("")}</select>`));
+  if(has("status"))parts.push(field(4,"Status",`<select class="input" data-ff="status"><option value="">Any status</option>${["Active","Pending","Closed"].map(s=>`<option ${f.status===s?"selected":""}>${s}</option>`).join("")}</select>`));
+  if(has("cov"))parts.push(field(4,"Coverage amount between",rng("cov","amount",1)));
+  if(has("review"))parts.push(field(4,"Review date between",rng("review","date")));
+  if(has("expiry"))parts.push(field(4,"Expiry date between",rng("expiry","date")));
+  if(has("posted"))parts.push(field(4,"Posted date between",rng("posted","date")));
+  const fill=(3-parts.length%3)%3;
+  return `<div class="filter-panel" id="enFilters"><div class="fp-head"><span>${icon("funnel")}<b>Advanced filters</b></span><button class="link-btn" id="enCloseF">${icon("x")}Close</button></div>
+    <form class="grid" id="enForm" autocomplete="off">${parts.join("")}${fill?`<div style="grid-column:span ${fill*4}"></div>`:""}
+    <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="enClearF">${icon("refresh")}Clear filters</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div></form></div>`;
+}
+function enqListHtml(){
+  const S_=E(),K=ENQ_KINDS[EK],rows=enqRows(),pages=Math.max(1,Math.ceil(rows.length/PAGE));S_.page=Math.min(S_.page,pages-1);
+  const shown=rows.slice(S_.page*PAGE,S_.page*PAGE+PAGE),chips=activeChips(),cols=COLS[EK];
+  const th=c=>`<th class="${c[4]?"num":""}" data-esort="${c[0]}" ${S_.sort.k===c[0]?`aria-sort="${S_.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${c[1]} <span class="arr">${S_.sort.k===c[0]&&S_.sort.d<0?"↓":"↑"}</span></th>`;
+  return `<div class="page-head"><div><h1>${K.title}</h1><p>${K.sub}</p></div>${enqActionBar("list")}</div>
+  <div class="seg" role="tablist" aria-label="Enquiry type">${Object.entries(ENQ_KINDS).map(([k,v])=>`<a role="tab" href="${v.hash}" aria-selected="${k===EK}" class="${k===EK?"on":""}">${v.label}</a>`).join("")}</div>
+  <section class="card search-card"><div class="card-body">
+    <div class="quick"><div class="quick-in">${icon("search")}<input class="input" id="enQ" placeholder="Search by customer name or number, collateral number, description or status" value="${esc(S_.q)}" aria-label="Search collateral"></div>
+      <button class="btn icon funnel ${S_.open?"on":""}" id="enFunnel" aria-expanded="${S_.open}" aria-controls="enFilters" title="Advanced filters">${icon("funnel")}${chips.length?`<span class="fbadge">${chips.length}</span>`:""}</button></div>
+    ${chips.length?`<div class="fchips">${chips.map(([k,t])=>`<span class="fchip"><b>${FILTER_LABELS[k]}:</b> ${esc(t)}<button aria-label="Remove ${FILTER_LABELS[k]} filter" data-unf="${k}">${icon("x")}</button></span>`).join("")}<button class="link-btn" id="enClearAll">Clear all</button></div>`
+      :`<p class="hint" style="margin:10px 0 0">Type to search, or use the funnel for advanced filters.</p>`}
+    ${S_.open?filterPanelHtml():""}
+  </div></section>
+  <section class="card"><div class="card-head wrap"><div class="rec-title"><h2>${K.label} records</h2><span class="chip-count">${rows.length} record${rows.length===1?"":"s"}</span><button class="btn ghost sm" id="enRefresh">${icon("refresh")}Refresh</button></div>
+      <div class="right exports"><button class="btn sm" id="enPdf">${icon("file")}PDF</button><button class="btn sm" id="enXls">${icon("sheet")}Excel</button></div></div>
+    <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r"><span class="sr">View</span></th></tr></thead><tbody>
+      ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="open-btn" data-eopen="${r.no}" aria-label="View collateral ${r.no}">${icon("chev")}</button></td></tr>`).join("")}
+    </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collateral matches</b><span>Change the search or clear the filters.</span></div>`}</div>
+    <div class="pager"><span>Showing <b>${rows.length?S_.page*PAGE+1:0}–${Math.min(rows.length,(S_.page+1)*PAGE)}</b> of <b>${rows.length}</b></span>
+      <div class="pg"><button class="btn" data-epage="first" ${S_.page?"":"disabled"}>First</button><button class="btn icon" data-epage="prev" aria-label="Previous page" ${S_.page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button><span class="pg-n">Page ${S_.page+1} of ${pages}</span><button class="btn icon" data-epage="next" aria-label="Next page" ${S_.page<pages-1?"":"disabled"}>${icon("chev")}</button><button class="btn" data-epage="last" ${S_.page<pages-1?"":"disabled"}>Last</button></div></div>
+  </section>`;
+}
+function enqDetailHtml(){
+  const x=E().item,r=x.r,t=r.isNew?typeBy(r.type):amTypeBy(r.type),c=x.cust,held=AM.filter(y=>y.cust===c.code&&y.status!=="Cancelled");
+  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
+  const pct=x.cov?Math.min(100,x.used/x.cov*100):0;
+  return `<div class="page-head"><div><button class="back" data-eback><svg class="i flip"><use href="#i-chev"/></svg>Back to ${ENQ_KINDS[EK].label.toLowerCase()}</button>
+    <h1>Collateral <span class="mono h1-no">${x.no}</span> <span class="status ${STATUS_CLS[x.status]}" style="vertical-align:4px">${x.status}</span></h1><p>Read-only enquiry. ${x.status==="Pending"?esc(x.pendingWhat)+".":"Values as approved."}</p></div>${enqActionBar("detail")}</div>
+  <section class="card"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2>Customer</h2><p>The customer who owns this collateral.</p></div></div>
+    <div class="card-body">${profileHtml(c,held.length,held.reduce((a,y)=>a+(parseAmt(y.values.amount)||0),0))}</div></section>
+  <section class="card"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2>Valuation and coverage</h2><p>The figures the bank relies on for this collateral.</p></div></div>
+    <div class="card-body"><div class="figs figs-12" style="--tc:var(${t.tc})">
+      ${cell("Collateral currency",`<span class="mono">${x.ccyRow.code}</span> · ${esc(x.ccyRow.desc)}`)}${cell("Estimated market",fmt(x.market),"num")}${cell("Current value",fmt(x.market),"num")}
+      ${cell("Coverage value",fmt(x.cov),"num")}${cell("Coverage rate %",x.realiz.toFixed(2),"num")}${cell("Forced sale value",fmt(x.fsv),"num")}
+      ${cell("FSV rate %",x.fsvRate.toFixed(2),"num")}${cell("Risk associated",`<span class="risk r-${x.risk.toLowerCase()}">${x.risk}</span>`)}${cell("Status of collateral",x.perfection)}
+      ${cell("Registered stamp cost",fmt(x.stamp),"num")}${cell("Review date",fmtDate(x.review))}${cell("Expiry date",fmtDate(x.expiry))}
+    </div></div></section>
+  <section class="card"><div class="card-head"><div class="step done">${icon("chart")}</div><div><h2>Usage</h2><p>How much of the coverage loan accounts are drawing on.</p></div></div>
+    <div class="card-body"><div class="usage"><div class="usage-bar" role="img" aria-label="${pct.toFixed(0)} percent of coverage used"><i style="width:${pct}%"></i></div>
+      <div class="usage-legend"><span><i class="u-used"></i>Used <b class="mono">${fmt(x.used)}</b></span><span><i class="u-avail"></i>Available <b class="mono">${fmt(x.avail)}</b></span><span class="mono">${pct.toFixed(1)}% of ${fmt(x.cov)}</span></div></div>
+      ${x.loans.length?`<div class="table-wrap dm-table" style="margin-top:14px"><table><thead><tr><th>Loan account</th><th class="num">Value used</th><th>Posted date</th></tr></thead><tbody>${x.loans.map(l=>`<tr><td class="mono">${l.acct}</td><td class="num">${fmt(l.used)}</td><td>${l.posted}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint" style="margin:12px 0 0">No loan account is using this collateral.</p>`}
+    </div></section>
+  <div class="form-wrap"><section class="card" id="enForm2" style="--tc:var(${t.tc})"></section><aside class="rail" id="enRail"></aside></div>
+  <div class="foot-note">${icon("info")}Enquiry only. To change this collateral use Amendment; to close it use Cancellation.</div>`;
+}
+function renderEnqDetailParts(){
+  const x=E().item,r=x.r,t=r.isNew?typeBy(r.type):amTypeBy(r.type),st={readonly:true,pfx:"e",type:r.type,values:r.values,lookups:r.lookups,customer:x.cust,rec:r};
+  $("#enForm2").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div><div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only.</p></div>
+    <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${x.no}</b></div></div>
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,st)).join("")}</div></div>`).join("")}</div>`;
+  $("#enRail").innerHTML=`<div class="card"><div class="card-body"><h3>Record</h3>
+    <div class="kv"><span>Collateral no.</span><b class="mono">${x.no}</b></div><div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
+    <div class="kv"><span>Status</span><b><span class="status ${STATUS_CLS[x.status]}">${x.status}</span></b></div>
+    <div class="kv"><span>Branch</span><b><span class="mono">${x.cust.brCode}</span> · ${esc(x.cust.branch)}</b></div>
+    <div class="kv"><span>${r.isNew?"Submitted by":"Approved by"}</span><b class="mono">${r.by}</b></div><div class="kv"><span>Approval date</span><b>${r.appr||"—"}</b></div></div></div>
+    <div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(r.docs||[])}<button class="btn act-blue doc-btn" data-docs="enquiry">${icon("clip")}View documents (${(r.docs||[]).length})</button></div></div>`;
+}
+function renderEnq(){
+  const S_=E();
+  if(S_.view==="list"){setCrumbs(["Enquiry",ENQ_KINDS[EK].label]);enqView.innerHTML=enqListHtml();}
+  else{setCrumbs(["Enquiry",ENQ_KINDS[EK].label,S_.item.no]);enqView.innerHTML=enqDetailHtml();renderEnqDetailParts();}
+  document.querySelectorAll(".subnav a").forEach(a=>{if(a.dataset.ek===EK)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+}
+function enqOpen(no){const x=enqRecords().find(r=>r.no===no);if(!x)return;Object.assign(E(),{view:"detail",item:x});renderEnq();window.scrollTo(0,0)}
+function enqBack(){E().view="list";E().item=null;renderEnq();window.scrollTo(0,0)}
+function readFilters(){enqView.querySelectorAll("[data-ff]").forEach(i=>E().f[i.dataset.ff]=i.value.trim())}
+function exportRows(kind){
+  const rows=enqRows(),cols=COLS[EK],strip=h=>String(h).replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim();
+  if(kind==="pdf"){toast(`PDF: ${rows.length} rows. In the Angular app this generates the ${ENQ_KINDS[EK].label.toLowerCase()} report.`);return}
+  const csv=[cols.map(c=>c[1]),...rows.map(r=>cols.map(c=>strip(c[2](r))))].map(l=>l.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
+  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["﻿"+csv],{type:"text/csv"}));a.download=`collateral-${EK}-enquiry.csv`;document.body.appendChild(a);a.click();a.remove()}catch(e){}
+  toast(`Excel: exporting ${rows.length} rows as collateral-${EK}-enquiry.csv.`);
+}
+enqView.addEventListener("input",e=>{if(e.target.id==="enQ"){E().q=e.target.value;E().page=0;const pos=e.target.selectionStart;readFilters();renderEnq();const q=$("#enQ");q.focus();q.setSelectionRange(pos,pos)}});
+enqView.addEventListener("submit",e=>{if(e.target.id==="enForm"){e.preventDefault();readFilters();E().applied={...E().f};E().page=0;E().open=false;renderEnq();toast(`${enqRows().length} record${enqRows().length===1?"":"s"} found.`)}});
+enqView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-esort]");if(th&&(e.key==="Enter"||e.key===" ")){e.preventDefault();th.click()}});
+enqView.addEventListener("click",e=>{
+  const T=x=>e.target.closest(x);let el;
+  if(T("#enHelp")){openDrawer("Help · Collateral enquiry",`<ol><li>Pick an enquiry: <b>All collateral</b>, <b>Running collateral</b> (active coverage, used and available) or <b>Used collateral</b> (one row per loan account).</li><li>Type in the search box to filter straight away, or open the <b>funnel</b> for advanced filters, then <b>Fetch</b>. Active filters show as chips you can remove one by one.</li><li>Sort any column. <b>PDF</b> and <b>Excel</b> export the rows you see.</li><li>Select <b>›</b> to view a collateral: valuation and coverage, usage by loan account, and its full type form, read only.</li></ol>`);return}
+  if(T("#enNew")||T("#enClearAll")){Object.assign(E(),{q:"",f:emptyF(),applied:emptyF(),page:0,open:false});renderEnq();toast("Search and filters cleared.");return}
+  if(T("#enExit")){if(E().view==="detail")enqBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("[data-eback]")){enqBack();return}
+  if(T("#enFunnel")){readFilters();E().open=!E().open;if(E().open)E().f={...E().applied};renderEnq();if(E().open)enqView.querySelector("[data-ff]")?.focus();return}
+  if(T("#enCloseF")){E().open=false;renderEnq();$("#enFunnel").focus();return}
+  if(T("#enClearF")){E().f=emptyF();renderEnq();return}
+  if(T("#enCustLov")){readFilters();openLov("Find customer",CUSTOMERS,r=>{E().f.cust=r.code;renderEnq()},[["code","Customer no."],["name","Name"],["type","Type"]]);return}
+  if(el=T("[data-unf]")){const k=el.dataset.unf,a=E().applied;if(k in a)a[k]="";a[k+"From"]="";a[k+"To"]="";E().f={...a};E().page=0;renderEnq();return}
+  if(T("#enRefresh")){renderEnq();toast("Records refreshed.");return}
+  if(T("#enPdf")){exportRows("pdf");return}
+  if(T("#enXls")){exportRows("xls");return}
+  if(el=T("[data-esort]")){const k=el.dataset.esort,S_=E();S_.sort=S_.sort.k===k?{k,d:-S_.sort.d}:{k,d:1};renderEnq();return}
+  if(el=T("[data-epage]")){const n=Math.ceil(enqRows().length/PAGE)-1,S_=E();S_.page={first:0,prev:S_.page-1,next:S_.page+1,last:n}[el.dataset.epage];renderEnq();return}
+  if(el=T("[data-eopen]")){enqOpen(el.dataset.eopen);return}
+  if(el=T("tr[data-erow]")){enqOpen(el.dataset.erow);return}
+});
+
 /* ---------- views + router ---------- */
 function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
-const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals"})[h]||"creation";
+const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals","#enquiry-all":"enquiry","#enquiry-running":"enquiry","#enquiry-used":"enquiry"})[h]||"creation";
 function go(view){
   const am=view==="amendment"||view==="cancellation",ap=view==="approvals";
-  $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;if(am)A=STATES[view];if(ap)renderAp();
+  const en=view==="enquiry";
+  $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;$("#view-enquiry").hidden=!en;if(am)A=STATES[view];if(ap)renderAp();
+  if(en){EK=(location.hash.split("-")[1])||"all";if(!ENQ[EK])EK="all";renderEnq();}
   document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  if(am)renderAm();else if(!ap){setCrumbs(["Creation"]);renderAll();}
+  if(am)renderAm();else if(!ap&&!en){setCrumbs(["Creation"]);renderAll();}
   $("#side").classList.remove("open");window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
