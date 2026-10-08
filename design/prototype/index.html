@@ -95,8 +95,9 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .menu-btn{display:none}
 
 .page{padding:24px 28px 40px;max-width:1240px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-/* Title, then the action bar on its own row, always left-aligned so it never moves between screens */
-.page-head{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+/* Title on the left, action bar always on the right; if it wraps under a long title it stays right-aligned */
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px 16px;flex-wrap:wrap}
+.page-head > .actionbar{margin-left:auto;justify-content:flex-end}
 .page-head h1{margin:0;font-size:24px;line-height:1.2;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
 .page-head p{margin:4px 0 0;color:var(--muted)}
 .actions{display:flex;gap:8px;flex-wrap:wrap}

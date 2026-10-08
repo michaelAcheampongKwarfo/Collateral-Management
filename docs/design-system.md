@@ -14,7 +14,7 @@ The visual rules used by the prototype, so the Angular build and later modules (
 
 Every screen uses the same buttons, in the same order and colours. Each screen shows only the buttons it uses, so nothing on the bar is a dead control.
 
-The bar always sits **on the left, directly under the page title**, on every screen (entry, list, details, approval, enquiry), so the buttons are always in the same place.
+The bar always sits **on the right of the page header**, on every screen (entry, list, details, approval, enquiry). When a long title pushes it onto its own row it stays right-aligned, so the buttons always end at the same edge.
 
 | Order | Button | Colour | Style |
 |---|---|---|---|
