@@ -43,13 +43,13 @@ The request opens on the **same layout as its entry screen**, with every field r
 | Area | Design |
 |---|---|
 | Header | **Back to approvals**, title "*Creation / Amendment / Cancellation* approval" + collateral number |
-| Action bar | **Help**, **Comment**, divider, **Reject** (amber), **Authorize** (green, solid), **Exit**. Reject and Authorize are disabled until the confirmation is ticked |
+| Action bar | **Help**, **Comment**, divider, **Return** (amber), **Dismiss** (rose), **Authorize** (green, solid), divider, **Exit** |
 | Request strip | Request type · Submitted by · Submitted on · Collateral type · Amount considered · plus *Collateral no.* (creation), *Fields changed* (amendment) or *Coverage released* (cancellation) |
 | Customer | The shared customer profile strip |
 | Closure reason | Cancellation only: the reason as entered, in a red-edged card |
 | Form | The type's form, read-only: the **Creation** form for creation requests, the **Amendment** form for amendments and cancellations |
 | Amendment highlighting | Each changed field has an amber outline, a **Changed** tag and its current (pre-amendment) value underneath |
-| Rail: Decision | **I have checked all the details** checkbox (the Forms "Tick to Confirm All Details"). The card turns green when ticked |
+| Rail: Decision | What each action does: Return, Dismiss, Authorize, and how many checklist items Authorize needs |
 | Rail: Requested changes | Amendment only: count and *old → new* list |
 | Rail: Account balances | Cash only |
 | Rail: Documents | Documents attached to the request, with **View documents** (read-only documents modal) |
@@ -58,12 +58,31 @@ The request opens on the **same layout as its entry screen**, with every field r
 
 | Action | What happens |
 |---|---|
-| **Authorize** | Creation: the collateral becomes *Approved* and appears in Amendment and Cancellation. Amendment: the new values replace the old. Cancellation: the collateral is closed and leaves the lists. A confirmation names the result. |
-| **Reject** | Opens a dialog with a required **Rejection reason** (300 characters). Creation: the collateral is not created. Amendment or cancellation: the collateral keeps its values and becomes available again. The submitter sees the reason. |
+| **Authorize** | Opens the **verification checklist** (below). Once every item is ticked: creation → the collateral becomes *Approved* and appears in Amendment and Cancellation; amendment → the new values replace the old; cancellation → the collateral is closed and leaves the lists. |
+| **Return** | Opens a dialog with a required **Return reason** ("say exactly what needs correcting"). The request leaves the approval queue and goes to the submitter's **Returned** queue (§3.5). The collateral shows *Amendment returned* / *Cancellation returned* and stays locked. |
+| **Dismiss** | Opens a dialog with a required **Dismissal reason** and a **Dismiss permanently** tick. The request leaves the queue for good: a creation is not created; an amendment or cancellation leaves the collateral unchanged and available again. Replaces *Reject*. |
+
+**Verification checklist** (training note 5, modelled on the Forms *VER* window). A blue "Verification · Confirm" header, then one row per item with a tick box, an "*n* of *m* confirmed" counter and **Tick all**. Authorize stays disabled until every item is ticked. Items depend on the request and collateral type:
+
+| Part | Items |
+|---|---|
+| First | Creation: *Customer and collateral type confirmed?* · Amendment: *Every changed field confirmed?* · Cancellation: *Closure reason confirmed?* and *No running loan still depends on this collateral?* |
+| By type | Cash: source account and balances; amount within available balance · Insurance: company and policy; amount within sum assured · Property: property, ownership, location; market and forced sale value · Guarantee: institution and account; amount, rate and tenor · Shares: security code and units; market value and folio range |
+| Last | *Review and expiry dates confirmed?* · *Supporting documents confirmed?* |
+
+### 3.5 Returned queue (training note 4)
+
+- A **Returned** module in the sidebar, with an amber count, lists returned requests: request type, collateral no., customer, type, **return reason**, returned by and when, and **›**.
+- **›** reopens the request **on its own entry screen**, filled with what was submitted:
+  - Creation → the Creation screen, customer and type selected, every field filled.
+  - Amendment → the Amendment details page, with the proposed changes highlighted against the approved values.
+  - Cancellation → the Cancellation details page, with the closure reason filled in.
+- An amber **Returned for correction** banner at the top shows who returned it, when, and the reason.
+- **Submit** sends it back to the approval queue with the **same collateral number** and removes it from Returned.
 
 ### 3.4 Connected prototype
 
-Requests created in the prototype's Creation, Amendment and Cancellation modules go straight into this queue. Deciding them updates every module, so the full lifecycle can be demonstrated live: submit → approve → amend → approve → cancel → approve.
+Requests created in the prototype's Creation, Amendment and Cancellation modules go straight into this queue. Deciding them updates every module, so the full lifecycle can be demonstrated live: submit → approve → amend → approve → cancel → approve, plus return → correct → resubmit and dismiss.
 
 ## 4. Maker-checker
 
@@ -75,8 +94,8 @@ The prototype marks requests submitted by the signed-in user with "(you)" and sh
 |---|---|
 | Q1 | Is maker-checker enforced (the submitter cannot authorize their own request)? Is there an approval limit by amount or role? |
 | Q2 | How does an approver reach requests today: an approval inbox, or by entering the collateral number? (The design assumes a queue.) |
-| Q3 | Is a rejection reason captured today? Where is it stored, and is the submitter notified? |
-| Q4 | Does a rejected request go back to the submitter for correction and resubmission, or is it closed? |
+| Q3 | Where are return and dismissal reasons stored, and how is the submitter notified (in-app, email)? |
+| Q4 | Can the submitter withdraw a returned request instead of correcting it? Is there a time limit before it is dismissed automatically? |
 | Q5 | The creation sample shows **New** on the approval toolbar. What does it do there? (Left out of the design.) |
 | Q6 | Is there a separate cancellation approval screen, or does the closing screen get re-opened for approval? |
 | Q7 | Is one level of approval enough, or do some requests need two approvers? |

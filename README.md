@@ -8,7 +8,11 @@ Design and documentation for moving the Collateral Management screens from Oracl
 | Amendment | Spec, UI prototype and draft flow ready. Open questions listed in the spec. |
 | Cancellation | Spec, UI prototype and draft flow ready. Uses the Amendment list with a read-only form and closure reason. |
 | Approvals | Spec, UI prototype and draft flow ready. One queue for creation, amendment and cancellation requests. |
-| Enquiry | Spec, UI prototype and draft flow ready. All, running and used collateral, with quick search, funnel filters and PDF / Excel. |
+| Enquiry | Spec, UI prototype and draft flow ready. All, running and used collateral, with quick search, funnel filters, review-date filters and PDF / Excel. |
+| Returned | Prototype ready (in the Approval spec). Requests returned by an approver, corrected on their entry screen and resubmitted. |
+| Reporting | Proposed in [training notes](docs/training-notes.md). Not built yet. |
+
+Training session notes and where each is handled: [docs/training-notes.md](docs/training-notes.md).
 
 ## Contents
 
@@ -51,9 +55,11 @@ docs/design-system.md          Colours, layout grid, action bar and components s
 
 **Cancellation screens:** [search list](design/cancellation/screens/01-search-list.png) · [cash](design/cancellation/screens/02-cash.png) · [insurance](design/cancellation/screens/03-insurance.png) · [property](design/cancellation/screens/04-property.png) · [guarantee](design/cancellation/screens/05-guarantee.png) · [shares](design/cancellation/screens/06-shares.png) · [confirm](design/cancellation/screens/08-confirm.png) · [submitted](design/cancellation/screens/09-submitted.png) · [pending in list](design/cancellation/screens/10-list-pending.png) · [mobile, dark](design/cancellation/screens/11-mobile-dark.png)
 
-**Approval screens:** [queue](design/approval/screens/01-queue.png) · [amendments only](design/approval/screens/02-queue-amendments.png) · [creation, cash](design/approval/screens/03-creation-cash.png) · [creation, property](design/approval/screens/04-creation-property.png) · [cancellation](design/approval/screens/08-cancellation.png) · [authorized](design/approval/screens/06-authorized.png) · [reject reason](design/approval/screens/07-reject-reason.png) · [mobile, dark](design/approval/screens/09-mobile-dark.png)
+**Approval screens:** [decisions](design/approval/screens/10-decisions.png) · [return](design/approval/screens/11-return.png) · [verification](design/approval/screens/12-verify.png) · [dismiss](design/approval/screens/13-dismiss.png) · [queue](design/approval/screens/01-queue.png) · [amendments only](design/approval/screens/02-queue-amendments.png) · [creation, cash](design/approval/screens/03-creation-cash.png) · [creation, property](design/approval/screens/04-creation-property.png) · [cancellation](design/approval/screens/08-cancellation.png) · [authorized](design/approval/screens/06-authorized.png) · [reject reason](design/approval/screens/07-reject-reason.png) · [mobile, dark](design/approval/screens/09-mobile-dark.png)
 
 **Enquiry screens:** [all](design/enquiry/screens/01-all.png) · [all, filters open](design/enquiry/screens/02-all-filters.png) · [all, filtered](design/enquiry/screens/03-all-filtered.png) · [running](design/enquiry/screens/04-running.png) · [used](design/enquiry/screens/06-used.png) · [details](design/enquiry/screens/07-detail-property.png) · [pending details](design/enquiry/screens/08-detail-pending.png) · [mobile, dark](design/enquiry/screens/09-mobile-dark.png)
+
+**Returned screens:** [queue](design/returned/screens/01-returned-queue.png) · [amendment to correct](design/returned/screens/02-amendment-correct.png) · [creation to correct](design/returned/screens/03-creation-correct.png)
 
 ## Using the prototype
 
@@ -65,7 +71,7 @@ Open `design/prototype/index.html` in a browser and switch modules from the side
 
 **Cancellation** uses the same list. Open a record to see its read-only form, pick or type a closure reason, then **Submit** and confirm. The record is then locked in both Amendment and Cancellation.
 
-**Approvals** starts with 6 sample requests, and everything you submit in the other modules joins the queue. Open one, tick *I have checked all the details*, then **Authorize** or **Reject** (with a reason). The result shows up across the modules: an authorized creation appears in Amendment, an authorized cancellation leaves the lists.
+**Approvals** starts with 6 sample requests, and everything you submit in the other modules joins the queue. Open one, then **Authorize** (tick every item on the verification checklist), **Return** (with a reason) or **Dismiss** (with a reason and a final tick). An authorized creation appears in Amendment, an authorized cancellation leaves the lists, and a returned request appears in **Returned**, where it reopens on its own entry screen to correct and resubmit.
 
 **Documents:** **Attach documents** in Creation (and **Manage documents** in Amendment) opens the documents modal. Choose or drop a file, or use **Scan document**, then **Save document**.
 

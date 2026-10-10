@@ -499,6 +499,36 @@ select.input{appearance:auto}
 .u-used{background:var(--primary)}.u-avail{background:var(--success-soft);border:1px solid var(--success)}
 @media (max-width:1100px){.figs.figs-12 > div{border-left:1px solid var(--line)}.figs.figs-12 > div:nth-child(3n+1){border-left:0}.figs.figs-12 > div:nth-child(n+4){border-top:1px solid var(--line)}}
 @media (max-width:640px){.quick-in{max-width:none}.exports .btn{flex:1}}
+
+/* ---------- Approval decisions, verification, Returned ---------- */
+:root{--act-rose:#B4234F;--act-rose-soft:#FCEBF1}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--act-rose:#F08AAB;--act-rose-soft:#3A1A26}}
+:root[data-theme="dark"]{--act-rose:#F08AAB;--act-rose-soft:#3A1A26}
+.btn.act-rose{background:var(--act-rose-soft);border-color:var(--act-rose);color:var(--act-rose)}
+.btn.act-rose:hover:not(:disabled){background:var(--act-rose);color:var(--surface)}
+.kind.k-ok{background:var(--success-soft);color:var(--success)}
+.dec-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--muted)}
+.dec-list .kind{display:inline-block;min-width:74px;text-align:center;margin-right:8px}
+.verify .vf-head{display:flex;justify-content:space-between;padding:8px 12px;background:var(--primary);color:var(--primary-ink);border-radius:var(--r-sm) var(--r-sm) 0 0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.vf-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r-sm) var(--r-sm)}
+.vf-list li + li{border-top:1px solid var(--line)}
+.vf-list label{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;font-weight:600;font-size:13px}
+.vf-list label:hover{background:var(--surface-2)}
+.vf-list input{width:18px;height:18px;accent-color:var(--success);flex:none}
+.vf-list label:has(input:checked){background:var(--success-soft)}
+.vf-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.vf-final{margin-top:14px}
+.vf-final input{accent-color:var(--act-rose)}
+.return-banner{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r-md);background:var(--warn-soft);border:1px solid var(--act-amber);color:var(--fg)}
+.return-banner > svg{color:var(--act-amber);margin-top:2px}
+.return-banner blockquote{margin:6px 0;font-style:italic;font-size:14.5px}
+.nav a .tag.count.ret{background:var(--act-amber);border-color:var(--act-amber)}
+.quickf{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.quickf .chip svg{width:14px;height:14px}
+.chip.q-overdue{color:var(--danger)}.chip.q-overdue[aria-pressed="true"]{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.chip.q-due{color:var(--warn)}.chip.q-due[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.rv{display:block;width:max-content;margin-top:3px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-radius:99px;padding:1px 7px}
+.rv-overdue{background:var(--danger-soft);color:var(--danger)}.rv-due{background:var(--warn-soft);color:var(--warn)}
 </style>
 </head>
 <body>
@@ -530,6 +560,7 @@ select.input{appearance:auto}
   <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></symbol>
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
 </svg>
 
@@ -544,6 +575,7 @@ select.input{appearance:auto}
       <a href="#enquiry-all" data-view="enquiry"><svg class="i"><use href="#i-search"/></svg>Enquiry</a>
       <div class="subnav" aria-label="Enquiry types"><a href="#enquiry-all" data-ek="all">All collateral</a><a href="#enquiry-running" data-ek="running">Running collateral</a><a href="#enquiry-used" data-ek="used">Used collateral</a></div>
       <a href="#approvals" data-view="approvals"><svg class="i"><use href="#i-check"/></svg>Approvals<span class="tag count" id="apCount">0</span></a>
+      <a href="#returned" data-view="returned"><svg class="i"><use href="#i-refresh"/></svg>Returned<span class="tag count ret" id="retCount" hidden>0</span></a>
     </nav>
     <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
   </aside>
@@ -561,7 +593,7 @@ select.input{appearance:auto}
     <main class="page" id="view-creation">
       <div class="page-head">
         <div>
-          <h1>Capture customer collateral</h1>
+          <h1 id="crTitle">Capture customer collateral</h1>
           <p>Find the customer, choose a collateral type, then complete its details for approval.</p>
         </div>
         <div class="actionbar" role="toolbar" aria-label="Screen actions">
@@ -573,6 +605,8 @@ select.input{appearance:auto}
           <button class="btn act-red" id="exitBtn"><svg class="i"><use href="#i-close"/></svg>Exit</button>
         </div>
       </div>
+
+      <div id="crReturn"></div>
 
       <!-- Step 1 -->
       <section class="card" aria-labelledby="s1">
@@ -618,6 +652,7 @@ select.input{appearance:auto}
     <main class="page" id="view-records" hidden></main>
     <main class="page" id="view-approvals" hidden></main>
     <main class="page" id="view-enquiry" hidden></main>
+    <main class="page" id="view-returned" hidden></main>
   </div>
 </div>
 
@@ -714,9 +749,9 @@ const TYPES=[
    sections:[
     {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
       {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
-      {id:"branch",label:"Branch",type:"text",col:4},
-      {id:"guarAccount",label:"Account number",type:"lookup",lov:"guarAccount",req:true,col:8},
       {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
+      {id:"guarAccount",label:"Account number",type:"lookup",lov:"account",req:true,col:8},
+      {id:"branch",label:"Branch",type:"derived",col:4,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} · ${s.lookups.guarAccount.branch}`,from:"account"},
       {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
       {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
@@ -755,6 +790,14 @@ const OTHER={
   "072530":[{no:"2603300457",type:"C01",desc:"CASH COLLATERALS",amt:60000,avail:60000,date:"30-JUN-2025",status:"Approved"}],
 };
 
+/* the customer's existing collateral, from the same records every module uses (closed ones left out) */
+function otherOf(code){
+  return AM.filter(r=>r.cust===code&&r.status!=="Cancelled"&&!S.newRows.some(n=>n.no===r.no)).map(r=>{
+    const cons=parseAmt(r.values.amount)||0,used=(LOANS[r.no]||[]).reduce((a,l)=>a+l.used,0);
+    return{no:r.no,type:r.type,desc:typeBy(r.type).lovDesc,amt:cons,avail:Math.max(cons-used,0),date:r.appr,status:r.status};
+  });
+}
+
 /* ---------- State ---------- */
 let S;
 function fresh(){return{customer:null,loading:false,custError:"",type:null,values:{},lookups:{},docs:[],errors:{},showErrors:false,comments:[],newRows:[]}}
@@ -770,7 +813,7 @@ function renderCustomer(){
   const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
   if(S.loading){const sk=`<div class="skeleton" style="width:70%"></div>`;card.innerHTML=`<div class="profile"><div class="who"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px">${sk}<div class="skeleton" style="width:40%"></div></div></div>${[1,2,3,4].map(()=>`<div style="gap:8px"><div class="skeleton" style="width:50%;height:9px"></div>${sk}</div>`).join("")}</div>`;return}
   if(!c){card.innerHTML=`<div class="profile empty"><div class="who"><div class="avatar">${icon("search")}</div><div><div class="nm">No customer selected</div><div class="sub">Enter a customer number to load the profile</div></div></div>${cell("Customer type","—")}${cell("Home branch","—")}${cell("Collaterals","—")}${cell("Amount held","—")}</div>`;return}
-  const held=[...S.newRows,...(OTHER[c.code]||[])];
+  const held=[...S.newRows,...otherOf(c.code)];
   card.innerHTML=profileHtml(c,held.length,held.reduce((a,r)=>a+(r.amt||0),0));
 }
 function fetchCustomer(code){
@@ -816,7 +859,7 @@ function fieldHtml(t,f,st=S){
     const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
     ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code">${esc(row.code)}</span><span class="desc">${esc(row.desc)}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
   }else if(f.type==="derived"){
-    const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):"From source account"}</span>${icon("lock")}</div>`;
+    const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
     return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
   }else if(f.type==="textarea"){
     ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
@@ -834,7 +877,11 @@ function fieldHtml(t,f,st=S){
   let help="";const chg=st.orig&&isChanged(f,st);
   if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
   else if(chg)help=`<div class="was">Was <b>${esc(origDisplay(f,st))}</b><button type="button" class="link-btn" data-revert="${f.id}">Undo</button></div>`;
-  else if(f.id==="amount"&&st.type==="C01"&&st.lookups.account)help=`<div class="hint">Available balance <span class="mono">${fmt(st.lookups.account.bal.avail)}</span></div>`;
+  else if(f.id==="amount"&&st.type==="C01"&&st.lookups.account)help=`<div class="hint">Up to the available balance <span class="mono">${fmt(st.lookups.account.bal.avail)}</span></div>`;
+  else if(f.id==="amount"&&st.type==="C02")help=`<div class="hint">Up to the sum assured${parseAmt(st.values.sumAssured)!=null?` <span class="mono">${fmt(parseAmt(st.values.sumAssured))}</span>`:""}</div>`;
+  else if(f.id==="amount"&&st.type==="C03")help=`<div class="hint">Up to the forced sale value${parseAmt(st.values.forcedSale)!=null?` <span class="mono">${fmt(parseAmt(st.values.forcedSale))}</span>`:""}</div>`;
+  else if(f.id==="forcedSale")help=`<div class="hint">Up to the ${st.values.collAmount!=null&&st.values.marketValue==null?"collateral amount":"market value"}</div>`;
+  else if(f.id==="reviewDate")help=`<div class="hint">Must be before the expiry date</div>`;
   return `<div class="field ${err?"invalid":""} ${chg?"changed":""}" style="--col:${f.col}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
 }
 const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
@@ -894,7 +941,7 @@ function renderRail(){
 function renderOther(){
   const w=$("#otherWrap");
   if(!S.customer){w.innerHTML=`<div class="empty-state" style="padding:28px">No customer selected.</div>`;$("#otherSub").textContent="Collaterals already held for this customer.";return}
-  const rows=[...S.newRows,...(OTHER[S.customer.code]||[])];
+  const rows=[...S.newRows,...otherOf(S.customer.code)];
   $("#otherSub").textContent=`${rows.length} collateral${rows.length===1?"":"s"} held for ${S.customer.name}.`;
   if(!rows.length){w.innerHTML=`<div class="empty-state" style="padding:28px">This customer has no other collaterals.</div>`;return}
   w.innerHTML=`<table><thead><tr><th>Collateral no.</th><th>Customer no.</th><th>Type</th><th>Description</th><th class="num">Amount considered</th><th class="num">Amount available</th><th>Approval date</th><th>Status</th></tr></thead><tbody>
@@ -907,7 +954,21 @@ function renderSteps(){
   $("#step2").className="step "+(S.type?"done":S.customer?"active":"");$("#step2").innerHTML=S.type?icon("check"):"2";
   $("#commentCount").textContent=S.comments.length?`(${S.comments.length})`:"";
 }
-function renderAll(){renderCustomer();renderTypes();renderForm();renderRail();renderOther();renderSteps()}
+function renderAll(){const rb=$("#crReturn");if(rb)rb.innerHTML=returnBanner(S.returnItem);renderCustomer();renderTypes();renderForm();renderRail();renderOther();renderSteps()}
+
+/* ---------- Business rules (training notes 5, 7, 11, 12, 13): one place, used by Creation and Amendment ---------- */
+function businessRules(type,v,l){
+  const e={},n=k=>parseAmt(v[k]),amt=n("amount");
+  if(v.reviewDate&&v.expiryDate&&v.reviewDate>=v.expiryDate)e.reviewDate="The review date must be before the expiry date.";
+  if(type==="C01"&&l.account&&amt!=null&&amt>l.account.bal.avail)e.amount=`Can't exceed the available balance of ${fmt(l.account.bal.avail)}.`;
+  if(type==="C02"&&amt!=null&&n("sumAssured")!=null&&amt>n("sumAssured"))e.amount=`Can't exceed the sum assured of ${fmt(n("sumAssured"))}.`;
+  if(type==="C03"){
+    const mv=n("marketValue")??n("collAmount"),fs=n("forcedSale");
+    if(fs!=null&&mv!=null&&fs>mv)e.forcedSale=`Can't exceed the ${v.marketValue!=null?"market value":"collateral amount"} of ${fmt(mv)}.`;
+    if(amt!=null&&fs!=null&&amt>fs)e.amount=`Can't exceed the forced sale value of ${fmt(fs)}.`;
+  }
+  return e;
+}
 
 /* ---------- Validation ---------- */
 function hasValue(id){const v=S.values[id];return v!=null&&String(v).trim()!==""}
@@ -922,6 +983,7 @@ function validate(){
   for(const f of t.sections.flatMap(s=>s.fields)){
     if(["amount","percent","int"].includes(f.type)&&hasValue(f.id)&&parseAmt(S.values[f.id])==null)S.errors[f.id]=`${f.label} must be a number.`;
   }
+  const br=businessRules(t.code,S.values,S.lookups);for(const k in br)if(!S.errors[k])S.errors[k]=br[k];
 }
 
 /* ---------- Layer: modal, drawer, toast ---------- */
@@ -1067,7 +1129,8 @@ $("#submitBtn").addEventListener("click",()=>{
   if(!S.type){renderAll();$("#types").scrollIntoView({block:"center"});toast("Choose a collateral type.");return}
   if(Object.keys(S.errors).length){renderForm();$("#errSummary").scrollIntoView({block:"center"});return}
   const t=typeBy(S.type),d=new Date(),p=n=>String(n).padStart(2,"0");
-  const no=`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}${String(Math.floor(Math.random()*1e7)).padStart(7,"0")}`;
+  const no=S.returnItem?S.returnItem.no:`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}${String(Math.floor(Math.random()*1e7)).padStart(7,"0")}`;
+  if(S.returnItem){resubmitted(S.returnItem);S.newRows=S.newRows.filter(r=>r.no!==no);S.returnItem=null;}
   const amt=parseAmt(S.values.amount);
   S.newRows.unshift({no,type:t.code,desc:t.lovDesc,amt,avail:null,date:null,status:"Pending approval",isNew:true});
   queueRequest({kind:"create",no,cust:S.customer.code,type:t.code,by:"K.ASARE",values:{...S.values},lookups:{...S.lookups},docs:[...S.docs]});
@@ -1296,7 +1359,7 @@ function amListHtml(){
 function amDetailHtml(){
   const r=A.rec,c=A.customer,t=amTypeBy(r.type),held=AM.filter(x=>x.cust===c.code);
   return `<div class="page-head"><div><button class="back" data-back>${`<svg class="i flip"><use href="#i-chev"/></svg>`}Back to search results</button>
-    <h1>Amend collateral <span class="mono h1-no">${r.no}</span></h1><p>Change what needs updating. Edited fields are highlighted, with the original value underneath.</p></div>${amActionBar("detail")}</div>
+    <h1>Amend collateral <span class="mono h1-no">${r.no}</span></h1><p>Change what needs updating. Edited fields are highlighted, with the original value underneath.</p></div>${amActionBar("detail")}</div>${returnBanner(A.returnItem)}
   <section class="card" aria-labelledby="amC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="amC">Customer</h2><p>The customer who owns this collateral. Customer details can't be changed here.</p></div></div>
     <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
   <div class="form-wrap"><section class="card" id="amForm" style="--tc:var(${t.tc})"></section><aside class="rail" id="amRail"></aside></div>
@@ -1360,7 +1423,7 @@ function openAm(no){
   Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[],reason:""});
   renderAm();window.scrollTo(0,0);
 }
-function backToList(){A.view="list";A.rec=null;A.orig=null;renderAm();window.scrollTo(0,0)}
+function backToList(){A.returnItem=null;A.view="list";A.rec=null;A.orig=null;renderAm();window.scrollTo(0,0)}
 function amFetch(){
   const raw=$("#amCust").value.trim(),coll=$("#amColl").value.trim();
   const cust=raw?raw.padStart(6,"0"):"";
@@ -1374,6 +1437,7 @@ function amValidate(){
     if(f.req&&!has){const l=f.label.toLowerCase();A.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`}
     else if(NUMERIC.includes(f.type)&&has&&parseAmt(A.values[f.id])==null)A.errors[f.id]=`${f.label} must be a number.`;
   }
+  const br=businessRules(t.code,A.values,A.lookups);for(const k in br)if(!A.errors[k])A.errors[k]=br[k];
   return !Object.keys(A.errors).length;
 }
 function amSubmit(){
@@ -1383,7 +1447,7 @@ function amSubmit(){
   if(!amValidate()){renderAmForm();$("#amErr").scrollIntoView({block:"center"});return}
   const r=A.rec,t=amTypeBy(A.type);
   const rows=ch.map(f=>`<tr><td>${esc(f.label)}</td><td class="o">${esc(origDisplay(f,A))}</td><td class="nv">${esc(showVal(f,A.values,A.lookups))}</td></tr>`).join("");
-  r.status="Amendment pending";
+  r.status="Amendment pending";if(A.returnItem){resubmitted(A.returnItem);A.returnItem=null}
   queueRequest({kind:"amend",no:r.no,cust:r.cust,type:r.type,by:"K.ASARE",rec:r,values:{...A.values},lookups:{...A.lookups},orig:{...A.orig},origLookups:{...A.origLookups},docs:r.docs});
   openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="amOk" style="width:min(560px,100%)"><div class="mb" style="padding:24px">
     <div class="success-ic">${icon("check")}</div><h2 id="amOk" style="margin:0;font-size:18px;text-align:center">Amendment submitted for approval</h2>
@@ -1469,7 +1533,7 @@ function cxDetailHtml(){
   const r=A.rec,c=A.customer,t=amTypeBy(r.type),held=AM.filter(x=>x.cust===c.code),fg=closureFigures(A),cc=ccyRow(A);
   const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
   return `<div class="page-head"><div><button class="back" data-back><svg class="i flip"><use href="#i-chev"/></svg>Back to search results</button>
-    <h1>Cancel collateral <span class="mono h1-no">${r.no}</span></h1><p>Review the collateral, then record why it is being cancelled. Nothing else can be changed here.</p></div>${amActionBar("detail")}</div>
+    <h1>Cancel collateral <span class="mono h1-no">${r.no}</span></h1><p>Review the collateral, then record why it is being cancelled. Nothing else can be changed here.</p></div>${amActionBar("detail")}</div>${returnBanner(A.returnItem)}
   <section class="card" aria-labelledby="cxC"><div class="card-head"><div class="step done">${icon("check")}</div><div><h2 id="cxC">Customer</h2><p>The customer who owns this collateral.</p></div></div>
     <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
   <section class="card" aria-labelledby="cxS"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="cxS">Closure summary</h2><p>What the bank holds against this collateral today. These values are released when the cancellation is approved.</p></div></div>
@@ -1520,7 +1584,7 @@ function cxSubmit(){
     </div><footer><button class="btn" data-close>Keep collateral</button><button class="btn act-red" id="cxConfirm">${icon("ban")}Submit cancellation</button></footer></div>`);
   $("#cxConfirm").focus();
   $("#cxConfirm").addEventListener("click",()=>{
-    r.status="Cancellation pending";r.closeReason=A.reason;
+    r.status="Cancellation pending";r.closeReason=A.reason;if(A.returnItem){resubmitted(A.returnItem);A.returnItem=null}
     queueRequest({kind:"cancel",no:r.no,cust:r.cust,type:r.type,by:"K.ASARE",rec:r,values:{...r.values},lookups:{...r.lookups},reason:A.reason,docs:r.docs});
     openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="cxOk" style="width:min(480px,100%)"><div class="mb" style="padding:24px;text-align:center">
       <div class="success-ic">${icon("check")}</div><h2 id="cxOk" style="margin:0;font-size:18px">Cancellation submitted for approval</h2>
@@ -1567,10 +1631,10 @@ function updateApBadge(){const b=$("#apCount");if(b){b.textContent=QUEUE.length;
 function apActionBar(mode){
   const help=`<button class="btn act-blue" id="apHelp">${icon("help")}Help</button>`,exit=`<button class="btn act-red" id="apExit">${icon("close")}Exit</button>`,sep=`<span class="sep" aria-hidden="true"></span>`;
   if(mode!=="detail")return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${sep}<button class="btn act-blue" id="apNew" title="Clear the search and show all requests">${icon("plus")}New</button>${exit}</div>`;
-  const off=P.ticked?"":`disabled title="Tick 'I have checked all the details' first."`;
   return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>(${P.comments.length})</span>`:""}</button>${sep}
-    <button class="btn act-amber" id="apReject" ${off}>${icon("ban")}Reject</button>
-    <button class="btn act-green" id="apAuth" ${off}>${icon("check")}Authorize</button>${exit}</div>`;
+    <button class="btn act-amber" id="apReturn" title="Send back to the submitter for correction">${icon("refresh")}Return</button>
+    <button class="btn act-rose" id="apDismiss" title="End the request for good">${icon("ban")}Dismiss</button>
+    <button class="btn act-green" id="apAuth">${icon("check")}Authorize</button>${sep}${exit}</div>`;
 }
 function apRows(){
   const q=P.q.trim().toLowerCase();
@@ -1626,8 +1690,10 @@ function renderApForm(){
 }
 function renderApRail(){
   const it=P.item,st=apState(it),ch=apChanges(it);
-  let h=`<div class="card decision ${P.ticked?"ok":""}"><div class="card-body"><h3>Decision</h3>
-    <label class="tick" for="apTick"><input type="checkbox" id="apTick" ${P.ticked?"checked":""}><span><b>I have checked all the details</b><br><span class="hint">Reject and Authorize unlock once this is ticked.</span></span></label>
+  let h=`<div class="card decision"><div class="card-body"><h3>Decision</h3>
+    <ul class="dec-list"><li><span class="kind k-amend">Return</span>Send back with a reason. It reappears in the submitter's Returned queue to correct and resubmit.</li>
+      <li><span class="kind k-cancel">Dismiss</span>End the request for good, with a reason and a final confirmation.</li>
+      <li><span class="kind k-ok">Authorize</span>Apply it, after ticking every item on the verification checklist (${verifyItems(it).length} items).</li></ul>
     ${it.by==="K.ASARE"?`<p class="maker-note">${icon("info")}<span>You submitted this request. In production a different officer must authorize it (maker-checker). Allowed here for the demo.</span></p>`:""}
   </div></div>`;
   if(ch.length)h+=`<div class="card"><div class="card-body"><h3>Requested changes</h3><div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
@@ -1642,62 +1708,135 @@ function renderAp(){
   if(P.view==="list"){setCrumbs(["Approvals"]);apView.innerHTML=apListHtml();}
   else{setCrumbs(["Approvals",P.item.no]);apView.innerHTML=apDetailHtml();renderApForm();renderApRail();}
 }
-function apOpen(id){P.item=QUEUE.find(x=>x.id===+id);if(!P.item)return;P.view="detail";P.ticked=false;P.comments=[];renderAp();window.scrollTo(0,0)}
+function apOpen(id){P.item=QUEUE.find(x=>x.id===+id);if(!P.item)return;P.view="detail";P.comments=[];renderAp();window.scrollTo(0,0)}
 function apBack(){P.view="list";P.item=null;renderAp();window.scrollTo(0,0)}
-function syncApActions(){["#apReject","#apAuth"].forEach(id=>{const b=$(id);if(b){b.disabled=!P.ticked;b.title=P.ticked?"":"Tick 'I have checked all the details' first."}});$(".decision")?.classList.toggle("ok",P.ticked)}
-
-/* apply the decision everywhere the record appears */
-function decide(it,approved,reason){
+/* ---------- Decisions (training notes 2, 4, 5): Return for correction, Dismiss for good, or Authorize ----------
+   Authorize and Dismiss both need the approver to confirm a checklist first, like the Forms VER window. */
+const RETURNED=[];
+function verifyItems(it){
+  const per={C01:["Source account and balances confirmed?","Collateral amount within the available balance confirmed?"],
+    C02:["Insurance company and policy confirmed?","Amount considered within the sum assured confirmed?"],
+    C03:["Property, ownership and location confirmed?","Market value and forced sale value confirmed?"],
+    C04:["Financial institution and account confirmed?","Guarantee amount, interest rate and tenor confirmed?"],
+    C05:["Security code and number of shares confirmed?","Market value and folio range confirmed?"]}[it.type];
+  const lead=it.kind==="amend"?["Every changed field confirmed?"]:it.kind==="cancel"?["Closure reason confirmed?","No running loan still depends on this collateral?"]:["Customer and collateral type confirmed?"];
+  return [...lead,...per,"Review and expiry dates confirmed?","Supporting documents confirmed?"];
+}
+/* apply the decision everywhere the record appears: "authorize" | "return" | "dismiss" */
+function decide(it,action,reason){
   QUEUE.splice(QUEUE.indexOf(it),1);updateApBadge();
   const row=S.newRows.find(r=>r.no===it.no);
+  if(action==="return"){
+    RETURNED.unshift(Object.assign(it,{retReason:reason,retBy:"K.ASARE",retOn:nowStamp()}));updateRetBadge();
+    if(it.rec)it.rec.status=it.kind==="amend"?"Amendment returned":"Cancellation returned";
+    if(row){row.status="Returned";row.date=null}
+    return;
+  }
+  const ok=action==="authorize";
   if(it.kind==="create"){
-    if(approved){const v={...it.values};if(it.type==="C03"){v.collAmount=v.marketValue;delete v.marketValue}if(it.type==="C05"){v.stockAmount=v.secAmount;delete v.secAmount}
+    if(ok){const v={...it.values};if(it.type==="C03"){v.collAmount=v.marketValue;delete v.marketValue}if(it.type==="C05"){v.stockAmount=v.secAmount;delete v.secAmount}
       AM.unshift({no:it.no,cust:it.cust,type:it.type,by:"K.ASARE",appr:nowStamp(),values:v,lookups:{...it.lookups},status:"Approved",docs:it.docs});}
-    if(row){row.status=approved?"Approved":"Rejected";row.date=approved?nowStamp():null}
+    if(row){row.status=ok?"Approved":"Dismissed";row.date=ok?nowStamp():null}
   }else if(it.kind==="amend"){
-    if(approved){it.rec.values={...it.values};it.rec.lookups={...it.lookups};it.rec.appr=nowStamp();it.rec.by="K.ASARE"}
+    if(ok){it.rec.values={...it.values};it.rec.lookups={...it.lookups};it.rec.appr=nowStamp();it.rec.by="K.ASARE"}
     it.rec.status="Approved";
-  }else{it.rec.status=approved?"Cancelled":"Approved";if(approved)it.rec.closeReason=it.reason}
+  }else{it.rec.status=ok?"Cancelled":"Approved";if(ok)it.rec.closeReason=it.reason}
 }
 const RESULT={create:["Collateral created","is now approved and appears in Amendment and Cancellation."],amend:["Amendment applied","now carries the new values."],cancel:["Collateral cancelled","is closed and no longer secures the customer's facilities."]};
-function apAuthorize(){
-  const it=P.item;decide(it,true);
-  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="apOk" style="width:min(460px,100%)"><div class="mb" style="padding:24px;text-align:center">
-    <div class="success-ic">${icon("check")}</div><h2 id="apOk" style="margin:0;font-size:18px">${RESULT[it.kind][0]}</h2>
-    <p class="hint" style="margin:8px 0 0">Collateral <span class="mono">${it.no}</span> for ${esc(custBy(it.cust).name)} ${RESULT[it.kind][1]}</p></div>
-    <footer><button class="btn primary" id="apOkBack">Back to approvals</button></footer></div>`);
-  $("#apOkBack").focus();$("#apOkBack").addEventListener("click",()=>{closeLayer();apBack()});
+function doneModal(ic,title,text){
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="apDone" style="width:min(460px,100%)"><div class="mb" style="padding:24px;text-align:center">${ic}
+    <h2 id="apDone" style="margin:0;font-size:18px">${title}</h2><p class="hint" style="margin:8px 0 0">${text}</p></div>
+    <footer><button class="btn primary" id="apDoneBack">Back to approvals</button></footer></div>`);
+  $("#apDoneBack").focus();$("#apDoneBack").addEventListener("click",()=>{closeLayer();apBack()});
 }
-function apReject(){
-  const it=P.item;
-  openLayer(`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="apRj" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
-    <h2 id="apRj" style="margin:0 0 6px;font-size:18px">Reject this ${KIND[it.kind].verb} request?</h2>
-    <p class="hint" style="margin:0 0 14px">${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values and becomes available again."} <span class="mono">${it.by}</span> sees your reason.</p>
-    <div class="field" id="apRjField"><label for="apRjIn">Rejection reason<span class="req">*</span></label><textarea class="input" id="apRjIn" maxlength="300" placeholder="e.g. Valuation report is older than 12 months. Attach a current one and resubmit."></textarea><span class="hint" id="apRjMsg">Required.</span></div>
-    </div><footer><button class="btn" data-close>Back</button><button class="btn act-amber" id="apRjGo">${icon("ban")}Reject request</button></footer></div>`);
-  $("#apRjIn").focus();
-  $("#apRjGo").addEventListener("click",()=>{
-    const v=$("#apRjIn").value.trim();
-    if(!v){$("#apRjField").classList.add("invalid");const m=$("#apRjMsg");m.className="err";m.innerHTML=icon("alert")+"Enter the reason for rejecting.";$("#apRjIn").focus();return}
-    decide(it,false,v);
-    openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="apRd" style="width:min(460px,100%)"><div class="mb" style="padding:24px;text-align:center">
-      <div class="warn-ic amber">${icon("ban")}</div><h2 id="apRd" style="margin:0;font-size:18px">Request rejected</h2>
-      <p class="hint" style="margin:8px 0 0">The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> was returned to <span class="mono">${it.by}</span> with your reason.</p></div>
-      <footer><button class="btn primary" id="apRdBack">Back to approvals</button></footer></div>`);
-    $("#apRdBack").focus();$("#apRdBack").addEventListener("click",()=>{closeLayer();apBack()});
+/* the verification checklist: every item ticked before the decision goes through */
+function verifyModal(it,mode){
+  const items=verifyItems(it),dismiss=mode==="dismiss";
+  openLayer(`<div class="modal verify" role="dialog" aria-modal="true" aria-labelledby="vfT" style="width:min(560px,100%)">
+    <header><div><h2 id="vfT">${dismiss?"Dismiss this request?":"Verify before authorizing"}</h2><p class="hint" style="margin:2px 0 0">${KIND[it.kind].label} · <span class="mono">${it.no}</span> · ${esc(custBy(it.cust).name)}</p></div><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb">
+      ${dismiss?`<div class="field" id="vfReasonF"><label for="vfReason">Dismissal reason<span class="req">*</span></label><textarea class="input" id="vfReason" maxlength="300" placeholder="e.g. Customer withdrew the facility application."></textarea><span class="hint" id="vfReasonMsg">Required. The submitter sees this exactly as written.</span></div>
+        <label class="tick vf-final" for="vfFinal"><input type="checkbox" id="vfFinal"><span><b>Dismiss permanently</b><br><span class="hint">The request leaves the queue and can't be resubmitted. ${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values."}</span></span></label>`
+      :`<div class="vf-head"><span>Verification</span><span>Confirm</span></div>
+        <ul class="vf-list">${items.map((t,i)=>`<li><label for="vf${i}"><span>${esc(t)}</span><input type="checkbox" id="vf${i}" data-vf></label></li>`).join("")}</ul>
+        <div class="vf-foot"><span class="hint"><b id="vfCount">0</b> of ${items.length} confirmed</span><button class="link-btn" id="vfAll">Tick all</button></div>`}
+    </div>
+    <footer><button class="btn" data-close>Back</button>${dismiss?`<button class="btn act-red" id="vfGo" disabled>${icon("ban")}Dismiss request</button>`:`<button class="btn act-green" id="vfGo" disabled>${icon("check")}Authorize</button>`}</footer></div>`);
+  const go=$("#vfGo"),sync=()=>{
+    if(dismiss)go.disabled=!($("#vfReason").value.trim()&&$("#vfFinal").checked);
+    else{const n=[...document.querySelectorAll("[data-vf]")].filter(c=>c.checked).length;$("#vfCount").textContent=n;go.disabled=n<items.length;}
+  };
+  const box=$("#scrim");box.addEventListener("input",sync);box.addEventListener("change",sync);
+  $("#vfAll")?.addEventListener("click",()=>{document.querySelectorAll("[data-vf]").forEach(c=>c.checked=true);sync()});
+  (dismiss?$("#vfReason"):$("#vf0")).focus();
+  go.addEventListener("click",()=>{
+    if(dismiss){const v=$("#vfReason").value.trim();decide(it,"dismiss",v);
+      doneModal(`<div class="warn-ic">${icon("ban")}</div>`,"Request dismissed",`The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> has left the queue. <span class="mono">${it.by}</span> sees your reason.`);}
+    else{decide(it,"authorize");doneModal(`<div class="success-ic">${icon("check")}</div>`,RESULT[it.kind][0],`Collateral <span class="mono">${it.no}</span> for ${esc(custBy(it.cust).name)} ${RESULT[it.kind][1]}`);}
   });
 }
+function returnModal(it){
+  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="rtT" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
+    <h2 id="rtT" style="margin:0 0 6px;font-size:18px">Return for correction</h2>
+    <p class="hint" style="margin:0 0 14px">The request goes to <span class="mono">${it.by}</span>'s <b>Returned</b> queue with your reason. They correct it and submit it again for approval.</p>
+    <div class="field" id="rtF"><label for="rtIn">Return reason<span class="req">*</span></label><textarea class="input" id="rtIn" maxlength="300" placeholder="e.g. Valuation date is older than 12 months. Attach the new valuation report and update the forced sale value."></textarea><span class="hint" id="rtMsg">Say exactly what needs correcting.</span></div>
+    </div><footer><button class="btn" data-close>Back</button><button class="btn act-amber" id="rtGo">${icon("refresh")}Return request</button></footer></div>`);
+  $("#rtIn").focus();
+  $("#rtGo").addEventListener("click",()=>{
+    const v=$("#rtIn").value.trim();
+    if(!v){$("#rtF").classList.add("invalid");const m=$("#rtMsg");m.className="err";m.innerHTML=icon("alert")+"Enter what needs correcting.";$("#rtIn").focus();return}
+    decide(it,"return",v);
+    doneModal(`<div class="warn-ic amber">${icon("refresh")}</div>`,"Request returned",`The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> is in <span class="mono">${it.by}</span>'s Returned queue.`);
+  });
+}
+
+/* ---------- RETURNED: requests sent back for correction, reopened on their own entry screen ---------- */
+const retView=$("#view-returned");
+function updateRetBadge(){const b=$("#retCount");if(b){b.textContent=RETURNED.length;b.hidden=!RETURNED.length}}
+function returnBanner(item){
+  return item?`<div class="return-banner" role="note">${icon("refresh")}<div><b>Returned for correction</b> by <span class="mono">${esc(item.retBy)}</span> on ${esc(item.retOn)}<blockquote>${esc(item.retReason)}</blockquote><span class="hint">Make the corrections, then Submit to send it back for approval.</span></div></div>`:"";
+}
+function renderReturned(){
+  setCrumbs(["Returned"]);
+  retView.innerHTML=`<div class="page-head"><div><h1>Returned requests</h1><p>Requests an approver sent back for correction. Open one, fix what the reason asks for, then submit it again.</p></div>
+    <div class="actionbar" role="toolbar" aria-label="Screen actions"><button class="btn act-blue" id="rtHelp">${icon("help")}Help</button><span class="sep" aria-hidden="true"></span><button class="btn act-red" id="rtExit">${icon("close")}Exit</button></div></div>
+  <section class="card"><div class="card-head"><div><h2>Waiting for correction</h2><p>${RETURNED.length} request${RETURNED.length===1?"":"s"}.</p></div></div>
+    <div class="table-wrap">${RETURNED.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th>Return reason</th><th>Returned</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+      ${RETURNED.map(it=>{const c=custBy(it.cust),t=typeBy(it.type);return `<tr data-retrow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
+        <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="ask">${esc(it.retReason)}</td><td><div>${it.retOn}</div><div class="sub">by <span class="mono">${it.retBy}</span></div></td>
+        <td class="sticky-r"><button class="open-btn" data-retopen="${it.id}" aria-label="Correct ${KIND[it.kind].verb} request ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
+    </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>Nothing to correct</b><span>Requests an approver returns appear here with the reason.</span></div>`}</div></section>`;
+}
+function openReturned(id){
+  const it=RETURNED.find(x=>x.id===+id);if(!it)return;
+  if(it.kind==="create"){
+    S=fresh();S.customer=custBy(it.cust);S.type=it.type;S.values={...it.values};S.lookups={...it.lookups};S.docs=[...(it.docs||[])];S.returnItem=it;
+    $("#custNo").value=it.cust;location.hash="#creation";go("creation");return;
+  }
+  const mod=it.kind==="amend"?"amendment":"cancellation",st=STATES[mod];
+  Object.assign(st,{view:"detail",rec:it.rec,type:it.type,customer:custBy(it.cust),values:{...it.values},lookups:{...it.lookups},
+    orig:{...it.rec.values},origLookups:{...it.rec.lookups},errors:{},showErrors:false,comments:[],files:[],reason:it.kind==="cancel"?it.reason:"",returnItem:it});
+  location.hash="#"+mod;go(mod);
+}
+function resubmitted(it){const i=RETURNED.indexOf(it);if(i>=0)RETURNED.splice(i,1);updateRetBadge()}
+retView.addEventListener("click",e=>{
+  const T=x=>e.target.closest(x);let el;
+  if(T("#rtHelp")){openDrawer("Help · Returned requests",`<ol><li>An approver returned these requests with a reason.</li><li>Select <b>›</b> to open one on its own entry screen. The reason is shown at the top.</li><li>Correct what the reason asks for, then <b>Submit</b>. The request goes back to the approval queue.</li></ol>`);return}
+  if(T("#rtExit")){toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(el=T("[data-retopen]")){openReturned(el.dataset.retopen);return}
+  if(el=T("tr[data-retrow]")){openReturned(el.dataset.retrow);return}
+});
 apView.addEventListener("input",e=>{if(e.target.id==="apQ"){P.q=e.target.value;const pos=e.target.selectionStart;renderAp();const q=$("#apQ");q.focus();q.setSelectionRange(pos,pos)}});
-apView.addEventListener("change",e=>{if(e.target.id==="apTick"){P.ticked=e.target.checked;syncApActions()}});
 apView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
-  if(T("#apHelp")){openDrawer("Help · Approvals",`<ol><li>The queue lists every request waiting for authorization: new collaterals, amendments and cancellations. Filter by request type or search by customer or collateral.</li><li>Select <b>›</b> to open a request. Everything is read only. Amendments highlight each changed field with its current value underneath. Cancellations show the closure reason.</li><li>Check the details and documents, then tick <b>I have checked all the details</b>.</li><li><b>Authorize</b> applies the request. <b>Reject</b> asks for a reason and returns it to the person who submitted it.</li></ol>`);return}
+  if(T("#apHelp")){openDrawer("Help · Approvals",`<ol><li>The queue lists every request waiting for authorization: new collaterals, amendments and cancellations. Filter by request type or search by customer or collateral.</li><li>Select <b>›</b> to open a request. Everything is read only. Amendments highlight each changed field with its current value underneath. Cancellations show the closure reason.</li><li>Check the details and documents, then decide.</li><li><b>Return</b> sends it back to the submitter with a reason to correct and resubmit. <b>Dismiss</b> ends it for good, with a reason and a final confirmation. <b>Authorize</b> applies it once every item on the verification checklist is ticked.</li></ol>`);return}
   if(T("#apComment")){openDrawer("Comments",`<div class="field"><label for="apCmt">Add a comment</label><textarea class="input" id="apCmt" placeholder="e.g. Called the valuer to confirm the forced sale value"></textarea></div><div><button class="btn primary" id="apCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${P.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · K. Asare</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
-    $("#apCmtAdd").addEventListener("click",()=>{const v=$("#apCmt").value.trim();if(!v)return;P.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();const t=P.ticked;renderAp();P.ticked=t;syncApActions();toast("Comment added.")});return}
+    $("#apCmtAdd").addEventListener("click",()=>{const v=$("#apCmt").value.trim();if(!v)return;P.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAp();toast("Comment added.")});return}
   if(T("#apNew")){P.q="";P.filter="ALL";renderAp();toast("Search cleared.");return}
   if(T("#apExit")||T("[data-apback]")){if(P.view==="detail")apBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
-  if(T("#apAuth")){if(P.ticked)apAuthorize();return}
-  if(T("#apReject")){if(P.ticked)apReject();return}
+  if(T("#apAuth")){verifyModal(P.item,"authorize");return}
+  if(T("#apDismiss")){verifyModal(P.item,"dismiss");return}
+  if(T("#apReturn")){returnModal(P.item);return}
   if(el=T("[data-apfilter]")){P.filter=el.dataset.apfilter;renderAp();return}
   if(el=T("[data-apopen]")){apOpen(el.dataset.apopen);return}
   if(el=T("tr[data-aprow]")){apOpen(el.dataset.aprow);return}
@@ -1732,7 +1871,7 @@ function collDesc(r){
 /* every collateral the bank knows about, with the figures the Forms enquiry shows */
 function enqRecords(){
   const recs=AM.map(r=>({r,src:"rec",status:r.status==="Approved"?"Active":r.status==="Cancelled"?"Closed":"Pending",pendingWhat:r.status}));
-  QUEUE.filter(q=>q.kind==="create").forEach(q=>recs.push({r:{no:q.no,cust:q.cust,type:q.type,values:q.values,lookups:q.lookups,by:q.by,appr:null,docs:q.docs,isNew:true},src:"queue",status:"Pending",pendingWhat:"Creation pending"}));
+  [...QUEUE,...RETURNED].filter(q=>q.kind==="create").forEach(q=>recs.push({r:{no:q.no,cust:q.cust,type:q.type,values:q.values,lookups:q.lookups,by:q.by,appr:null,docs:q.docs,isNew:true},src:"queue",status:"Pending",pendingWhat:q.retReason?"Creation returned":"Creation pending"}));
   return recs.map(x=>{
     const r=x.r,st={type:r.type,values:r.values,lookups:r.lookups};
     const v=r.isNew&&r.type==="C03"?{...r.values,collAmount:r.values.marketValue}:r.values;
@@ -1755,10 +1894,14 @@ const ENQ_KINDS={
 };
 const emptyF=()=>({cust:"",branch:"",coll:"",type:"",status:"",covFrom:"",covTo:"",reviewFrom:"",reviewTo:"",expiryFrom:"",expiryTo:"",postedFrom:"",postedTo:""});
 const ENQ={all:null,running:null,used:null};
-Object.keys(ENQ).forEach(k=>ENQ[k]={kind:k,view:"list",q:"",open:false,f:emptyF(),applied:emptyF(),sort:{k:"no",d:1},page:0,item:null});
+Object.keys(ENQ).forEach(k=>ENQ[k]={kind:k,view:"list",q:"",quick:"",open:false,f:emptyF(),applied:emptyF(),sort:{k:"no",d:1},page:0,item:null});
 let EK="all";const E=()=>ENQ[EK];
 const enqView=$("#view-enquiry");
 const STATUS_CLS={Active:"",Pending:"pending",Closed:"closed"};
+/* review-date state (training note 6): overdue, due within 30 days, or fine */
+const plusDays=n=>{const d=new Date(todayIso());d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const reviewState=d=>!d?"":d<todayIso()?"overdue":d<=plusDays(30)?"due":"";
+const reviewCell=d=>{const st=reviewState(d);return `${fmtDate(d)}${st?`<span class="rv rv-${st}">${st==="overdue"?"Overdue":"Due soon"}</span>`:""}`};
 /* description with type and currency underneath keeps the grids narrow enough to fit */
 const descCell=r=>`<span class="desc-cell">${esc(r.desc)}</span><span class="sub desc-sub" style="--tc:var(${typeBy(r.type).tc})"><span class="tdot"></span><span class="mono">${r.type}</span> · ${esc(typeBy(r.type).name)} · <span class="mono">${r.ccy}</span></span>`;
 const dmy=s=>{if(!s)return"";const[d,m,y]=s.split("-");return `${y}-${String(MON.indexOf(m)+1).padStart(2,"0")}-${d}`};
@@ -1768,11 +1911,11 @@ const COLS={
   all:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
     ["desc","Description",descCell],
     ["market","Market value",r=>fmt(r.market),null,1],["used","Value used",r=>fmt(r.used),null,1],["cov","Amount considered",r=>fmt(r.cov),null,1],
-    ["review","Review date",r=>fmtDate(r.review)],["status","Status",r=>`<span class="status ${STATUS_CLS[r.status]}" title="${esc(r.pendingWhat)}">${r.status}</span>`]],
+    ["review","Review date",r=>reviewCell(r.review)],["status","Status",r=>`<span class="status ${STATUS_CLS[r.status]}" title="${esc(r.pendingWhat)}">${r.status}</span>`]],
   running:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
     ["desc","Description",descCell],["market","Market value",r=>fmt(r.market),null,1],["cov","Coverage value",r=>fmt(r.cov),null,1],
     ["realiz","Realiz. rate %",r=>r.realiz.toFixed(2),null,1],["used","Value used",r=>fmt(r.used),null,1],
-    ["avail","Avail. value",r=>`<span class="avail ${r.avail?"":"zero"}">${fmt(r.avail)}</span>`,null,1],["review","Review date",r=>fmtDate(r.review)]],
+    ["avail","Avail. value",r=>`<span class="avail ${r.avail?"":"zero"}">${fmt(r.avail)}</span>`,null,1],["review","Review date",r=>reviewCell(r.review)]],
   used:[["no","Collateral no.",r=>`<span class="mono link">${r.no}</span>`],["cust","Customer",r=>`<div class="cell-name">${esc(r.cust.name)}</div><div class="sub mono">${r.cust.code}</div>`,r=>r.cust.name],
     ["desc","Description",descCell],
     ["cov","Amt considered",r=>fmt(r.cov),null,1],["coverage","Coverage value",r=>fmt(r.cov),r=>r.cov,1],["lused","Value used",r=>fmt(r.loan.used),r=>r.loan.used,1],
@@ -1784,6 +1927,7 @@ function enqRows(){
   if(EK==="running")rows=rows.filter(r=>r.status==="Active");
   if(EK==="used")rows=rows.filter(r=>r.status!=="Closed").flatMap(r=>r.loans.map(l=>({...r,loan:l})));
   const inRange=(v,lo,hi)=>(!lo||v>=lo)&&(!hi||v<=hi);
+  if(S_.quick)rows=rows.filter(r=>reviewState(r.review)===S_.quick);
   rows=rows.filter(r=>(!q||[r.no,r.cust.code,r.cust.name,r.desc,r.status].some(x=>String(x).toLowerCase().includes(q)))
     &&(!a.cust||r.cust.code===a.cust.padStart(6,"0"))&&(!a.branch||r.branch===a.branch)&&(!a.coll||r.no.includes(a.coll))&&(!a.type||r.type===a.type)&&(!a.status||r.status===a.status)
     &&inRange(r.cov,parseAmt(a.covFrom),parseAmt(a.covTo))&&inRange(r.review,a.reviewFrom,a.reviewTo)&&inRange(r.expiry,a.expiryFrom,a.expiryTo)
@@ -1837,6 +1981,10 @@ function enqListHtml(){
       <button class="btn icon funnel ${S_.open?"on":""}" id="enFunnel" aria-expanded="${S_.open}" aria-controls="enFilters" title="Advanced filters">${icon("funnel")}${chips.length?`<span class="fbadge">${chips.length}</span>`:""}</button></div>
     ${chips.length?`<div class="fchips">${chips.map(([k,t])=>`<span class="fchip"><b>${FILTER_LABELS[k]}:</b> ${esc(t)}<button aria-label="Remove ${FILTER_LABELS[k]} filter" data-unf="${k}">${icon("x")}</button></span>`).join("")}<button class="link-btn" id="enClearAll">Clear all</button></div>`
       :`<p class="hint" style="margin:10px 0 0">Type to search, or use the funnel for advanced filters.</p>`}
+    ${(()=>{const base=enqRecords().filter(r=>EK!=="running"||r.status==="Active"),c=k=>base.filter(r=>r.status!=="Closed"&&reviewState(r.review)===k).length;
+      return `<div class="quickf" role="group" aria-label="Review date"><span class="hint">Review dates:</span>
+      <button class="chip q-overdue" data-quick="overdue" aria-pressed="${S_.quick==="overdue"}">${icon("alert")}Overdue <span class="n">${c("overdue")}</span></button>
+      <button class="chip q-due" data-quick="due" aria-pressed="${S_.quick==="due"}">${icon("calendar")}Due in 30 days <span class="n">${c("due")}</span></button></div>`})()}
     ${S_.open?filterPanelHtml():""}
   </div></section>
   <section class="card"><div class="card-head wrap"><div class="rec-title"><h2>${K.label} records</h2><span class="chip-count">${rows.length} record${rows.length===1?"":"s"}</span><button class="btn ghost sm" id="enRefresh">${icon("refresh")}Refresh</button></div>
@@ -1920,7 +2068,7 @@ enqView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-esort]
 enqView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#enHelp")){openDrawer("Help · Collateral enquiry",`<ol><li>Pick an enquiry: <b>All collateral</b>, <b>Running collateral</b> (active coverage, used and available) or <b>Used collateral</b> (one row per loan account).</li><li>Type in the search box to filter straight away, or open the <b>funnel</b> for advanced filters, then <b>Fetch</b>. Active filters show as chips you can remove one by one.</li><li>Sort any column. <b>PDF</b> and <b>Excel</b> export the rows you see.</li><li>Select <b>›</b> to view a collateral: valuation and coverage, usage by loan account, and its full type form, read only.</li></ol>`);return}
-  if(T("#enNew")||T("#enClearAll")){Object.assign(E(),{q:"",f:emptyF(),applied:emptyF(),page:0,open:false});renderEnq();toast("Search and filters cleared.");return}
+  if(T("#enNew")||T("#enClearAll")){Object.assign(E(),{q:"",quick:"",f:emptyF(),applied:emptyF(),page:0,open:false});renderEnq();toast("Search and filters cleared.");return}
   if(T("#enExit")){if(E().view==="detail")enqBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
   if(T("[data-eback]")){enqBack();return}
   if(T("#enFunnel")){readFilters();E().open=!E().open;if(E().open)E().f={...E().applied};renderEnq();if(E().open)enqView.querySelector("[data-ff]")?.focus();return}
@@ -1929,6 +2077,7 @@ enqView.addEventListener("click",e=>{
   if(T("#enCustLov")){readFilters();openLov("Find customer",CUSTOMERS,r=>{E().f.cust=r.code;renderEnq()},[["code","Customer no."],["name","Name"],["type","Type"]]);return}
   if(el=T("[data-unf]")){const k=el.dataset.unf,a=E().applied;if(k in a)a[k]="";a[k+"From"]="";a[k+"To"]="";E().f={...a};E().page=0;renderEnq();return}
   if(T("#enRefresh")){renderEnq();toast("Records refreshed.");return}
+  if(el=T("[data-quick]")){const q=el.dataset.quick;E().quick=E().quick===q?"":q;E().page=0;renderEnq();return}
   if(T("#enPdf")){exportRows("pdf");return}
   if(T("#enXls")){exportRows("xls");return}
   if(el=T("[data-esort]")){const k=el.dataset.esort,S_=E();S_.sort=S_.sort.k===k?{k,d:-S_.sort.d}:{k,d:1};renderEnq();return}
@@ -1939,14 +2088,14 @@ enqView.addEventListener("click",e=>{
 
 /* ---------- views + router ---------- */
 function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
-const viewOf=h=>({"#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals","#enquiry-all":"enquiry","#enquiry-running":"enquiry","#enquiry-used":"enquiry"})[h]||"creation";
+const viewOf=h=>({"#returned":"returned","#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals","#enquiry-all":"enquiry","#enquiry-running":"enquiry","#enquiry-used":"enquiry"})[h]||"creation";
 function go(view){
   const am=view==="amendment"||view==="cancellation",ap=view==="approvals";
   const en=view==="enquiry";
-  $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;$("#view-enquiry").hidden=!en;if(am)A=STATES[view];if(ap)renderAp();
+  $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;$("#view-enquiry").hidden=!en;$("#view-returned").hidden=view!=="returned";if(am)A=STATES[view];if(ap)renderAp();if(view==="returned")renderReturned();
   if(en){EK=(location.hash.split("-")[1])||"all";if(!ENQ[EK])EK="all";renderEnq();}
   document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
-  if(am)renderAm();else if(!ap&&!en){setCrumbs(["Creation"]);renderAll();}
+  if(am)renderAm();else if(view==="creation"){setCrumbs(["Creation"]);renderAll();}
   $("#side").classList.remove("open");window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
@@ -1956,7 +2105,7 @@ S=fresh();
 S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
 S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
 renderAll();
-updateApBadge();
+updateApBadge();updateRetBadge();
 go(viewOf(location.hash));
 })();
 </script>

@@ -191,6 +191,19 @@ Columns: Collateral no., Customer no., Collateral type, Description, Amount cons
 - Fields marked with a red asterisk are mandatory.
 - The collateral number is system-generated. Example: `202509273039629`, which looks like `YYYYMMDD` + a 7-digit sequence.
 
+### 5.1a Business rules (from the training session)
+
+| Rule | Message |
+|---|---|
+| Cash: collateral amount ≤ available balance | Can't exceed the available balance of *x*. |
+| All types: next review date < expiry date | The review date must be before the expiry date. |
+| Insurance: amount considered ≤ sum assured | Can't exceed the sum assured of *x*. |
+| Property: forced sale value ≤ market value | Can't exceed the market value of *x*. |
+| Property: amount considered ≤ forced sale value | Can't exceed the forced sale value of *x*. |
+| Guarantee: branch comes from the chosen customer account | Branch is auto-filled, not typed. |
+
+The same rules apply in Amendment. See [training notes](../training-notes.md).
+
 ### 5.2 To confirm against the PL/SQL
 
 > **Update:** the Creation PL/SQL answers Q1 (cash only), Q5, Q8 and Q9, and shows no business-rule checks for Q2–Q4. See [flowchart.md §5–6](flowchart.md#5-findings-to-check-before-migrating) for the answers and the findings it raised.

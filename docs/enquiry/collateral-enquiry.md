@@ -64,6 +64,10 @@ Enquiry is read-only. It lets staff find any collateral and see its value, cover
 - **PDF** exports the same rows as a landscape A4 report: title, record count, the active filters, date and user, then the table. The prototype builds it in the browser with jsPDF; the Angular app can do the same or generate it server-side.
 - *Pending* creations appear in **All** with status *Pending*. **Running** shows only *Active* collateral. Closed collateral appears only in **All**.
 
+### 4.1 Review-date quick filters (training note 6)
+
+Under the search box: **Overdue** and **Due in 30 days**, each with a count of open collateral. One click filters the grid; click again to clear. In the grids, overdue review dates carry a red *Overdue* tag and dates due within 30 days an amber *Due soon* tag.
+
 ## 5. Details page
 
 | Area | Content |

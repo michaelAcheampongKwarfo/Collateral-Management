@@ -24,7 +24,8 @@ The bar always sits **on the right of the page header**, on every screen (entry,
 | 3 | New | Blue | Tinted |
 | 4 | Submit | Green | Solid (the only solid button) |
 | 5 | Exit | Red | Tinted (red border and text) |
-| — | Reject *(Approvals only)* | Amber | Tinted (amber border and text), placed before the green Authorize |
+| — | Return *(Approvals only)* | Amber | Tinted, before Dismiss |
+| — | Dismiss *(Approvals only)* | Rose | Tinted (rose border and text, distinct from the red Exit), before the green Authorize |
 
 Which buttons each screen shows, and what New does there:
 
@@ -37,7 +38,8 @@ Which buttons each screen shows, and what New does there:
 | Approvals queue | Help, New, Exit | Clears the search |
 | Enquiry grids | Help, New, Exit | Clears the search and every filter |
 | Enquiry details | Help, Exit | Not shown (read only, as in Forms) |
-| Approval request | Help, Comment, Reject, Authorize, Exit | Not shown. Reject and Authorize unlock once "I have checked all the details" is ticked |
+| Approval request | Help, Comment, Return, Dismiss, Authorize, Exit | Not shown. Authorize opens the verification checklist; Return and Dismiss ask for a reason |
+| Returned queue | Help, Exit | Not shown |
 
 Rules:
 - The order and colours never change. A button a screen doesn't use is left out, not shown disabled.
@@ -52,6 +54,7 @@ Rules:
 | `--act-green` | `#1D7A4C` | `#3FB57A` |
 | `--act-red` | `#B42318` | `#F2867B` |
 | `--act-amber` | `#9A5A00` | `#E9B15C` |
+| `--act-rose` | `#B4234F` | `#F08AAB` |
 
 ## Form layout: 12-column grid
 
@@ -124,6 +127,16 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 - A module with several screens gets an indented sub-list in the sidebar (All collateral, Running collateral, Used collateral) and a matching tab switcher at the top of the page. Both link to the same routes.
 
+### Business-rule messages
+
+- Limits are stated **before** the user hits them, as a hint under the field: "Up to the available balance 1,220.78", "Up to the sum assured", "Up to the forced sale value", "Must be before the expiry date".
+- On Submit, a broken rule shows on the field like any other error and in the summary: "Can't exceed the available balance of 1,220.78."
+
+### Review-date status (Enquiry)
+
+- Quick-filter chips under the search box: **Overdue** (red) and **Due in 30 days** (amber), with counts.
+- In the grids, review dates that are overdue or due soon carry a small red *Overdue* or amber *Due soon* tag.
+
 ### Change tracking (Amendment)
 
 - An edited field gets an amber outline, an **Edited** tag on its label and "Was *old value* · Undo" underneath.
@@ -155,7 +168,13 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 ### Approval request (Approvals)
 
 - The request opens on its entry screen's layout, read-only. Amendment requests highlight changed fields (**Changed** tag, amber outline, current value underneath).
-- A **Decision** card at the top of the rail holds the confirmation checkbox; it turns green when ticked and unlocks Reject and Authorize.
+- A **Decision** card at the top of the rail explains Return, Dismiss and Authorize.
+- **Verification checklist** modal before Authorize: blue header row, one tick per item, counter and *Tick all*; the action stays disabled until all are ticked. Dismiss asks for a reason plus a "Dismiss permanently" tick.
+
+### Returned for correction (all entry screens)
+
+- An amber banner under the page header: "Returned for correction by *user* on *date*", the reason as a quote, and what to do next.
+- The entry screen is otherwise unchanged, so correcting a request works exactly like entering it.
 - Request types have their own colours, used for badges, chips and dots: Creation blue, Amendment amber, Cancellation red.
 - The **Approvals** sidebar link shows a red count of requests waiting.
 
