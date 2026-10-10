@@ -782,14 +782,6 @@ const TYPES=[
 ];
 const typeBy=c=>TYPES.find(t=>t.code===c);
 
-const OTHER={
-  "056719":[{no:"2606204210",type:"C03",desc:"PROPERTY COLLATERAL",amt:150000,avail:null,date:"27-SEP-2025",status:"Approved"},
-            {no:"2601187735",type:"C02",desc:"INSURANCE COLLATERALS",amt:45000,avail:45000,date:"14-MAR-2025",status:"Approved"}],
-  "048213":[{no:"2511093318",type:"C04",desc:"GUARANTEE COLLATERALS",amt:500000,avail:320000,date:"02-NOV-2024",status:"Approved"}],
-  "061104":[],
-  "072530":[{no:"2603300457",type:"C01",desc:"CASH COLLATERALS",amt:60000,avail:60000,date:"30-JUN-2025",status:"Approved"}],
-};
-
 /* the customer's existing collateral, from the same records every module uses (closed ones left out) */
 function otherOf(code){
   return AM.filter(r=>r.cust===code&&r.status!=="Cancelled"&&!S.newRows.some(n=>n.no===r.no)).map(r=>{
