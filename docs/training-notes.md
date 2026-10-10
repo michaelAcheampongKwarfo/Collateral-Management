@@ -17,7 +17,7 @@ Modules in scope: **Creation, Amendment, Cancellation, Enquiry, Approval, Return
 | 3 | Source accounts linked to the customer number | Prototype | The account lookup lists only the selected customer's accounts. |
 | 4 | Selecting a source account auto-fills account details and balances | Prototype | Branch, product, currency (auto-filled) and the Account balances panel. |
 | 5 | Cash: validate collateral amount against available balance | **Prototype (new)** | "Can't exceed the available balance of …". Hint under the field states the limit. Also enforced in Amendment. |
-| 6 | Enforce the next review date (alert, notification, report) | **Prototype (new)** + Backend | Enquiry gets **Overdue** and **Due in 30 days** quick filters and an Overdue / Due soon tag on the review date. Backend: a daily job for reminders, and a review-due report (see Reporting below). |
+| 6 | Enforce the next review date (alert, notification, report) | **Prototype (new)** + Backend | Enquiry gets **Overdue** and **Due in 30 days** quick filters and an Overdue / Due soon tag on the review date. The **Review due / overdue** report is built (see Reporting below). Backend: a daily job for reminders. |
 | 7 | Next review date must be before the expiry date | **Prototype (new)** | "The review date must be before the expiry date." on every collateral type, in Creation and Amendment. |
 | 8 | Document reference button opens a modal to register documents | Prototype | Supporting documents modal (replaces Forms *Document Registration*). |
 | 9 | Show other collateral registered for the customer | Prototype | "Customer's other collaterals" table and the Collaterals / Amount held figures on the customer strip. Now read from the same records as every other module. |
@@ -54,17 +54,26 @@ These are **working assumptions from common banking practice**, to be confirmed 
 
 **Questions for the team:** Should currency, rate and months be read from the deposit record rather than typed? Should the review/expiry dates be capped by the deposit's maturity (start date + months)? Should institutions have their own list instead of reusing insurance companies?
 
-## Reporting (proposed module)
+## Reporting
 
-The training listed **Reporting** as a module. Proposed first reports, all filterable by branch, type and date and exportable to PDF / Excel like the enquiry grids:
+The training listed **Reporting** as a module. Chosen for the roadmap: **Review due / overdue**, **Expiring collateral** and **Audit trail**. The presentation is about the UI, so one is prototyped: **Review due / overdue** ([spec](reporting/review-due-overdue.md)). The others reuse the same layout (parameters, summary, grouped table, PDF / Excel).
+
+All proposed reports, filterable by branch, type and date and exportable to PDF / Excel like the enquiry grids:
 
 | Report | Purpose |
 |---|---|
-| Review due / overdue | Collateral whose next review date is overdue or within N days (answers creation note 6) |
-| Expiring collateral | Collateral expiring within N days |
+| Review due / overdue | Collateral whose next review date is overdue or within N days (answers creation note 6). **Prototyped** |
+| Expiring collateral | Collateral expiring within N days. **Chosen, next** |
 | Coverage and utilisation | Coverage, value used and available, by customer, branch and type |
 | Pending, returned and dismissed requests | Ageing of the approval queue and the Returned queue, with reasons |
 | Collateral register | Everything held, as at a date |
-| Audit trail | Who created, amended, returned, dismissed or authorized what, and when |
+| Audit trail | Who created, amended, returned, dismissed or authorized what, and when. **Chosen, next** |
 
-Not built yet. Pick the reports to prototype first.
+## Other decisions from the follow-up
+
+| Point | Outcome |
+|---|---|
+| Maker-checker | Confirmed: a user can't approve their own entry (Forms `WHEN-NEW-FORM-INSTANCE`, `username != posted_by`). Enforced in the prototype; see [Approval §4](approval/collateral-approval.md#4-maker-checker-confirmed). |
+| Approvals search | Narrowed to about half (360px), the same box as Enquiry. |
+| Returned queue | Laid out like the approval queue: search, request-type chips, the same columns plus the return reason. |
+| Entry screen wording | Shortened: Amendment *"Edit what needs changing. Changes are highlighted."*; Cancellation *"Enter the reason for cancelling. Everything else is read only."* |

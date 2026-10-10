@@ -39,7 +39,9 @@ Which buttons each screen shows, and what New does there:
 | Enquiry grids | Help, New, Exit | Clears the search and every filter |
 | Enquiry details | Help, Exit | Not shown (read only, as in Forms) |
 | Approval request | Help, Comment, Return, Dismiss, Authorize, Exit | Not shown. Authorize opens the verification checklist; Return and Dismiss ask for a reason |
-| Returned queue | Help, Exit | Not shown |
+| Returned queue | Help, New, Exit | Clears the search |
+| Reports | Help, New, Exit | Resets the report parameters |
+| Approval request you submitted | Help, Comment, Exit | Not shown (maker-checker: someone else decides) |
 
 Rules:
 - The order and colours never change. A button a screen doesn't use is left out, not shown disabled.
@@ -114,7 +116,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Quick search with funnel (Enquiry)
 
-- One search box, about 360px wide (customer name or number, collateral number, description, status), that filters as you type, with a solid blue **funnel** button beside it.
+- One search box, about 360px wide (customer name or number, collateral number, description, status), that filters as you type, with a solid blue **funnel** button beside it. Approvals and Returned use the same 360px box without the funnel.
 - The funnel opens an **Advanced filters** panel inside the same card, laid out on the 12-column grid (three fields per row; ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
 - Applied filters appear as chips under the search box, each with its own ×, plus **Clear all**. The funnel shows a red count of active filters.
 
@@ -177,6 +179,17 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 - The entry screen is otherwise unchanged, so correcting a request works exactly like entering it.
 - Request types have their own colours, used for badges, chips and dots: Creation blue, Amendment amber, Cancellation red.
 - The **Approvals** sidebar link shows a red count of requests waiting.
+
+### Maker-checker (Approvals)
+
+- Your own requests stay in the queue with *(you)* and a grey **Yours** tag.
+- Opening one shows a blue banner with a lock: you submitted it, so another officer must decide. Return, Dismiss and Authorize are left off the action bar.
+
+### Report page (Reports)
+
+- **Parameters** card on the 12-column grid (four fields at 3 columns: As at, Due within, Branch, Collateral type). The report updates as they change; **New** resets them.
+- **Summary** strip using the figures grid: counts and amounts coloured by state (red overdue, amber due, green good).
+- Results table grouped by state, with a group header row and count, state chips (All / Overdue / Due), **PDF** and **Excel**, and a footer with the parameters and who ran it.
 
 ## Components
 

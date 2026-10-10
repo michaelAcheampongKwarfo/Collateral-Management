@@ -13,7 +13,7 @@ flowchart TD
     V --> C{Decision}
     C -- Authorize --> VC{"Verification checklist<br/>every item ticked?"}
     VC -- No --> V
-    VC -- Yes --> MC{"Approver is not the submitter?<br/>(maker-checker, to confirm)"}
+    VC -- Yes --> MC{"Approver is not the submitter?<br/>(maker-checker)"}
     MC -- No --> MC1[Block: another officer must authorize] --> V
     MC -- Yes --> AU{Request type}
     AU -- Creation --> R1[Collateral becomes Approved]

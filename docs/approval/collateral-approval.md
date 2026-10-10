@@ -31,7 +31,7 @@ The Angular design keeps all three ideas.
 | Area | Design |
 |---|---|
 | Action bar | **Help**, **New** (clears the search), **Exit**. The same as the other search lists |
-| Search | One box: customer name, customer number or collateral number, filtering as you type |
+| Search | One box, about 360px wide (as in Enquiry): customer name, customer number or collateral number, filtering as you type |
 | Request filter | Chips: All, Creation, Amendment, Cancellation, each with a count and its own colour (blue, amber, red) |
 | Table | Request (coloured badge) · Collateral no. · Customer · Collateral type · Considered · **What's asked** (*New collateral*, *3 fields changed*, *Close: reason…*) · Submitted (date, *by* user, "(you)" if it's yours) · **›** |
 | Sidebar | **Approvals** shows a red badge with the number of requests waiting |
@@ -72,7 +72,7 @@ The request opens on the **same layout as its entry screen**, with every field r
 
 ### 3.5 Returned queue (training note 4)
 
-- A **Returned** module in the sidebar, with an amber count, lists returned requests: request type, collateral no., customer, type, **return reason**, returned by and when, and **›**.
+- A **Returned** module in the sidebar, with an amber count. Its list is laid out like the approval queue: action bar **Help**, **New** (clears the search), **Exit**; the same search box; request-type chips with counts; columns request type, collateral no., customer, type, amount considered, **return reason**, returned by and when, and **›**.
 - **›** reopens the request **on its own entry screen**, filled with what was submitted:
   - Creation → the Creation screen, customer and type selected, every field filled.
   - Amendment → the Amendment details page, with the proposed changes highlighted against the approved values.
@@ -84,15 +84,21 @@ The request opens on the **same layout as its entry screen**, with every field r
 
 Requests created in the prototype's Creation, Amendment and Cancellation modules go straight into this queue. Deciding them updates every module, so the full lifecycle can be demonstrated live: submit → approve → amend → approve → cancel → approve, plus return → correct → resubmit and dismiss.
 
-## 4. Maker-checker
+## 4. Maker-checker (confirmed)
 
-The prototype marks requests submitted by the signed-in user with "(you)" and shows a note on the request page: *"You submitted this request. In production a different officer must authorize it."* It still allows the approval so the demo works with one user. See Q1.
+**Rule:** a user can't approve a request they submitted. In Forms this is checked in the `WHEN-NEW-FORM-INSTANCE` trigger (`username != posted_by`). The Angular build must enforce it on the server as well as in the screen.
+
+In the prototype:
+
+- The queue still lists the user's own requests, with *by K.ASARE (you)* and a grey **Yours** tag, so they can see what is waiting.
+- Opening one shows a blue banner: *"You submitted this request, so you can't decide on it. Another officer must return, dismiss or authorize it."* The action bar drops to **Help**, **Comment**, **Exit**, and the Decision card is hidden.
+- For the demo, the user menu at the top right switches between **K. Asare** (collateral officer) and **A. Mensah** (credit supervisor), so both sides can be shown.
 
 ## 5. To confirm against the PL/SQL
 
 | # | Question |
 |---|---|
-| Q1 | Is maker-checker enforced (the submitter cannot authorize their own request)? Is there an approval limit by amount or role? |
+| Q1 | ~~Is maker-checker enforced?~~ Confirmed: yes (§4). Still open: is there an approval limit by amount or role? |
 | Q2 | How does an approver reach requests today: an approval inbox, or by entering the collateral number? (The design assumes a queue.) |
 | Q3 | Where are return and dismissal reasons stored, and how is the submitter notified (in-app, email)? |
 | Q4 | Can the submitter withdraw a returned request instead of correcting it? Is there a time limit before it is dismissed automatically? |
