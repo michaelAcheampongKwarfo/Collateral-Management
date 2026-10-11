@@ -1,5 +1,7 @@
 # Collateral Cancellation: Process Flow (draft)
 
+> **From the PL/SQL:** [`cancellation-approval-flow.html`](cancellation-approval-flow.html) (open in a browser) has the cancellation and approval flow read from the submit and approve triggers, with row states, payload and the switched-off checks. Image for slides: [`cancellation-approval-flow.png`](cancellation-approval-flow.png).
+
 > **Status: draft.** Based on the screenshot and the agreed design only. It will be rewritten once the PL/SQL behind the Oracle Forms closing screen is reviewed. Nodes marked *(to confirm)* match the open questions in [`collateral-cancellation.md` §6.2](collateral-cancellation.md#62-to-confirm-against-the-plsql).
 
 ```mermaid

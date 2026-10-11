@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cancellation and Approval Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a technical brief in the prototype's enterprise style. Swimlane flowchart first, then the payload by collateral type, then the procedure call and open questions. */
+:root{
+  --bg:#E6EBF2; --surface:#F9FAFC; --surface-2:#F1F4F8; --sunken:#E7ECF2;
+  --fg:#13223A; --muted:#5A6A80; --faint:#8593A6; --line:#D5DCE6; --edge:#6B7A90;
+  --primary:#0B5CAD; --primary-soft:#E3ECF8; --navy:#0F2342; --navy-soft:#E4E9F1;
+  --green:#1D7A4C; --green-soft:#E4F3EB; --amber:#9A5A00; --amber-soft:#FFF4E0; --rose:#B4234F; --rose-soft:#FCEBF1;
+  --font-ui:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.55;padding:32px 24px 56px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+p{margin:0}
+.mono,code{font-family:var(--font-mono);font-size:.92em}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+.lead{color:var(--muted);max-width:72ch;margin-top:6px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.tag b{color:var(--fg);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.card-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:75ch}
+
+/* flowchart */
+.fig{margin:0;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:760px;height:auto;color:var(--edge)}
+.fig figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:90ch}
+.lane-bg{fill:var(--surface-2)} .lane-bg.alt{fill:var(--surface)}
+.lane-h{fill:var(--navy-soft)}
+.lane-t{fill:var(--fg);font:700 12px var(--font-ui);letter-spacing:.06em;text-transform:uppercase}
+.lane-s{fill:var(--muted);font:500 11px var(--font-mono)}
+.lane-div{stroke:var(--line);stroke-width:1}
+.n{stroke-width:1.4}
+.n-ui{fill:var(--surface);stroke:var(--edge)}
+.n-proc{fill:var(--primary-soft);stroke:var(--primary)}
+.n-db{fill:var(--navy-soft);stroke:var(--navy)}
+.n-dec{fill:var(--amber-soft);stroke:var(--amber)}
+.n-err{fill:var(--rose-soft);stroke:var(--rose)}
+.n-ok{fill:var(--green-soft);stroke:var(--green)}
+.n-start{fill:var(--navy);stroke:var(--navy)}
+.t{fill:var(--fg);font:600 13px var(--font-ui)}
+.t-mono{fill:var(--fg);font:600 12.5px var(--font-mono)}
+.t-sub{fill:var(--muted);font:500 11px var(--font-ui)}
+.t-subm{fill:var(--muted);font:500 10.5px var(--font-mono)}
+.t-inv{fill:var(--bg);font:700 13px var(--font-ui)}
+.t-ok{fill:var(--green);font:700 13px var(--font-ui)}
+.t-err{fill:var(--rose);font:700 13px var(--font-ui)}
+.edge{fill:none;stroke:currentColor;stroke-width:1.5}
+.edge-l{fill:var(--muted);font:600 11px var(--font-ui)}
+.edge-yes{fill:var(--green);font:700 11px var(--font-ui)}
+.edge-no{fill:var(--rose);font:700 11px var(--font-ui)}
+.edge-data{fill:var(--primary);font:600 10.5px var(--font-mono)}
+.step-c{fill:var(--fg)} .step-t{fill:var(--bg);font:700 10.5px var(--font-mono)}
+.arrowhead{fill:currentColor}
+
+/* payload */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--sunken);border-radius:10px;flex-wrap:wrap;align-self:flex-start}
+.tabs button{border:0;background:none;font:600 13.5px var(--font-ui);color:var(--muted);padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;gap:7px;align-items:center}
+.tabs button .c{font:600 11.5px var(--font-mono);color:var(--faint)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(19,34,58,.08)}
+.tabs button:focus-visible,.copy:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.pay{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-block:6px}
+td.k{font-family:var(--font-mono);font-size:12.5px;color:var(--primary);white-space:nowrap}
+td.col{font-family:var(--font-mono);font-size:12px;white-space:nowrap}
+td .note{display:block;color:var(--muted);font-size:12px}
+.req{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.req.y{background:var(--rose-soft);color:var(--rose)}
+.req.s{background:var(--navy-soft);color:var(--navy)}
+.req.o{background:var(--sunken);color:var(--muted)}
+.warn{color:var(--amber);font-weight:600}
+.code{position:relative;background:var(--navy);color:#E5ECF5;border-radius:8px;padding:16px 18px;font:500 12.5px/1.6 var(--font-mono);overflow-x:auto;margin:0;white-space:pre}
+:root[data-theme="dark"] .code{background:#0A111D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .code{background:#0A111D}}
+.code .jk{color:#8CC4FF}.code .js{color:#A8E6B8}.code .jn{color:#FFD28A}.code .jc{color:#8593A6}
+.code-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.code-head span{font-size:12.5px;color:var(--muted)}
+.copy{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 12px var(--font-ui);border-radius:7px;padding:5px 10px;cursor:pointer}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lookups{display:flex;flex-wrap:wrap;gap:6px}
+.lk{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--surface-2)}
+.lk b{font-family:var(--font-mono);font-weight:600;color:var(--primary);margin-right:4px}
+.srv{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.srv div{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:var(--surface-2);min-width:0}
+.srv b{display:block;font:600 12.5px var(--font-mono)}
+.srv span{font-size:12.5px;color:var(--muted)}
+.params td:first-child{font-family:var(--font-mono);color:var(--faint);width:42px}
+.dir{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px}
+.dir.in{background:var(--primary-soft);color:var(--primary)}.dir.out{background:var(--green-soft);color:var(--green)}.dir.nil{background:var(--sunken);color:var(--faint)}
+.confirm{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.confirm div{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:12px 14px;background:var(--surface-2);font-size:14px}
+.confirm b{display:block;margin-bottom:3px}
+footer{font-size:12.5px;color:var(--muted)}
+@media (max-width:860px){.pay{grid-template-columns:1fr}}
+@media (max-width:640px){body{padding:20px 16px 40px}h1{font-size:24px}.card{padding:18px 16px}}
+.phase{fill:var(--navy)} .phase-t{fill:var(--bg);font:700 11.5px var(--font-ui);letter-spacing:.08em;text-transform:uppercase}
+.phase-s{fill:var(--bg);font:500 11px var(--font-ui);opacity:.8}
+.n-ghost{fill:none;stroke:var(--faint);stroke-dasharray:5 4}
+.t-ghost{fill:var(--faint);font:600 12px var(--font-mono)} .t-ghost-s{fill:var(--faint);font:italic 500 11px var(--font-ui)}
+.edge-dash{fill:none;stroke:var(--faint);stroke-width:1.4;stroke-dasharray:5 4}
+.cmp td.diff{color:var(--amber);font-weight:600}
+.cmp td.col{white-space:normal}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.state{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.state .pill{font:600 12.5px var(--font-mono);border-radius:99px;padding:4px 12px}
+.state .p-n{background:var(--amber-soft);color:var(--amber)}.state .p-y{background:var(--green-soft);color:var(--green)}
+.state .arr{color:var(--faint)}
+.ghostbox{border:1.5px dashed var(--faint);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--muted)}
+.ghostbox b{color:var(--fg)}
+.cols2 > *,.side > *,.card > *,.wrap > *{min-width:0;max-width:100%}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.n-risk{fill:var(--rose-soft);stroke:var(--rose);stroke-width:1.8}
+.matrix td{text-align:center;white-space:nowrap}.matrix td:first-child{text-align:left;white-space:normal}
+.matrix .bad{color:var(--rose);font-weight:700}.matrix .ok{color:var(--green);font-weight:700}
+.confirm div.crit{border-left-color:var(--rose)}
+.empty-tab{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Collateral Management · Cancellation and approval (LRSK)</div>
+  <h1>From Cancel to Closed</h1>
+  <p class="lead">How an approved collateral is closed in Oracle Forms today, read from the cancellation submit trigger and its approve trigger. Unlike amendment, nothing is copied or deleted: the live row in <code>TB_COLLATERAL</code> is marked <code>'C'</code> on submit and <code>'CO'</code> on approval, through the form's own save.</p>
+  <div class="meta"><span class="tag">Source: <b>cancellation and cancellation approval triggers</b></span><span class="tag">Table: <b class="mono">TB_COLLATERAL</b> only</span><span class="tag">Calls: <b class="mono">PRC_APP_ENQ</b>, <b class="mono">PRC_APPROVAL_COMMENTS</b>, <b class="mono">USER_ACTION_AUDIT</b></span></div>
+</header>
+
+<section class="card" aria-labelledby="h-flow">
+  <div class="card-head"><div><h2 id="h-flow">Cancellation and approval flow</h2><p>Three lanes: what the screen does, what the approval procedures do, and what is written to the database. Steps 1–10 follow the submit trigger; A1–A7 follow the approve trigger.</p></div></div>
+  <figure class="fig">
+    <svg viewBox="0 0 1000 2350" role="img" aria-label="Cancellation flow. Maker: Submit runs no checks, raises an approval request with PRC_APP_ENQ and comments; if the response is S the live row gets the new APP_REF and is marked APPROVAL_FLAG C and status CANCELLED through the form, the action is audited and committed. Checker: a different officer approves with no checks; if PRC_APP_ENQ returns Y the row is marked CO, the approval is stamped in the AM_APPROVED fields, audited and committed; any other code shows an error.">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker></defs>
+      <rect class="lane-bg" x="0" y="0" width="400" height="2350"/><rect class="lane-bg alt" x="400" y="0" width="320" height="2350"/><rect class="lane-bg" x="720" y="0" width="280" height="2350"/>
+      <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
+      <line class="lane-div" x1="400" y1="0" x2="400" y2="2350"/><line class="lane-div" x1="720" y1="0" x2="720" y2="2350"/>
+      <text class="lane-t" x="20" y="22">Screen</text><text class="lane-s" x="20" y="38">Forms today · Angular next</text>
+      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">PL/SQL packages</text>
+      <text class="lane-t" x="740" y="22">Database</text><text class="lane-s" x="740" y="38">TB_COLLATERAL (live row)</text>
+      <path class="edge" d="M120 150 V175" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 227 V300 H450" marker-end="url(#ah)"/>
+      <text class="edge-l" x="128" y="250" text-anchor="start">nothing is checked</text>
+      <text class="edge-data" x="215" y="293" text-anchor="start">collateral no., customer</text>
+      <path class="edge" d="M560 326 V375" marker-end="url(#ah)"/>
+      <text class="edge-data" x="570" y="347" text-anchor="start">APPSEQ_V</text>
+      <text class="edge-data" x="570" y="361" text-anchor="start">RESPONSE_CODE</text>
+      <path class="edge" d="M560 427 V457" marker-end="url(#ah)"/>
+      <path class="edge" d="M470 505 H390" marker-end="url(#ah)"/>
+      <text class="edge-no" x="420" y="497" text-anchor="start">No</text>
+      <path class="edge" d="M310 531 V577" marker-end="url(#ah)"/>
+      <path class="edge" d="M650 505 H750" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="664" y="497" text-anchor="start">Yes</text>
+      <path class="edge" d="M860 531 V565" marker-end="url(#ah)"/>
+      <path class="edge" d="M860 629 V690 H670" marker-end="url(#ah)"/>
+      <path class="edge" d="M560 716 V786 H750" marker-end="url(#ah)"/>
+      <path class="edge-dash" d="M830 812 V840" marker-end="url(#ah)"/>
+      <path class="edge" d="M940 812 V940 H900" marker-end="url(#ah)"/>
+      <path class="edge" d="M780 940 H220" marker-end="url(#ah)"/>
+      <text class="edge-l" x="500" y="932" text-anchor="start">request saved</text>
+      <path class="edge" d="M120 966 V1000" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 1052 V1090" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 1130 V1225" marker-end="url(#ah)"/>
+      <text class="edge-l" x="130" y="1152" text-anchor="start">row already reads CANCELLED</text>
+      <path class="edge" d="M120 1265 V1299" marker-end="url(#ah)"/>
+      <path class="edge" d="M200 1345 H230" marker-end="url(#ah)"/>
+      <text class="edge-no" x="206" y="1337" text-anchor="start">No</text>
+      <path class="edge" d="M120 1391 V1425" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="128" y="1412" text-anchor="start">Yes</text>
+      <path class="edge" d="M120 1477 V1511" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 1563 V1617 H450" marker-end="url(#ah)"/>
+      <text class="edge-l" x="128" y="1590" text-anchor="start">nothing is checked</text>
+      <text class="edge-data" x="250" y="1610" text-anchor="start">GLOBAL.APPROVAL_REF</text>
+      <path class="edge" d="M560 1643 V1697" marker-end="url(#ah)"/>
+      <path class="edge" d="M470 1745 H390" marker-end="url(#ah)"/>
+      <text class="edge-no" x="410" y="1737" text-anchor="start">not Y</text>
+      <path class="edge" d="M310 1771 V1805" marker-end="url(#ah)"/>
+      <path class="edge" d="M650 1745 H750" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="680" y="1737" text-anchor="start">Y</text>
+      <path class="edge" d="M860 1777 V1850 H670" marker-end="url(#ah)"/>
+      <path class="edge-dash" d="M940 1777 V1906 H905" marker-end="url(#ah)"/>
+      <path class="edge" d="M560 1876 V1990 H780" marker-end="url(#ah)"/>
+      <path class="edge" d="M840 2010 V2090 H220" marker-end="url(#ah)"/>
+      <text class="edge-l" x="500" y="2082" text-anchor="start">approval saved</text>
+      <path class="edge" d="M120 2116 V2144" marker-end="url(#ah)"/>
+      <path class="edge" d="M200 2190 H245" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="206" y="2182" text-anchor="start">Yes</text>
+      <path class="edge" d="M120 2236 V2280" marker-end="url(#ah)"/>
+      <text class="edge-no" x="128" y="2258" text-anchor="start">No</text>
+      <rect class="phase" x="0" y="52" width="1000" height="30"/><text class="phase-t" x="20" y="72" text-anchor="start">Maker · cancel</text><text class="phase-s" x="146" y="72" text-anchor="start">collateral officer, Cancellation screen</text>
+      <rect class="n n-start" x="35" y="110" width="170" height="40" rx="20"/>
+      <text class="t-inv" x="120" y="135" text-anchor="middle">Submit pressed</text>
+      <rect class="n n-ghost" x="20" y="175" width="200" height="52" rx="8"/><text class="t-ghost" x="120.0" y="198.0" text-anchor="middle">Validate fields</text><text class="t-ghost-s" x="120.0" y="215.0" text-anchor="middle">every check commented out</text>
+      <rect class="n n-proc" x="450" y="274" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="297" text-anchor="middle">PRC_APP_ENQ</text>
+      <text class="t-sub" x="560" y="314" text-anchor="middle">raise the approval request</text>
+      <rect class="n n-proc" x="450" y="375" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="398" text-anchor="middle">PRC_APPROVAL_COMMENTS</text>
+      <text class="t-subm" x="560" y="415" text-anchor="middle">APPSEQ_V, TEMP_REF</text>
+      <polygon class="n n-dec" points="560,457 650,505 560,553 470,505"/>
+      <text class="t-mono" x="560" y="502" text-anchor="middle">RESPONSE_CODE</text>
+      <text class="t" x="560" y="518" text-anchor="middle">= 'S' ?</text>
+      <rect class="n n-err" x="230" y="479" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="502" text-anchor="middle">Show the error</text>
+      <text class="t-subm" x="310" y="519" text-anchor="middle">RESPONSE_MESSAGE</text>
+      <rect class="n n-err" x="245" y="577" width="130" height="36" rx="18"/>
+      <text class="t-err" x="310" y="600" text-anchor="middle">Nothing saved</text>
+      <rect class="n n-db" x="750" y="479" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="860" y="502" text-anchor="middle">UPDATE APP_REF</text>
+      <text class="t-sub" x="860" y="519" text-anchor="middle">on the live row</text>
+      <rect class="n n-risk" x="750" y="565" width="220" height="64" rx="8"/>
+      <text class="t" x="860" y="587" text-anchor="middle">Mark the row cancelled</text>
+      <text class="t-subm" x="860" y="603" text-anchor="middle">FLAG 'C' · 'CANCELLED'</text>
+      <text class="t-sub" x="860" y="618" text-anchor="middle">AMENDED_BY, date, time, reason</text>
+      <rect class="n n-proc" x="450" y="664" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="687" text-anchor="middle">USER_ACTION_AUDIT</text>
+      <text class="t-sub" x="560" y="704" text-anchor="middle">'COLLATERAL CANCELLATION'</text>
+      <rect class="n n-db" x="750" y="760" width="220" height="52" rx="8"/>
+      <text class="t" x="860" y="783" text-anchor="middle">Read account and APP_REF</text>
+      <text class="t-sub" x="860" y="800" text-anchor="middle">used only by disabled code</text>
+      <rect class="n n-ghost" x="755" y="840" width="150" height="52" rx="8"/><text class="t-ghost" x="830.0" y="863.0" text-anchor="middle">prc_central_app</text><text class="t-ghost-s" x="830.0" y="880.0" text-anchor="middle">commented out</text>
+      <rect class="n n-db" x="780" y="920" width="120" height="40" rx="8"/>
+      <text class="t-mono" x="840" y="945" text-anchor="middle">COMMIT</text>
+      <rect class="n n-ui" x="20" y="914" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="937" text-anchor="middle">Show confirmation</text>
+      <text class="t-subm" x="120" y="954" text-anchor="middle">message 06818</text>
+      <rect class="n n-ui" x="20" y="1000" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="1023" text-anchor="middle">Clear the screen</text>
+      <text class="t-sub" x="120" y="1040" text-anchor="middle">back to collateral no.</text>
+      <rect class="n n-dec" x="10" y="1090" width="220" height="40" rx="20"/>
+      <text class="t" x="120" y="1115" text-anchor="middle">Cancellation pending</text>
+      <rect class="phase" x="0" y="1180" width="1000" height="30"/><text class="phase-t" x="20" y="1200" text-anchor="start">Checker · approve</text><text class="phase-s" x="182" y="1200" text-anchor="start">a different officer, Approval screen</text>
+      <rect class="n n-start" x="25" y="1225" width="190" height="40" rx="20"/>
+      <text class="t-inv" x="120" y="1250" text-anchor="middle">Approver opens request</text>
+      <polygon class="n n-dec" points="120,1299 200,1345 120,1391 40,1345"/>
+      <text class="t" x="120" y="1342" text-anchor="middle">Not the</text>
+      <text class="t" x="120" y="1358" text-anchor="middle">submitter?</text>
+      <rect class="n n-err" x="230" y="1319" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="1342" text-anchor="middle">Blocked</text>
+      <text class="t-sub" x="310" y="1359" text-anchor="middle">another officer approves</text>
+      <rect class="n n-ui" x="20" y="1425" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="1448" text-anchor="middle">Approve pressed</text>
+      <text class="t-sub" x="120" y="1465" text-anchor="middle">after checking the reason</text>
+      <rect class="n n-ghost" x="20" y="1511" width="200" height="52" rx="8"/><text class="t-ghost" x="120.0" y="1534.0" text-anchor="middle">Validate values</text><text class="t-ghost-s" x="120.0" y="1551.0" text-anchor="middle">every check commented out</text>
+      <rect class="n n-proc" x="450" y="1591" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="1614" text-anchor="middle">PRC_APP_ENQ</text>
+      <text class="t-sub" x="560" y="1631" text-anchor="middle">approve the request</text>
+      <polygon class="n n-dec" points="560,1697 650,1745 560,1793 470,1745"/>
+      <text class="t-mono" x="560" y="1742" text-anchor="middle">RESPONSE_V</text>
+      <text class="t" x="560" y="1758" text-anchor="middle">= 'Y' ?</text>
+      <rect class="n n-err" x="230" y="1719" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="1742" text-anchor="middle">Show the error</text>
+      <text class="t-subm" x="310" y="1759" text-anchor="middle">FORM_TRIGGER_FAILURE</text>
+      <rect class="n n-err" x="240" y="1805" width="140" height="36" rx="18"/>
+      <text class="t-err" x="310" y="1828" text-anchor="middle">Nothing changed</text>
+      <rect class="n n-db" x="750" y="1713" width="220" height="64" rx="8"/>
+      <text class="t" x="860" y="1735" text-anchor="middle">Mark cancellation approved</text>
+      <text class="t-subm" x="860" y="1751" text-anchor="middle">FLAG 'CO' · 'CANCELLED'</text>
+      <text class="t-sub" x="860" y="1766" text-anchor="middle">AM_APPROVED_BY, date, time</text>
+      <rect class="n n-proc" x="450" y="1824" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="1847" text-anchor="middle">USER_ACTION_AUDIT</text>
+      <text class="t-sub" x="560" y="1864" text-anchor="middle">'COLLATERAL CANCELLATION'</text>
+      <rect class="n n-ghost" x="755" y="1880" width="150" height="52" rx="8"/><text class="t-ghost" x="830.0" y="1903.0" text-anchor="middle">prc_central_app</text><text class="t-ghost-s" x="830.0" y="1920.0" text-anchor="middle">commented out</text>
+      <rect class="n n-db" x="780" y="1970" width="120" height="40" rx="8"/>
+      <text class="t-mono" x="840" y="1995" text-anchor="middle">COMMIT</text>
+      <rect class="n n-ui" x="20" y="2064" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="2087" text-anchor="middle">Show confirmation</text>
+      <text class="t-subm" x="120" y="2104" text-anchor="middle">message 06776</text>
+      <polygon class="n n-dec" points="120,2144 200,2190 120,2236 40,2190"/>
+      <text class="t" x="120" y="2187" text-anchor="middle">Opened from</text>
+      <text class="t" x="120" y="2203" text-anchor="middle">main screen?</text>
+      <rect class="n n-ui" x="245" y="2172" width="130" height="36" rx="18"/>
+      <text class="t" x="310" y="2195" text-anchor="middle">Exit the form</text>
+      <rect class="n n-ok" x="0" y="2280" width="240" height="40" rx="20"/>
+      <text class="t-ok" x="120" y="2305" text-anchor="middle">Cancelled · list refreshed</text>
+      <g><circle class="step-c" cx="450" cy="274" r="10"/><text class="step-t" x="450" y="278" text-anchor="middle" style="font-size:10.5px">1</text></g>
+      <g><circle class="step-c" cx="450" cy="375" r="10"/><text class="step-t" x="450" y="379" text-anchor="middle" style="font-size:10.5px">2</text></g>
+      <g><circle class="step-c" cx="560" cy="457" r="10"/><text class="step-t" x="560" y="461" text-anchor="middle" style="font-size:10.5px">3</text></g>
+      <g><circle class="step-c" cx="750" cy="479" r="10"/><text class="step-t" x="750" y="483" text-anchor="middle" style="font-size:10.5px">4</text></g>
+      <g><circle class="step-c" cx="750" cy="565" r="10"/><text class="step-t" x="750" y="569" text-anchor="middle" style="font-size:10.5px">5</text></g>
+      <g><circle class="step-c" cx="450" cy="664" r="10"/><text class="step-t" x="450" y="668" text-anchor="middle" style="font-size:10.5px">6</text></g>
+      <g><circle class="step-c" cx="750" cy="760" r="10"/><text class="step-t" x="750" y="764" text-anchor="middle" style="font-size:10.5px">7</text></g>
+      <g><circle class="step-c" cx="780" cy="920" r="10"/><text class="step-t" x="780" y="924" text-anchor="middle" style="font-size:10.5px">8</text></g>
+      <g><circle class="step-c" cx="20" cy="914" r="10"/><text class="step-t" x="20" y="918" text-anchor="middle" style="font-size:10.5px">9</text></g>
+      <g><circle class="step-c" cx="20" cy="1000" r="12"/><text class="step-t" x="20" y="1004" text-anchor="middle" style="font-size:9.5px">10</text></g>
+      <g><circle class="step-c" cx="230" cy="479" r="10"/><text class="step-t" x="230" y="483" text-anchor="middle" style="font-size:10.5px">E</text></g>
+      <g><circle class="step-c" cx="20" cy="1425" r="12"/><text class="step-t" x="20" y="1429" text-anchor="middle" style="font-size:9.5px">A1</text></g>
+      <g><circle class="step-c" cx="450" cy="1591" r="12"/><text class="step-t" x="450" y="1595" text-anchor="middle" style="font-size:9.5px">A2</text></g>
+      <g><circle class="step-c" cx="560" cy="1697" r="12"/><text class="step-t" x="560" y="1701" text-anchor="middle" style="font-size:9.5px">A3</text></g>
+      <g><circle class="step-c" cx="750" cy="1713" r="12"/><text class="step-t" x="750" y="1717" text-anchor="middle" style="font-size:9.5px">A4</text></g>
+      <g><circle class="step-c" cx="450" cy="1824" r="12"/><text class="step-t" x="450" y="1828" text-anchor="middle" style="font-size:9.5px">A5</text></g>
+      <g><circle class="step-c" cx="780" cy="1970" r="12"/><text class="step-t" x="780" y="1974" text-anchor="middle" style="font-size:9.5px">A6</text></g>
+      <g><circle class="step-c" cx="20" cy="2064" r="12"/><text class="step-t" x="20" y="2068" text-anchor="middle" style="font-size:9.5px">A7</text></g>
+      <g><circle class="step-c" cx="230" cy="1719" r="12"/><text class="step-t" x="230" y="1723" text-anchor="middle" style="font-size:9.5px">AE</text></g>
+    </svg>
+    <figcaption>Dashed boxes are code that exists but is commented out, including every field check in both triggers. The red box is the risky step: the row reads <code>CANCELLED</code> as soon as the request is submitted, before anyone approves it. The maker-checker check is assumed to be in the approval form's <code>WHEN-NEW-FORM-INSTANCE</code>, as for creation.</figcaption>
+  </figure>
+</section>
+
+<section class="card" aria-labelledby="h-state">
+  <div class="card-head"><div><h2 id="h-state">One row, three states</h2><p>Everything happens on the live row. Most columns are set on the form's block <code>ONE</code> and saved by the form's commit, not by SQL in the trigger.</p></div></div>
+  <div class="state"><span class="pill p-y">'Y' · approved</span><span class="arr">→ submit →</span><span class="pill p-n">'C' · CANCELLED</span><span class="arr">→ approve →</span><span class="pill" style="background:var(--sunken);color:var(--muted)">'CO' · CANCELLED</span></div>
+  <div class="tbl-wrap"><table class="cmp" aria-label="Columns written at each stage"><thead><tr><th>TB_COLLATERAL column</th><th>On submit</th><th>On approve</th></tr></thead><tbody>
+    <tr><td class="col">APP_REF</td><td><code>APPSEQ_V</code>, by SQL <span class="note">replaces the creation request's reference</span></td><td>—</td></tr>
+    <tr><td class="col">APPROVAL_FLAG</td><td><code>'C'</code></td><td><code>'CO'</code></td></tr>
+    <tr><td class="col">APPROVAL_STATUS</td><td><code>'CANCELLED'</code></td><td><code>'CANCELLED'</code></td></tr>
+    <tr><td class="col">C_REASON</td><td>Closure reason typed on the screen <span class="note">assumed saved by block ONE; not checked</span></td><td>—</td></tr>
+    <tr><td class="col">AMENDED_BY · _TERMINAL · _DATE · _TIME</td><td>Requesting user, host, business date, time</td><td>—</td></tr>
+    <tr><td class="col">AM_APPROVED_BY · AM_APPROVAL_TERMINAL · _DATE · _TIME</td><td>—</td><td>Approver, host, business date, time</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="card" aria-labelledby="h-pay">
+  <div class="card-head"><div><h2 id="h-pay">Payload</h2><p>Cancellation is the same for every collateral type. The screen sends three values; nothing in the PL/SQL checks them today.</p></div></div>
+  <div class="pay">
+    <div class="tbl-wrap"><table aria-label="Fields sent on cancellation"><thead><tr><th>Field on screen</th><th>JSON key</th><th>Column</th><th>PL/SQL</th></tr></thead><tbody>
+      <tr><td>Collateral number<span class="note">:DUMMY.COLLATERAL_NO</span></td><td class="k">collateralNo</td><td class="col">COLLATERAL_NO</td><td><span class="req o">Not checked</span></td></tr>
+      <tr><td>Customer number<span class="note">:DUMMY.CUSTOMER_NUMBER</span></td><td class="k">customerNumber</td><td class="col">CUSTOMER_NUMBER</td><td><span class="req o">Not checked</span></td></tr>
+      <tr><td>Closure reason<span class="note">:ONE.C_REASON</span></td><td class="k">reason</td><td class="col">C_REASON</td><td><span class="req o">Not checked</span></td></tr>
+      <tr><td>Comment for the approver<span class="note">via PRC_APPROVAL_COMMENTS</span></td><td class="k">comment</td><td class="col">TEMP_REF</td><td><span class="req o">Optional</span></td></tr>
+    </tbody></table></div>
+    <div class="side">
+      <div><div class="code-head"><span><code>POST /collaterals/{no}/cancellation</code> request body</span><button class="copy" id="copy" type="button">Copy JSON</button></div>
+<pre class="code" id="json"><span class="jc">// Angular should require the reason and re-check the customer.</span>
+{
+  <span class="jk">"customerNumber"</span>: <span class="js">"048213"</span>,
+  <span class="jk">"reason"</span>: <span class="js">"Collateral replaced by property 2310024084"</span>,
+  <span class="jk">"comment"</span>: <span class="js">"Customer's release letter attached"</span>
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-off">
+  <div class="card-head"><div><h2 id="h-off">Checks that are switched off</h2><p>Both triggers contain these checks, but all are inside comments. In the approve trigger, the comment opened at line 11 isn't closed until line 85, so the realizability, market value and coverage checks look active but never run.</p></div></div>
+  <div class="tbl-wrap"><table class="matrix" aria-label="Commented-out checks"><thead><tr><th>Check</th><th>Message</th><th>Submit</th><th>Approve</th></tr></thead><tbody>
+    <tr><td>Collateral number entered</td><td class="mono">05668</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Customer number entered</td><td class="mono">01116</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Collateral type entered</td><td class="mono">01151</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Currency entered</td><td class="mono">01130</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Realizability rate entered</td><td class="mono">05669</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Market value entered</td><td class="mono">05670</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Coverage rate entered</td><td class="mono">05671</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Market value not below coverage value</td><td class="mono">05672</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Risk code entered</td><td class="mono">05673</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Review date entered</td><td class="mono">01152</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Review date not after expiry date</td><td class="mono">01149</td><td class="bad">Off</td><td class="bad">Off</td></tr>
+    <tr><td>Closure reason entered</td><td>—</td><td class="bad">None</td><td>—</td></tr>
+    <tr><td>No loan still uses the collateral</td><td>—</td><td class="bad">None</td><td class="bad">None</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="card" aria-labelledby="h-enq">
+  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ, called twice</h2><p>The same procedure raises the request on submit (step 1) and approves it (step A2). Amber values differ between the two calls.</p></div></div>
+  <div class="tbl-wrap"><table class="params cmp"><thead><tr><th>#</th><th>On submit</th><th>On approve</th><th>Meaning</th></tr></thead><tbody id="params"></tbody></table></div>
+  <p style="font-size:14px;color:var(--muted)">Unlike creation and amendment, both calls pass the local currency (<code>GET_LOCALCURRENCY</code>) and leave the channel code empty.</p>
+</section>
+
+<section class="card" aria-labelledby="h-conf">
+  <div class="card-head"><div><h2 id="h-conf">To confirm with the PL/SQL team</h2><p>Red items change what other screens and reports see, and should be settled before the Angular build copies this logic.</p></div></div>
+  <h3>Data and status</h3>
+  <div class="confirm">
+    <div class="crit"><b>Cancelled before approval</b>Submit already sets <code>APPROVAL_STATUS = 'CANCELLED'</code> and flag <code>'C'</code>. Any screen or report filtering on status treats the collateral as closed while it waits, and there is no path back to <code>'Y'</code> if the request is refused.</div>
+    <div class="crit"><b>No checks at all</b>Every field check is commented out, the closure reason isn't required, and nothing stops cancelling a collateral that a loan still draws on. The new design requires the reason and a "no running loan" confirmation.</div>
+    <div class="crit"><b>APP_REF overwritten</b>Submit replaces <code>APP_REF</code> with the cancellation request, so the link to the creation approval is lost from the live row.</div>
+    <div class="crit"><b>Lien not released</b><code>prc_central_app</code> is commented out in both triggers, so closing a collateral releases nothing on the account.</div>
+  </div>
+  <h3>Behaviour to confirm</h3>
+  <div class="confirm">
+    <div><b>Amendment columns reused</b>The request is stamped in <code>AMENDED_BY</code> and the approval in <code>AM_APPROVED_BY</code>, so a cancellation overwrites the last amendment's stamps and can't be told apart from one.</div>
+    <div><b>Saved by the form, not by SQL</b>Flag, status, reason and stamps are set on block <code>ONE</code> and saved by the form's commit. Which columns does that block save? The Angular build needs an explicit update.</div>
+    <div><b>Response codes</b>Approval treats anything other than <code>Y</code> as an error. Creation and amendment let other codes through. Which is right?</div>
+    <div><b>No history</b>Amendment copies the row to <code>TB_COLLATERAL_HISTORY</code>; cancellation doesn't. Should it?</div>
+    <div><b>Unused read</b>Submit reads the account number and <code>APP_REF</code> only for the commented-out <code>prc_central_app</code>. With duplicate rows it would fail with "too many rows".</div>
+    <div><b>Channel code empty</b>Both calls pass NULL as the channel code, where creation and amendment pass <code>:GLOBAL.CHNCODE</code>.</div>
+  </div>
+</section>
+
+<footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. JSON values are sample data.</footer>
+</div>
+
+<script>
+(()=>{
+const PARAMS=[
+  ["GET_PROCESS_CODE(FRMCODE)",":GLOBAL.PROCESS_CODE","Process code of the screen"],["APPSEQ_V",":GLOBAL.APPROVAL_REF","Approval request ID (APP_REF)"],
+  [":DUMMY.CUSTOMER_NUMBER",":ONE.CUSTOMER_NUMBER","Customer"],["BRANCH_CODE",":GLOBAL.BRA","Branch"],["NULL","NULL","Amount: not sent"],
+  ["NULL","NULL","Not used"],["GET_LOCALCURRENCY","GET_LOCALCURRENCY","Local currency"],["NULL","NULL","Not used"],
+  ["USERNAME",":global.username","Signed-in user"],["TERMINAL_ID",":GLOBAL.TERMINAL_ID","Terminal"],["TERMINAL_IP",":GLOBAL.TERMINAL_IP","Terminal IP address"],
+  ["NULL","NULL","Not used"],["NULL","NULL","Not used"],["NULL","NULL","Channel code: empty"],
+  ["NULL","NULL","Not used"],["NULL","NULL","Not used"],["NULL","NULL","Not used"],
+  ["RESPONSE_CODE","RESPONSE_V","Returned: S on submit; Y on approve"],["RESPONSE_MESSAGE","RESPONSE_MESS_V","Returned: message shown to the user"]];
+const $=s=>document.querySelector(s);
+const norm=s=>s.replace(/^:?(GLOBAL|ONE|DUMMY|one|global)\./i,"").toUpperCase().replace("GET_PROCESS_CODE(FRMCODE)","PROCESS_CODE").replace("APPSEQ_V","APPROVAL_REF").replace("BRANCH_CODE","BRA").replace("RESPONSE_V","RESPONSE_CODE").replace("RESPONSE_MESS_V","RESPONSE_MESSAGE");
+$("#params").innerHTML=PARAMS.map((p,i)=>{const d=p[0]!=="NULL"&&norm(p[0])!==norm(p[1]);return `<tr><td>${i+1}</td><td class="col">${p[0]}</td><td class="col${d?" diff":""}">${p[1]}</td><td>${p[2]}</td></tr>`}).join("");
+$("#copy").addEventListener("click",async()=>{const b=$("#copy"),txt=JSON.stringify({customerNumber:"048213",reason:"Collateral replaced by property 2310024084",comment:"Customer's release letter attached"},null,2);
+  try{await navigator.clipboard.writeText(txt);b.textContent="Copied"}catch(e){const r=document.createRange();r.selectNodeContents($("#json"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press Ctrl+C"}
+  setTimeout(()=>b.textContent="Copy JSON",1800)});
+})();
+</script>
+
+</html>

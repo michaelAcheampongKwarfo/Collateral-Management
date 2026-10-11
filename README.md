@@ -6,7 +6,7 @@ Design and documentation for moving the Collateral Management screens from Oracl
 |---|---|
 | Creation | Spec, UI prototype and flowchart from the PL/SQL ready ([flowchart](docs/creation/flowchart.md), [creation and approval flow, payload](docs/creation/creation-approval-flow.html)). |
 | Amendment | Spec, UI prototype and draft flow ready. [Amendment and approval flow, payload](docs/amendment/amendment-approval-flow.html) from the PL/SQL. |
-| Cancellation | Spec, UI prototype and draft flow ready. Uses the Amendment list with a read-only form and closure reason. |
+| Cancellation | Spec, UI prototype and draft flow ready. Uses the Amendment list with a read-only form and closure reason. [Cancellation and approval flow](docs/cancellation/cancellation-approval-flow.html) from the PL/SQL. |
 | Approvals | Spec, UI prototype and draft flow ready. One queue for creation, amendment and cancellation requests. |
 | Enquiry | Spec, UI prototype and draft flow ready. All, running and used collateral, with quick search, funnel filters, review-date filters and PDF / Excel. |
 | Returned | Prototype ready (in the Approval spec). Requests returned by an approver, corrected on their entry screen and resubmitted. |
