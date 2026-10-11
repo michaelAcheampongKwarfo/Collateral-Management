@@ -163,7 +163,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
       <line class="lane-div" x1="400" y1="0" x2="400" y2="2530"/><line class="lane-div" x1="720" y1="0" x2="720" y2="2530"/>
       <text class="lane-t" x="20" y="22">Screen</text><text class="lane-s" x="20" y="38">Forms today · Angular next</text>
-      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">PL/SQL packages</text>
+      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">central approval module</text>
       <text class="lane-t" x="740" y="22">Database</text><text class="lane-s" x="740" y="38">live · AMEND_TEMP · HISTORY</text>
       <path class="edge" d="M120 150 V175" marker-end="url(#ah)"/>
       <path class="edge" d="M120 227 V259" marker-end="url(#ah)"/>
@@ -214,8 +214,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <path class="edge" d="M860 1852 V1880" marker-end="url(#ah)"/>
       <path class="edge" d="M860 1916 V1944" marker-end="url(#ah)"/>
       <path class="edge" d="M860 1996 V2026" marker-end="url(#ah)"/>
-      <path class="edge-dash" d="M830 2090 V2126" marker-end="url(#ah)"/>
-      <path class="edge" d="M940 2090 V2210 H670" marker-end="url(#ah)"/>
+      <path class="edge" d="M860 2090 V2210 H670" marker-end="url(#ah)"/>
       <path class="edge" d="M560 1783 V2184" marker-end="url(#ah)"/>
       <text class="edge-l" x="570" y="1980" text-anchor="start">any other code</text>
       <text class="edge-l" x="570" y="1994" text-anchor="start">(no change)</text>
@@ -245,7 +244,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-sub" x="310" y="459" text-anchor="middle">nothing sent</text>
       <rect class="n n-proc" x="450" y="549" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="572" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="589" text-anchor="middle">raise the approval request</text>
+      <text class="t-sub" x="560" y="589" text-anchor="middle">add to the approval queue</text>
       <rect class="n n-proc" x="450" y="650" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="673" text-anchor="middle">PRC_APPROVAL_COMMENTS</text>
       <text class="t-subm" x="560" y="690" text-anchor="middle">APPSEQ_V, TEMP_REF</text>
@@ -294,7 +293,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-subm" x="860" y="1570" text-anchor="middle">AMEND_TEMP by APP_REF</text>
       <rect class="n n-proc" x="450" y="1609" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="1632" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="1649" text-anchor="middle">approve the request</text>
+      <text class="t-sub" x="560" y="1649" text-anchor="middle">record the approval</text>
       <polygon class="n n-dec" points="560,1687 650,1735 560,1783 470,1735"/>
       <text class="t-mono" x="560" y="1732" text-anchor="middle">RESPONSE_V</text>
       <text class="t" x="560" y="1748" text-anchor="middle">= ?</text>
@@ -319,7 +318,6 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-mono" x="860" y="2048" text-anchor="middle">INSERT TB_COLLATERAL</text>
       <text class="t-subm" x="860" y="2064" text-anchor="middle">SELECT … FROM AMEND_TEMP</text>
       <text class="t-subm" x="860" y="2079" text-anchor="middle">APPROVAL_FLAG = 'Y'</text>
-      <rect class="n n-ghost" x="755" y="2126" width="150" height="52" rx="8"/><text class="t-ghost" x="830" y="2148" text-anchor="middle">LIEN · G_LEDGER</text><text class="t-ghost-s" x="830" y="2165" text-anchor="middle">commented out</text>
       <rect class="n n-proc" x="450" y="2184" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="2207" text-anchor="middle">USER_ACTION_AUDIT</text>
       <text class="t-sub" x="560" y="2224" text-anchor="middle">who approved, when, from where</text>
@@ -356,7 +354,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <g><circle class="step-c" cx="20" cy="2354" r="12"/><text class="step-t" x="20" y="2358" text-anchor="middle" style="font-size:9.5px">A12</text></g>
       <g><circle class="step-c" cx="230" cy="1709" r="12"/><text class="step-t" x="230" y="1713" text-anchor="middle" style="font-size:9.5px">AE</text></g>
     </svg>
-    <figcaption>Red database boxes are the risky steps: the live row is deleted on submit for guarantee and insurance, and on approval it is deleted and committed before the new row is inserted. The maker-checker check is assumed to be in the approval form's <code>WHEN-NEW-FORM-INSTANCE</code>, as for creation. The dashed box is code that is commented out.</figcaption>
+    <figcaption>Red database boxes are the steps that delete the live row: on submit for guarantee and insurance, and on approval before the row is rebuilt from <code>AMEND_TEMP</code>. The maker-checker check is assumed to be in the approval form's <code>WHEN-NEW-FORM-INSTANCE</code>, as for creation.</figcaption>
   </figure>
 </section>
 
@@ -395,42 +393,9 @@ footer{font-size:12.5px;color:var(--muted)}
   </div>
 </section>
 
-<section class="card" aria-labelledby="h-diff">
-  <div class="card-head"><div><h2 id="h-diff">How the four save procedures differ</h2><p>They follow the same steps but not the same rules. The Angular build should use one set of rules for every type.</p></div></div>
-  <div class="tbl-wrap"><table class="matrix" aria-label="Differences between the save procedures"><thead><tr><th>Behaviour</th><th>Cash</th><th>Insurance</th><th>Property</th><th>Guarantee</th></tr></thead><tbody>
-    <tr><td>Checks customer and collateral type</td><td class="bad">No</td><td class="ok">Yes</td><td class="ok">Yes</td><td class="ok">Yes</td></tr>
-    <tr><td>Deletes the live row on submit</td><td class="ok">No</td><td class="bad">Yes</td><td class="ok">No</td><td class="bad">Yes</td></tr>
-    <tr><td>Currency sent to <code>PRC_APP_ENQ</code></td><td>Screen</td><td class="bad">'010'</td><td class="bad">'010'</td><td>Screen</td></tr>
-    <tr><td><code>ACCOUNT_NUMBER</code> saved</td><td class="ok">Account</td><td class="bad">NULL</td><td class="bad">NULL</td><td class="bad">NULL</td></tr>
-    <tr><td>Response other than S or F</td><td>Error</td><td>Error</td><td class="bad">Silently ignored</td><td>Error</td></tr>
-    <tr><td>Catches unexpected errors</td><td class="ok">Yes</td><td>No</td><td>No</td><td>No</td></tr>
-    <tr><td>Success message code</td><td class="mono">07952</td><td class="mono">07954</td><td class="mono">07955</td><td class="mono">07953</td></tr>
-  </tbody></table></div>
-</section>
-
 <section class="card" aria-labelledby="h-enq">
-  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ, called twice</h2><p>The same procedure raises the request on submit (step 3) and approves it (step A3). Amber values differ between the two calls.</p></div></div>
+  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ · central approval queue</h2><p><code>PRC_APP_ENQ</code> belongs to the core banking's general approval module, which gathers every record waiting for approval. Every new or changed record goes through it when it is submitted, and again when it is approved. It doesn't post anything itself: the end-of-day and start-of-day procedures carry out the actual transactions. The table shows what each call passes; amber marks the values that differ.</p></div></div>
   <div class="tbl-wrap"><table class="params cmp"><thead><tr><th>#</th><th>On submit</th><th>On approve</th><th>Meaning</th></tr></thead><tbody id="params"></tbody></table></div>
-</section>
-
-<section class="card" aria-labelledby="h-conf">
-  <div class="card-head"><div><h2 id="h-conf">To confirm with the PL/SQL team</h2><p>Red items can lose or corrupt collateral data and should be settled before the Angular build copies this logic.</p></div></div>
-  <h3>Data safety</h3>
-  <div class="confirm">
-    <div class="crit"><b>Live row deleted on submit</b>Guarantee and insurance delete the row from <code>TB_COLLATERAL</code> before copying it to history. History gets nothing, and the collateral disappears from the live table while the amendment waits. If the request is never approved, it's gone.</div>
-    <div class="crit"><b>Commit between delete and insert</b>On approval the live row is deleted and committed, then rebuilt. If the insert fails, the collateral is lost. Delete and insert should be one transaction, or the row should be updated in place.</div>
-    <div class="crit"><b>Rebuilt only from the temp row</b>The new live row takes every column from <code>AMEND_TEMP</code>, which holds only the screen's fields. Values such as amount used, coverage, risk code, perfection, the original approver and (for non-cash types) the account number come back empty.</div>
-    <div class="crit"><b>Temp row updated by collateral number</b>Step A5 updates <code>AMEND_TEMP</code> by <code>COLLATERAL_NO</code>, not <code>APP_REF</code>, so it also re-stamps every earlier amendment of the same collateral.</div>
-  </div>
-  <h3>Behaviour to confirm</h3>
-  <div class="confirm">
-    <div><b>Amendment approver fields</b><code>AM_APPROVED_BY</code>, <code>AM_APPROVAL_DATE</code> and the other amendment stamps are never set. The amendment approver is written to <code>APPROVED_BY</code>, replacing the original approver.</div>
-    <div><b>History written twice</b>The live row is copied to history on submit and again on approval. Is one copy enough, and which one?</div>
-    <div><b>Posted-by overwritten</b>The temp row, and then the live row, record the amending user as <code>POSTED_BY</code>. Who created the collateral is only kept in history.</div>
-    <div><b>Property checks</b>Valuer contact reuses the ownership error code (<code>01302</code>), and valuer name isn't checked. Property also stamps the posted-by fields on the form instead of the amended-by fields.</div>
-    <div><b>Other response codes</b>As in creation, an approval response other than <code>Y</code> or <code>F</code> skips the change but still audits, commits and says "Record Saved."</div>
-    <div><b>Lien and central approval</b>The lien insert, the <code>G_LEDGER</code> lien update and <code>prc_central_app</code> are commented out. Changing a cash amount doesn't change any lien on the account.</div>
-  </div>
 </section>
 
 <footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. JSON values are sample data.</footer>
@@ -523,7 +488,8 @@ function render(){
   $("#tabs").querySelectorAll("button").forEach((b,i)=>{b.setAttribute("aria-selected",i===cur);b.tabIndex=i===cur?0:-1});
   $("#payArea").hidden=!t.rows;$("#sharesNote").hidden=!!t.rows;if(!t.rows)return;
   const row=r=>`<tr><td>${esc(r[0])}${r[5]?`<span class="note">${esc(r[5])}</span>`:""}</td><td class="k">${r[1]?esc(r[1]):'<span style="color:var(--faint)">—</span>'}</td><td class="col">${esc(r[2])}</td><td><span class="req ${REQ[r[3]][1]}">${REQ[r[3]][0]}</span></td></tr>`;
-  $("#fields tbody").innerHTML=`<tr class="grp"><td colspan="4">${esc(t.name)} · ${t.code}</td></tr>${t.rows.map(row).join("")}`;
+  const sent=t.rows.filter(r=>r[1]),sys_=t.rows.filter(r=>!r[1]);
+  $("#fields tbody").innerHTML=`<tr class="grp"><td colspan="4">${esc(t.name)} · ${t.code}</td></tr>${sent.map(row).join("")}${sys_.length?`<tr class="grp"><td colspan="4">Filled in by the system · not sent from the screen</td></tr>${sys_.map(row).join("")}`:""}`;
   $("#json").innerHTML=hl(JSON.stringify(body(t),null,2));
 }
 $("#tabs").innerHTML=TYPES.map(t=>`<button role="tab" id="tab-${t.code}" aria-controls="fields">${t.name}<span class="c">${t.code}</span></button>`).join("");

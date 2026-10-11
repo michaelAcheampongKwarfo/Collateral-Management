@@ -158,7 +158,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
       <line class="lane-div" x1="400" y1="0" x2="400" y2="2100"/><line class="lane-div" x1="720" y1="0" x2="720" y2="2100"/>
       <text class="lane-t" x="20" y="22">Screen</text><text class="lane-s" x="20" y="38">Forms today · Angular next</text>
-      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">PL/SQL packages</text>
+      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">central approval module</text>
       <text class="lane-t" x="740" y="22">Database</text><text class="lane-s" x="740" y="38">TB_COLLATERAL</text>
             <path class="edge" d="M120 150 V175" marker-end="url(#ah)"/>
       <path class="edge" d="M120 227 V259" marker-end="url(#ah)"/>
@@ -200,8 +200,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <path class="edge" d="M310 1526 V1560" marker-end="url(#ah)"/>
       <path class="edge" d="M650 1500 H750" marker-end="url(#ah)"/>
       <text class="edge-yes" x="680" y="1492" text-anchor="start">Y</text>
-      <path class="edge-dash" d="M830 1532 V1572" marker-end="url(#ah)"/>
-      <path class="edge" d="M940 1532 V1666 H670" marker-end="url(#ah)"/>
+      <path class="edge" d="M860 1532 V1666 H670" marker-end="url(#ah)"/>
       <path class="edge" d="M560 1548 V1640" marker-end="url(#ah)"/>
       <text class="edge-l" x="570" y="1600" text-anchor="start">any other code</text>
       <text class="edge-l" x="570" y="1614" text-anchor="start">(no update)</text>
@@ -228,7 +227,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-err" x="310" y="395" text-anchor="middle">Back to the form</text>
       <rect class="n n-proc" x="450" y="409" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="432" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="449" text-anchor="middle">raise the approval request</text>
+      <text class="t-sub" x="560" y="449" text-anchor="middle">add to the approval queue</text>
       <rect class="n n-proc" x="450" y="510" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="533" text-anchor="middle">PRC_APPROVAL_COMMENTS</text>
       <text class="t-subm" x="560" y="550" text-anchor="middle">APPSEQ_V, TEMP_REF</text>
@@ -275,7 +274,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-subm" x="860" y="1335" text-anchor="middle">WHERE APP_REF = :ref</text>
       <rect class="n n-proc" x="450" y="1374" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="1397" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="1414" text-anchor="middle">approve the request</text>
+      <text class="t-sub" x="560" y="1414" text-anchor="middle">record the approval</text>
       <polygon class="n n-dec" points="560,1452 650,1500 560,1548 470,1500"/>
       <text class="t-mono" x="560" y="1497" text-anchor="middle">RESPONSE_V</text>
       <text class="t" x="560" y="1513" text-anchor="middle">= ?</text>
@@ -288,7 +287,6 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-mono" x="860" y="1490" text-anchor="middle">UPDATE TB_COLLATERAL</text>
       <text class="t-subm" x="860" y="1506" text-anchor="middle">APPROVAL_FLAG = 'Y'</text>
       <text class="t-sub" x="860" y="1521" text-anchor="middle">approver, date, time, terminal, IP</text>
-      <rect class="n n-ghost" x="755" y="1572" width="150" height="52" rx="8"/><text class="t-ghost" x="830" y="1594" text-anchor="middle">LIEN · G_LEDGER</text><text class="t-ghost-s" x="830" y="1611" text-anchor="middle">commented out</text>
       <rect class="n n-proc" x="450" y="1640" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="1663" text-anchor="middle">USER_ACTION_AUDIT</text>
       <text class="t-sub" x="560" y="1680" text-anchor="middle">who approved, when, from where</text>
@@ -324,7 +322,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <g><circle class="step-c" cx="20" cy="1814" r="12"/><text class="step-t" x="20" y="1818" text-anchor="middle" style="font-size:9.5px">A8</text></g>
       <g><circle class="step-c" cx="230" cy="1474" r="12"/><text class="step-t" x="230" y="1478" text-anchor="middle" style="font-size:9.5px">A9</text></g>
     </svg>
-    <figcaption>The two halves are linked by one value: <code>APPSEQ_V</code> is saved as <code>APP_REF</code> on submit, and the approval screen finds the row with it (<code>GLOBAL.APPROVAL_REF</code>). The maker-checker check comes from the approval form's <code>WHEN-NEW-FORM-INSTANCE</code> trigger (<code>username != posted_by</code>). The dashed box is code that exists but is commented out. Red boxes are where the flow stops without saving.</figcaption>
+    <figcaption>The two halves are linked by one value: <code>APPSEQ_V</code> is saved as <code>APP_REF</code> on submit, and the approval screen finds the row with it (<code>GLOBAL.APPROVAL_REF</code>). The maker-checker check comes from the approval form's <code>WHEN-NEW-FORM-INSTANCE</code> trigger (<code>username != posted_by</code>). Red boxes are where the flow stops without saving.</figcaption>
   </figure>
 </section>
 
@@ -379,7 +377,6 @@ footer{font-size:12.5px;color:var(--muted)}
   <span class="jk">"checklist"</span>: [<span class="js">"customer"</span>, <span class="js">"amounts"</span>, <span class="js">"dates"</span>, <span class="js">"documents"</span>],
   <span class="jk">"comment"</span>: <span class="js">""</span>
 }</pre></div>
-      <div class="ghostbox"><b>Commented out today.</b> The trigger also contains an INSERT into <code>LIEN</code> (account, amount considered, collateral no., expiry and review dates, approver) and an UPDATE of <code>G_LEDGER</code> setting <code>LIEN_AMOUNT</code> and <code>LIEN_EXPIRING_DATE</code> on the account. Neither runs, so approving a cash collateral does not block the amount on the account in this code.</div>
     </div>
   </div>
   <div>
@@ -397,31 +394,9 @@ footer{font-size:12.5px;color:var(--muted)}
 </section>
 
 <section class="card" aria-labelledby="h-enq">
-  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ, called twice</h2><p>The same procedure raises the request on submit (step 2) and approves it (step A3). Amber values differ between the two calls.</p></div></div>
+  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ · central approval queue</h2><p><code>PRC_APP_ENQ</code> belongs to the core banking's general approval module, which gathers every record waiting for approval. Every new or changed record goes through it when it is submitted, and again when it is approved. It doesn't post anything itself: the end-of-day and start-of-day procedures carry out the actual transactions. The table shows what each call passes; amber marks the values that differ.</p></div></div>
   <div class="tbl-wrap"><table class="params cmp"><thead><tr><th>#</th><th>On submit</th><th>On approve</th><th>Meaning</th></tr></thead><tbody id="params"></tbody></table></div>
   <p style="font-size:14px;color:var(--muted)">After the submit call, <code>PRC_APPROVAL_COMMENTS(APPSEQ_V, TEMP_REF)</code> attaches the screen's comments to the same request.</p>
-</section>
-
-<section class="card" aria-labelledby="h-conf">
-  <div class="card-head"><div><h2 id="h-conf">To confirm with the PL/SQL team</h2><p>Points in the two triggers that look unexpected, or that the Angular build needs a decision on.</p></div></div>
-  <h3>Approval</h3>
-  <div class="confirm">
-    <div><b>Response codes</b>Submit checks for <code>S</code>; approve checks for <code>F</code> and <code>Y</code>. Any other code skips the update but still audits, commits and shows "Record Saved." Does it mean another approval level is needed?</div>
-    <div><b>Lien not placed</b>The <code>LIEN</code> insert and <code>G_LEDGER</code> lien update are commented out. Is the lien placed somewhere else? If they are switched back on, the insert should filter by <code>COLLATERAL_NO</code>: today it selects every row on the account.</div>
-    <div><b>Hard-coded values</b>The approve call passes currency <code>'010'</code> and a NULL amount, whatever the collateral's currency and amount.</div>
-    <div><b>Four reads of one row</b>Four SELECTs fetch one row by <code>APP_REF</code>. One query would do, and none handles "no row found".</div>
-    <div><b>No reject path</b>This trigger only approves. The new design adds Return and Dismiss with reasons. Where should those be stored, and does <code>PRC_APP_ENQ</code> have a reject mode?</div>
-    <div><b>Audit detail</b>The audit passes NULL for the description and the collateral type. Should the Angular build record the collateral number and type?</div>
-  </div>
-  <h3>Creation</h3>
-  <div class="confirm">
-    <div><b>Property insert columns</b>The property INSERT lists the insurance columns (<code>POLICY_TYPE</code>, <code>INS_COMPANY</code>, <code>INS_CODE</code>, <code>POLICY_NO</code>). Location, ownership, forced sale value, valuer and valuation date are validated but not inserted.</div>
-    <div><b>Comments before the check</b><code>PRC_APPROVAL_COMMENTS</code> runs before <code>RESPONSE_CODE</code> is checked. If the request fails, are the comments left behind?</div>
-    <div><b>Delete then insert</b>Step 5 deletes any row with the same collateral number before inserting. This allows resubmission but drops the earlier row's history.</div>
-    <div><b>Fields saved but not required</b>Insurance saves <code>POLICY_NO</code> without requiring it. Guarantee saves the account and the underlying collateral type without requiring them.</div>
-    <div><b>Approval request ID</b>Is <code>APPSEQ_V</code> returned by <code>PRC_APP_ENQ</code>, or generated before the call?</div>
-    <div><b>Typos in the breakdown</b>Shares inserts <code>FOLIO_START_N</code>, and its block is titled "submit guarantee collateral". Probably copy slips.</div>
-  </div>
 </section>
 
 <footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. JSON values are sample data.</footer>
@@ -507,7 +482,8 @@ function render(){
   const t=TYPES[cur];
   $("#tabs").querySelectorAll("button").forEach((b,i)=>{b.setAttribute("aria-selected",i===cur);b.tabIndex=i===cur?0:-1});
   const row=r=>`<tr><td>${esc(r[0])}${r[5]?`<span class="note">${esc(r[5])}</span>`:""}</td><td class="k">${r[1]?esc(r[1]):'<span style="color:var(--faint)">—</span>'}</td><td class="col">${r[2]==="not in INSERT"?'<span class="warn">not in INSERT</span>':esc(r[2])}</td><td><span class="req ${REQ[r[3]][1]}">${REQ[r[3]][0]}</span></td></tr>`;
-  $("#fields tbody").innerHTML=`<tr class="grp"><td colspan="4">Every type</td></tr>${COMMON.map(row).join("")}<tr class="grp"><td colspan="4">${esc(t.name)} · ${t.code}</td></tr>${t.rows.map(row).join("")}`;
+  const sent=t.rows.filter(r=>r[1]),sys_=t.rows.filter(r=>!r[1]);
+  $("#fields tbody").innerHTML=`<tr class="grp"><td colspan="4">Every type</td></tr>${COMMON.map(row).join("")}<tr class="grp"><td colspan="4">${esc(t.name)} · ${t.code}</td></tr>${sent.map(row).join("")}${sys_.length?`<tr class="grp"><td colspan="4">Filled in by the system · not sent from the screen</td></tr>${sys_.map(row).join("")}`:""}`;
   $("#json").innerHTML=hl(JSON.stringify(body(t),null,2));
   $("#lookups").innerHTML=[["COL","collateral types"],...t.lookups].map(l=>`<span class="lk"><b>${esc(l[0])}</b>${esc(l[1])}</span>`).join("");
 }

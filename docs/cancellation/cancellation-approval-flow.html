@@ -163,7 +163,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
       <line class="lane-div" x1="400" y1="0" x2="400" y2="2350"/><line class="lane-div" x1="720" y1="0" x2="720" y2="2350"/>
       <text class="lane-t" x="20" y="22">Screen</text><text class="lane-s" x="20" y="38">Forms today · Angular next</text>
-      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">PL/SQL packages</text>
+      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">central approval module</text>
       <text class="lane-t" x="740" y="22">Database</text><text class="lane-s" x="740" y="38">TB_COLLATERAL (live row)</text>
       <path class="edge" d="M120 150 V175" marker-end="url(#ah)"/>
       <path class="edge" d="M120 227 V300 H450" marker-end="url(#ah)"/>
@@ -181,8 +181,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <path class="edge" d="M860 531 V565" marker-end="url(#ah)"/>
       <path class="edge" d="M860 629 V690 H670" marker-end="url(#ah)"/>
       <path class="edge" d="M560 716 V786 H750" marker-end="url(#ah)"/>
-      <path class="edge-dash" d="M830 812 V840" marker-end="url(#ah)"/>
-      <path class="edge" d="M940 812 V940 H900" marker-end="url(#ah)"/>
+      <path class="edge" d="M860 812 V920" marker-end="url(#ah)"/>
       <path class="edge" d="M780 940 H220" marker-end="url(#ah)"/>
       <text class="edge-l" x="500" y="932" text-anchor="start">request saved</text>
       <path class="edge" d="M120 966 V1000" marker-end="url(#ah)"/>
@@ -205,7 +204,6 @@ footer{font-size:12.5px;color:var(--muted)}
       <path class="edge" d="M650 1745 H750" marker-end="url(#ah)"/>
       <text class="edge-yes" x="680" y="1737" text-anchor="start">Y</text>
       <path class="edge" d="M860 1777 V1850 H670" marker-end="url(#ah)"/>
-      <path class="edge-dash" d="M940 1777 V1906 H905" marker-end="url(#ah)"/>
       <path class="edge" d="M560 1876 V1990 H780" marker-end="url(#ah)"/>
       <path class="edge" d="M840 2010 V2090 H220" marker-end="url(#ah)"/>
       <text class="edge-l" x="500" y="2082" text-anchor="start">approval saved</text>
@@ -220,7 +218,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="n n-ghost" x="20" y="175" width="200" height="52" rx="8"/><text class="t-ghost" x="120.0" y="198.0" text-anchor="middle">Validate fields</text><text class="t-ghost-s" x="120.0" y="215.0" text-anchor="middle">every check commented out</text>
       <rect class="n n-proc" x="450" y="274" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="297" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="314" text-anchor="middle">raise the approval request</text>
+      <text class="t-sub" x="560" y="314" text-anchor="middle">add to the approval queue</text>
       <rect class="n n-proc" x="450" y="375" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="398" text-anchor="middle">PRC_APPROVAL_COMMENTS</text>
       <text class="t-subm" x="560" y="415" text-anchor="middle">APPSEQ_V, TEMP_REF</text>
@@ -244,8 +242,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <text class="t-sub" x="560" y="704" text-anchor="middle">'COLLATERAL CANCELLATION'</text>
       <rect class="n n-db" x="750" y="760" width="220" height="52" rx="8"/>
       <text class="t" x="860" y="783" text-anchor="middle">Read account and APP_REF</text>
-      <text class="t-sub" x="860" y="800" text-anchor="middle">used only by disabled code</text>
-      <rect class="n n-ghost" x="755" y="840" width="150" height="52" rx="8"/><text class="t-ghost" x="830.0" y="863.0" text-anchor="middle">prc_central_app</text><text class="t-ghost-s" x="830.0" y="880.0" text-anchor="middle">commented out</text>
+      <text class="t-subm" x="860" y="800" text-anchor="middle">SELECT … INTO acc_no_v</text>
       <rect class="n n-db" x="780" y="920" width="120" height="40" rx="8"/>
       <text class="t-mono" x="840" y="945" text-anchor="middle">COMMIT</text>
       <rect class="n n-ui" x="20" y="914" width="200" height="52" rx="8"/>
@@ -271,7 +268,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="n n-ghost" x="20" y="1511" width="200" height="52" rx="8"/><text class="t-ghost" x="120.0" y="1534.0" text-anchor="middle">Validate values</text><text class="t-ghost-s" x="120.0" y="1551.0" text-anchor="middle">every check commented out</text>
       <rect class="n n-proc" x="450" y="1591" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="1614" text-anchor="middle">PRC_APP_ENQ</text>
-      <text class="t-sub" x="560" y="1631" text-anchor="middle">approve the request</text>
+      <text class="t-sub" x="560" y="1631" text-anchor="middle">record the approval</text>
       <polygon class="n n-dec" points="560,1697 650,1745 560,1793 470,1745"/>
       <text class="t-mono" x="560" y="1742" text-anchor="middle">RESPONSE_V</text>
       <text class="t" x="560" y="1758" text-anchor="middle">= 'Y' ?</text>
@@ -287,7 +284,6 @@ footer{font-size:12.5px;color:var(--muted)}
       <rect class="n n-proc" x="450" y="1824" width="220" height="52" rx="8"/>
       <text class="t-mono" x="560" y="1847" text-anchor="middle">USER_ACTION_AUDIT</text>
       <text class="t-sub" x="560" y="1864" text-anchor="middle">'COLLATERAL CANCELLATION'</text>
-      <rect class="n n-ghost" x="755" y="1880" width="150" height="52" rx="8"/><text class="t-ghost" x="830.0" y="1903.0" text-anchor="middle">prc_central_app</text><text class="t-ghost-s" x="830.0" y="1920.0" text-anchor="middle">commented out</text>
       <rect class="n n-db" x="780" y="1970" width="120" height="40" rx="8"/>
       <text class="t-mono" x="840" y="1995" text-anchor="middle">COMMIT</text>
       <rect class="n n-ui" x="20" y="2064" width="200" height="52" rx="8"/>
@@ -320,7 +316,7 @@ footer{font-size:12.5px;color:var(--muted)}
       <g><circle class="step-c" cx="20" cy="2064" r="12"/><text class="step-t" x="20" y="2068" text-anchor="middle" style="font-size:9.5px">A7</text></g>
       <g><circle class="step-c" cx="230" cy="1719" r="12"/><text class="step-t" x="230" y="1723" text-anchor="middle" style="font-size:9.5px">AE</text></g>
     </svg>
-    <figcaption>Dashed boxes are code that exists but is commented out, including every field check in both triggers. The red box is the risky step: the row reads <code>CANCELLED</code> as soon as the request is submitted, before anyone approves it. The maker-checker check is assumed to be in the approval form's <code>WHEN-NEW-FORM-INSTANCE</code>, as for creation.</figcaption>
+    <figcaption>Dashed boxes are field checks that exist in both triggers but are commented out. The red box marks where the row first reads <code>CANCELLED</code>: on submit, before approval. The maker-checker check is assumed to be in the approval form's <code>WHEN-NEW-FORM-INSTANCE</code>, as for creation.</figcaption>
   </figure>
 </section>
 
@@ -378,29 +374,9 @@ footer{font-size:12.5px;color:var(--muted)}
 </section>
 
 <section class="card" aria-labelledby="h-enq">
-  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ, called twice</h2><p>The same procedure raises the request on submit (step 1) and approves it (step A2). Amber values differ between the two calls.</p></div></div>
+  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ · central approval queue</h2><p><code>PRC_APP_ENQ</code> belongs to the core banking's general approval module, which gathers every record waiting for approval. Every new or changed record goes through it when it is submitted, and again when it is approved. It doesn't post anything itself: the end-of-day and start-of-day procedures carry out the actual transactions. The table shows what each call passes; amber marks the values that differ.</p></div></div>
   <div class="tbl-wrap"><table class="params cmp"><thead><tr><th>#</th><th>On submit</th><th>On approve</th><th>Meaning</th></tr></thead><tbody id="params"></tbody></table></div>
   <p style="font-size:14px;color:var(--muted)">Unlike creation and amendment, both calls pass the local currency (<code>GET_LOCALCURRENCY</code>) and leave the channel code empty.</p>
-</section>
-
-<section class="card" aria-labelledby="h-conf">
-  <div class="card-head"><div><h2 id="h-conf">To confirm with the PL/SQL team</h2><p>Red items change what other screens and reports see, and should be settled before the Angular build copies this logic.</p></div></div>
-  <h3>Data and status</h3>
-  <div class="confirm">
-    <div class="crit"><b>Cancelled before approval</b>Submit already sets <code>APPROVAL_STATUS = 'CANCELLED'</code> and flag <code>'C'</code>. Any screen or report filtering on status treats the collateral as closed while it waits, and there is no path back to <code>'Y'</code> if the request is refused.</div>
-    <div class="crit"><b>No checks at all</b>Every field check is commented out, the closure reason isn't required, and nothing stops cancelling a collateral that a loan still draws on. The new design requires the reason and a "no running loan" confirmation.</div>
-    <div class="crit"><b>APP_REF overwritten</b>Submit replaces <code>APP_REF</code> with the cancellation request, so the link to the creation approval is lost from the live row.</div>
-    <div class="crit"><b>Lien not released</b><code>prc_central_app</code> is commented out in both triggers, so closing a collateral releases nothing on the account.</div>
-  </div>
-  <h3>Behaviour to confirm</h3>
-  <div class="confirm">
-    <div><b>Amendment columns reused</b>The request is stamped in <code>AMENDED_BY</code> and the approval in <code>AM_APPROVED_BY</code>, so a cancellation overwrites the last amendment's stamps and can't be told apart from one.</div>
-    <div><b>Saved by the form, not by SQL</b>Flag, status, reason and stamps are set on block <code>ONE</code> and saved by the form's commit. Which columns does that block save? The Angular build needs an explicit update.</div>
-    <div><b>Response codes</b>Approval treats anything other than <code>Y</code> as an error. Creation and amendment let other codes through. Which is right?</div>
-    <div><b>No history</b>Amendment copies the row to <code>TB_COLLATERAL_HISTORY</code>; cancellation doesn't. Should it?</div>
-    <div><b>Unused read</b>Submit reads the account number and <code>APP_REF</code> only for the commented-out <code>prc_central_app</code>. With duplicate rows it would fail with "too many rows".</div>
-    <div><b>Channel code empty</b>Both calls pass NULL as the channel code, where creation and amendment pass <code>:GLOBAL.CHNCODE</code>.</div>
-  </div>
 </section>
 
 <footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. JSON values are sample data.</footer>
