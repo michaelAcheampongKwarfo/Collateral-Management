@@ -1,5 +1,7 @@
 # Collateral Approval: Process Flow (draft)
 
+> **Creation approval from the PL/SQL:** see [`../creation/creation-approval-flow.html`](../creation/creation-approval-flow.html) for the current Forms approve trigger (read by `APP_REF`, `PRC_APP_ENQ` returning `Y`/`F`, `TB_COLLATERAL` update, audit), drawn together with creation.
+
 > **Status: draft.** Based on the approval screenshots and the agreed design. It will be rewritten once the approval PL/SQL is reviewed. Nodes marked *(to confirm)* match [`collateral-approval.md` §5](collateral-approval.md#5-to-confirm-against-the-plsql).
 
 ```mermaid
