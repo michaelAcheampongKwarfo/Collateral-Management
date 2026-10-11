@@ -9,7 +9,7 @@ Design and documentation for moving the Collateral Management screens from Oracl
 | Cancellation | Spec, UI prototype and draft flow ready. Uses the Amendment list with a read-only form and closure reason. [Cancellation and approval flow](docs/cancellation/cancellation-approval-flow.html) from the PL/SQL. |
 | Approvals | Spec, UI prototype and draft flow ready. One queue for creation, amendment and cancellation requests. |
 | Enquiry | Spec, UI prototype and draft flow ready. All, running and used collateral, with quick search, funnel filters, review-date filters and PDF / Excel. |
-| Returned | Prototype ready (in the Approval spec). Requests returned by an approver, corrected on their entry screen and resubmitted. |
+| Returned | Prototype ready (in the Approval spec). Requests returned by an approver, corrected on their entry screen and resubmitted. [Return and resubmit flow](docs/returned/return-flow.html). |
 | Reporting | **Review due / overdue** report prototyped ([spec](docs/reporting/review-due-overdue.md)). Expiring collateral and Audit trail chosen next ([training notes](docs/training-notes.md)). |
 
 Training session notes and where each is handled: [docs/training-notes.md](docs/training-notes.md).

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Return and Resubmit Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a technical brief in the prototype's enterprise style. Swimlane flowchart first, then the payload by collateral type, then the procedure call and open questions. */
+:root{
+  --bg:#E6EBF2; --surface:#F9FAFC; --surface-2:#F1F4F8; --sunken:#E7ECF2;
+  --fg:#13223A; --muted:#5A6A80; --faint:#8593A6; --line:#D5DCE6; --edge:#6B7A90;
+  --primary:#0B5CAD; --primary-soft:#E3ECF8; --navy:#0F2342; --navy-soft:#E4E9F1;
+  --green:#1D7A4C; --green-soft:#E4F3EB; --amber:#9A5A00; --amber-soft:#FFF4E0; --rose:#B4234F; --rose-soft:#FCEBF1;
+  --font-ui:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.55;padding:32px 24px 56px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+p{margin:0}
+.mono,code{font-family:var(--font-mono);font-size:.92em}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+.lead{color:var(--muted);max-width:72ch;margin-top:6px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.tag b{color:var(--fg);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.card-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:75ch}
+
+/* flowchart */
+.fig{margin:0;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:760px;height:auto;color:var(--edge)}
+.fig figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:90ch}
+.lane-bg{fill:var(--surface-2)} .lane-bg.alt{fill:var(--surface)}
+.lane-h{fill:var(--navy-soft)}
+.lane-t{fill:var(--fg);font:700 12px var(--font-ui);letter-spacing:.06em;text-transform:uppercase}
+.lane-s{fill:var(--muted);font:500 11px var(--font-mono)}
+.lane-div{stroke:var(--line);stroke-width:1}
+.n{stroke-width:1.4}
+.n-ui{fill:var(--surface);stroke:var(--edge)}
+.n-proc{fill:var(--primary-soft);stroke:var(--primary)}
+.n-db{fill:var(--navy-soft);stroke:var(--navy)}
+.n-dec{fill:var(--amber-soft);stroke:var(--amber)}
+.n-err{fill:var(--rose-soft);stroke:var(--rose)}
+.n-ok{fill:var(--green-soft);stroke:var(--green)}
+.n-start{fill:var(--navy);stroke:var(--navy)}
+.t{fill:var(--fg);font:600 13px var(--font-ui)}
+.t-mono{fill:var(--fg);font:600 12.5px var(--font-mono)}
+.t-sub{fill:var(--muted);font:500 11px var(--font-ui)}
+.t-subm{fill:var(--muted);font:500 10.5px var(--font-mono)}
+.t-inv{fill:var(--bg);font:700 13px var(--font-ui)}
+.t-ok{fill:var(--green);font:700 13px var(--font-ui)}
+.t-err{fill:var(--rose);font:700 13px var(--font-ui)}
+.edge{fill:none;stroke:currentColor;stroke-width:1.5}
+.edge-l{fill:var(--muted);font:600 11px var(--font-ui)}
+.edge-yes{fill:var(--green);font:700 11px var(--font-ui)}
+.edge-no{fill:var(--rose);font:700 11px var(--font-ui)}
+.edge-data{fill:var(--primary);font:600 10.5px var(--font-mono)}
+.step-c{fill:var(--fg)} .step-t{fill:var(--bg);font:700 10.5px var(--font-mono)}
+.arrowhead{fill:currentColor}
+
+/* payload */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--sunken);border-radius:10px;flex-wrap:wrap;align-self:flex-start}
+.tabs button{border:0;background:none;font:600 13.5px var(--font-ui);color:var(--muted);padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;gap:7px;align-items:center}
+.tabs button .c{font:600 11.5px var(--font-mono);color:var(--faint)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(19,34,58,.08)}
+.tabs button:focus-visible,.copy:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.pay{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-block:6px}
+td.k{font-family:var(--font-mono);font-size:12.5px;color:var(--primary);white-space:nowrap}
+td.col{font-family:var(--font-mono);font-size:12px;white-space:nowrap}
+td .note{display:block;color:var(--muted);font-size:12px}
+.req{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.req.y{background:var(--rose-soft);color:var(--rose)}
+.req.s{background:var(--navy-soft);color:var(--navy)}
+.req.o{background:var(--sunken);color:var(--muted)}
+.warn{color:var(--amber);font-weight:600}
+.code{position:relative;background:var(--navy);color:#E5ECF5;border-radius:8px;padding:16px 18px;font:500 12.5px/1.6 var(--font-mono);overflow-x:auto;margin:0;white-space:pre}
+:root[data-theme="dark"] .code{background:#0A111D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .code{background:#0A111D}}
+.code .jk{color:#8CC4FF}.code .js{color:#A8E6B8}.code .jn{color:#FFD28A}.code .jc{color:#8593A6}
+.code-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.code-head span{font-size:12.5px;color:var(--muted)}
+.copy{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 12px var(--font-ui);border-radius:7px;padding:5px 10px;cursor:pointer}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lookups{display:flex;flex-wrap:wrap;gap:6px}
+.lk{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--surface-2)}
+.lk b{font-family:var(--font-mono);font-weight:600;color:var(--primary);margin-right:4px}
+.srv{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.srv div{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:var(--surface-2);min-width:0}
+.srv b{display:block;font:600 12.5px var(--font-mono)}
+.srv span{font-size:12.5px;color:var(--muted)}
+.params td:first-child{font-family:var(--font-mono);color:var(--faint);width:42px}
+.dir{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px}
+.dir.in{background:var(--primary-soft);color:var(--primary)}.dir.out{background:var(--green-soft);color:var(--green)}.dir.nil{background:var(--sunken);color:var(--faint)}
+.confirm{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.confirm div{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:12px 14px;background:var(--surface-2);font-size:14px}
+.confirm b{display:block;margin-bottom:3px}
+footer{font-size:12.5px;color:var(--muted)}
+@media (max-width:860px){.pay{grid-template-columns:1fr}}
+@media (max-width:640px){body{padding:20px 16px 40px}h1{font-size:24px}.card{padding:18px 16px}}
+.phase{fill:var(--navy)} .phase-t{fill:var(--bg);font:700 11.5px var(--font-ui);letter-spacing:.08em;text-transform:uppercase}
+.phase-s{fill:var(--bg);font:500 11px var(--font-ui);opacity:.8}
+.n-ghost{fill:none;stroke:var(--faint);stroke-dasharray:5 4}
+.t-ghost{fill:var(--faint);font:600 12px var(--font-mono)} .t-ghost-s{fill:var(--faint);font:italic 500 11px var(--font-ui)}
+.edge-dash{fill:none;stroke:var(--faint);stroke-width:1.4;stroke-dasharray:5 4}
+.cmp td.diff{color:var(--amber);font-weight:600}
+.cmp td.col{white-space:normal}
+.cols2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+.state{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.state .pill{font:600 12.5px var(--font-mono);border-radius:99px;padding:4px 12px}
+.state .p-n{background:var(--amber-soft);color:var(--amber)}.state .p-y{background:var(--green-soft);color:var(--green)}
+.state .arr{color:var(--faint)}
+.ghostbox{border:1.5px dashed var(--faint);border-radius:8px;padding:12px 14px;font-size:14px;color:var(--muted)}
+.ghostbox b{color:var(--fg)}
+.cols2 > *,.side > *,.card > *,.wrap > *{min-width:0;max-width:100%}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.n-risk{fill:var(--rose-soft);stroke:var(--rose);stroke-width:1.8}
+.matrix td{text-align:center;white-space:nowrap}.matrix td:first-child{text-align:left;white-space:normal}
+.matrix .bad{color:var(--rose);font-weight:700}.matrix .ok{color:var(--green);font-weight:700}
+.confirm div.crit{border-left-color:var(--rose)}
+.empty-tab{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:8px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Collateral Management · Returned (new module)</div>
+  <h1>Return and Resubmit</h1>
+  <p class="lead">The approval screens in Oracle Forms can only approve. The new design gives the approver three decisions: <b>Authorize</b>, <b>Return</b> for correction, or <b>Dismiss</b> for good. A returned request goes to the submitter's <b>Returned</b> queue, reopens on its own entry screen, and comes back for approval with the same collateral number.</p>
+  <div class="meta"><span class="tag">Applies to: <b>creation, amendment and cancellation requests</b></span><span class="tag">Status: <b>proposed design, as built in the prototype</b></span></div>
+</header>
+
+<section class="card" aria-labelledby="h-flow">
+  <div class="card-head"><div><h2 id="h-flow">Return and resubmit flow</h2><p>Three lanes: what the approver does, what the submitter does, and what the system records. The dashed line is the loop back to the approver.</p></div></div>
+  <figure class="fig">
+    <svg viewBox="0 0 1000 1340" role="img" aria-label="Return and resubmit flow. The approver checks the request. If it is correct as submitted, they tick the verification checklist and authorize it. If not, and it can't be corrected, they dismiss it with a reason and a final tick, and it leaves the queue. If it can be corrected, they enter a return reason; the request is marked returned and added to the submitter's Returned queue. The submitter opens it, the entry screen reopens filled in with the reason in a banner, they correct and submit, and once valid it goes back to the approval queue with the same collateral number for the approver to decide again.">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker></defs>
+      <rect class="lane-bg" x="0" y="0" width="400" height="1340"/><rect class="lane-bg alt" x="400" y="0" width="320" height="1340"/><rect class="lane-bg" x="720" y="0" width="280" height="1340"/>
+      <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
+      <line class="lane-div" x1="400" y1="0" x2="400" y2="1340"/><line class="lane-div" x1="720" y1="0" x2="720" y2="1340"/>
+      <text class="lane-t" x="20" y="22">Approver</text><text class="lane-s" x="20" y="38">Approval screen</text>
+      <text class="lane-t" x="420" y="22">Submitter</text><text class="lane-s" x="420" y="38">Returned queue · entry screens</text>
+      <text class="lane-t" x="740" y="22">System</text><text class="lane-s" x="740" y="38">approval queue · request record</text>
+      <path class="edge" d="M120 150 V175" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 227 V259" marker-end="url(#ah)"/>
+      <path class="edge" d="M200 305 H230" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="206" y="297" text-anchor="start">Yes</text>
+      <path class="edge" d="M390 305 H750" marker-end="url(#ah)"/>
+      <text class="edge-l" x="560" y="297" text-anchor="middle">Authorize</text>
+      <path class="edge" d="M120 351 V399" marker-end="url(#ah)"/>
+      <text class="edge-no" x="128" y="376" text-anchor="start">No</text>
+      <path class="edge" d="M200 445 H230" marker-end="url(#ah)"/>
+      <text class="edge-no" x="206" y="437" text-anchor="start">No</text>
+      <path class="edge" d="M390 445 H750" marker-end="url(#ah)"/>
+      <text class="edge-l" x="560" y="437" text-anchor="middle">Dismiss</text>
+      <path class="edge" d="M860 483 V506" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 491 V600" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="128" y="548" text-anchor="start">Yes</text>
+      <path class="edge" d="M220 626 H750" marker-end="url(#ah)"/>
+      <text class="edge-l" x="485" y="618" text-anchor="middle">Return</text>
+      <path class="edge" d="M860 658 V730 H670" marker-end="url(#ah)"/>
+      <path class="edge" d="M560 756 V860" marker-end="url(#ah)"/>
+      <text class="edge-l" x="570" y="780" text-anchor="start">submitter sees it</text>
+      <path class="edge" d="M560 912 V946" marker-end="url(#ah)"/>
+      <path class="edge" d="M560 998 V1032" marker-end="url(#ah)"/>
+      <path class="edge" d="M560 1084 V1114" marker-end="url(#ah)"/>
+      <path class="edge" d="M650 1160 H692 V1058 H670" marker-end="url(#ah)"/>
+      <text class="edge-no" x="660" y="1152" text-anchor="start">No</text>
+      <text class="edge-l" x="700" y="1110" text-anchor="start">fix and</text>
+      <text class="edge-l" x="700" y="1124" text-anchor="start">try again</text>
+      <path class="edge" d="M560 1206 V1270 H750" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="568" y="1230" text-anchor="start">Yes</text>
+      <path class="edge-dash" d="M970 1270 H988 V130 H205" marker-end="url(#ah)"/>
+      <text class="edge-l" x="600" y="122" text-anchor="middle">decided again · same collateral no. · maker-checker applies</text>
+      <rect class="phase" x="0" y="52" width="1000" height="30"/><text class="phase-t" x="20" y="72" text-anchor="start">Approver · decide</text><text class="phase-s" x="172" y="72" text-anchor="start">a different officer from the submitter, Approval screen</text>
+      <rect class="n n-start" x="35" y="110" width="170" height="40" rx="20"/>
+      <text class="t-inv" x="120" y="135" text-anchor="middle">Approver opens request</text>
+      <rect class="n n-ui" x="20" y="175" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="198" text-anchor="middle">Check the request</text>
+      <text class="t-sub" x="120" y="215" text-anchor="middle">fields, changes, documents</text>
+      <polygon class="n n-dec" points="120,259 200,305 120,351 40,305"/>
+      <text class="t" x="120" y="302" text-anchor="middle">Correct as</text>
+      <text class="t" x="120" y="318" text-anchor="middle">submitted?</text>
+      <rect class="n n-ui" x="230" y="279" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="302" text-anchor="middle">Verification checklist</text>
+      <text class="t-sub" x="310" y="319" text-anchor="middle">every item ticked</text>
+      <rect class="n n-ok" x="750" y="279" width="220" height="52" rx="8"/>
+      <text class="t" x="860" y="302" text-anchor="middle">Request authorized</text>
+      <text class="t-sub" x="860" y="319" text-anchor="middle">applied as in its module flow</text>
+      <polygon class="n n-dec" points="120,399 200,445 120,491 40,445"/>
+      <text class="t" x="120" y="442" text-anchor="middle">Can it be</text>
+      <text class="t" x="120" y="458" text-anchor="middle">corrected?</text>
+      <rect class="n n-err" x="230" y="419" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="442" text-anchor="middle">Dismissal reason</text>
+      <text class="t-sub" x="310" y="459" text-anchor="middle">+ “Dismiss permanently” tick</text>
+      <rect class="n n-err" x="750" y="419" width="220" height="64" rx="8"/>
+      <text class="t" x="860" y="441" text-anchor="middle">Mark request dismissed</text>
+      <text class="t-sub" x="860" y="457" text-anchor="middle">reason, who, when</text>
+      <text class="t-sub" x="860" y="472" text-anchor="middle">record keeps its approved values</text>
+      <rect class="n n-err" x="775" y="506" width="170" height="36" rx="18"/>
+      <text class="t-err" x="860" y="529" text-anchor="middle">Leaves the queue</text>
+      <rect class="n n-ui" x="20" y="600" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="623" text-anchor="middle">Enter the return reason</text>
+      <text class="t-sub" x="120" y="640" text-anchor="middle">required: what to correct</text>
+      <rect class="n n-dec" x="750" y="594" width="220" height="64" rx="8"/>
+      <text class="t" x="860" y="616" text-anchor="middle">Mark request returned</text>
+      <text class="t-sub" x="860" y="632" text-anchor="middle">reason, who, when</text>
+      <text class="t-sub" x="860" y="647" text-anchor="middle">record stays locked</text>
+      <rect class="n n-proc" x="450" y="704" width="220" height="52" rx="8"/>
+      <text class="t" x="560" y="727" text-anchor="middle">Added to Returned queue</text>
+      <text class="t-sub" x="560" y="744" text-anchor="middle">amber count in the sidebar</text>
+      <rect class="phase" x="0" y="800" width="1000" height="30"/><text class="phase-t" x="20" y="820" text-anchor="start">Submitter · correct and resubmit</text><text class="phase-s" x="300" y="820" text-anchor="start">the officer who entered it, Returned module</text>
+      <rect class="n n-proc" x="450" y="860" width="220" height="52" rx="8"/>
+      <text class="t" x="560" y="883" text-anchor="middle">Open › on the request</text>
+      <text class="t-sub" x="560" y="900" text-anchor="middle">search and type chips, as Approvals</text>
+      <rect class="n n-proc" x="450" y="946" width="220" height="52" rx="8"/>
+      <text class="t" x="560" y="969" text-anchor="middle">Entry screen reopens</text>
+      <text class="t-sub" x="560" y="986" text-anchor="middle">filled in, reason in a banner</text>
+      <rect class="n n-proc" x="450" y="1032" width="220" height="52" rx="8"/>
+      <text class="t" x="560" y="1055" text-anchor="middle">Correct and Submit</text>
+      <text class="t-sub" x="560" y="1072" text-anchor="middle">same rules as a new entry</text>
+      <polygon class="n n-dec" points="560,1114 650,1160 560,1206 470,1160"/>
+      <text class="t" x="560" y="1157" text-anchor="middle">All valid?</text>
+      <text class="t-sub" x="560" y="1173" text-anchor="middle">fields and rules</text>
+      <rect class="n n-db" x="750" y="1244" width="220" height="52" rx="8"/>
+      <text class="t" x="860" y="1267" text-anchor="middle">Back in the approval queue</text>
+      <text class="t-sub" x="860" y="1284" text-anchor="middle">leaves the Returned queue</text>
+    </svg>
+    <figcaption>Return and Dismiss both need a reason, and Dismiss also needs a final "Dismiss permanently" tick. A resubmitted request is checked with the same rules as a new entry and decided again by an officer other than the submitter. Authorizing follows each module's own flow.</figcaption>
+  </figure>
+</section>
+
+<section class="card" aria-labelledby="h-state">
+  <div class="card-head"><div><h2 id="h-state">Request states</h2><p>Where a request shows at each state, and who acts next.</p></div></div>
+  <div class="state"><span class="pill p-n">Pending</span><span class="arr">→ return →</span><span class="pill" style="background:var(--amber-soft);color:var(--amber)">Returned</span><span class="arr">→ resubmit →</span><span class="pill p-n">Pending</span><span class="arr">→</span><span class="pill p-y">Authorized</span><span class="arr">or</span><span class="pill" style="background:var(--rose-soft);color:var(--rose)">Dismissed</span></div>
+  <div class="tbl-wrap"><table class="cmp" aria-label="Request states"><thead><tr><th>State</th><th>Where it shows</th><th>Collateral record</th><th>Who acts next</th></tr></thead><tbody>
+    <tr><td><b>Pending</b></td><td>Approvals queue, red count in the sidebar</td><td>Creation: <i>Pending</i> in Enquiry. Amendment / cancellation: <i>Amendment pending</i> / <i>Cancellation pending</i>, locked in both lists</td><td>Approver (not the submitter)</td></tr>
+    <tr><td><b>Returned</b></td><td>Returned queue, amber count in the sidebar, with the reason</td><td>Creation: <i>Creation returned</i> in Enquiry. Amendment / cancellation: <i>Amendment returned</i> / <i>Cancellation returned</i>, still locked</td><td>Submitter</td></tr>
+    <tr><td><b>Authorized</b></td><td>Leaves both queues</td><td>Applied as in the creation, amendment or cancellation flow</td><td>No one</td></tr>
+    <tr><td><b>Dismissed</b></td><td>Leaves both queues; the submitter sees the reason</td><td>Creation: not created. Amendment / cancellation: keeps its approved values and is unlocked</td><td>No one; it can't be resubmitted</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="card" aria-labelledby="h-reopen">
+  <div class="card-head"><div><h2 id="h-reopen">What reopens</h2><p>A returned request opens on the screen it was entered on, filled in, with an amber banner showing who returned it, when, and the reason.</p></div></div>
+  <div class="tbl-wrap"><table class="cmp" aria-label="What reopens by request type"><thead><tr><th>Request</th><th>Screen</th><th>Filled in with</th><th>On resubmit</th></tr></thead><tbody>
+    <tr><td><b>Creation</b></td><td>Creation</td><td>Customer and collateral type selected, every field and document as submitted</td><td>Same collateral number; replaces the pending row</td></tr>
+    <tr><td><b>Amendment</b></td><td>Amendment details</td><td>The proposed changes, highlighted against the approved values</td><td>Same collateral number; the new changes replace the returned ones</td></tr>
+    <tr><td><b>Cancellation</b></td><td>Cancellation details</td><td>The read-only collateral and the closure reason</td><td>Same collateral number and reason, unless changed</td></tr>
+  </tbody></table></div>
+</section>
+
+<section class="card" aria-labelledby="h-pay">
+  <div class="card-head"><div><h2 id="h-pay">Payload</h2><p>Proposed API calls for the Angular build. The system adds who acted and when; the browser never sends them.</p></div></div>
+  <div class="pay">
+    <div class="tbl-wrap"><table aria-label="Return module API calls"><thead><tr><th>Action</th><th>Call</th><th>Body</th></tr></thead><tbody>
+      <tr><td>Return</td><td class="col">POST /approvals/{appRef}/return</td><td class="k">reason</td></tr>
+      <tr><td>Dismiss</td><td class="col">POST /approvals/{appRef}/dismiss</td><td class="k">reason, confirmed</td></tr>
+      <tr><td>Returned queue</td><td class="col">GET /approvals/returned?q=&amp;type=</td><td>—<span class="note">the signed-in submitter's requests</span></td></tr>
+      <tr><td>Resubmit</td><td class="col">The original entry call</td><td class="k">returnRef<span class="note">+ the entry's usual body</span></td></tr>
+      <tr class="grp"><td colspan="3">Set by the system</td></tr>
+      <tr><td>Returned</td><td colspan="2"><code>returnedBy</code>, <code>returnedAt</code>, <code>status = RETURNED</code></td></tr>
+      <tr><td>Dismissed</td><td colspan="2"><code>dismissedBy</code>, <code>dismissedAt</code>, <code>status = DISMISSED</code></td></tr>
+    </tbody></table></div>
+    <div class="side">
+      <div><div class="code-head"><span><code>POST /approvals/{appRef}/return</code></span></div>
+<pre class="code">{
+  <span class="jk">"reason"</span>: <span class="js">"Valuation is from June. Attach the new valuation report and update the forced sale value."</span>
+}</pre></div>
+      <div><div class="code-head"><span><code>POST /approvals/{appRef}/dismiss</code></span></div>
+<pre class="code">{
+  <span class="jk">"reason"</span>: <span class="js">"Customer withdrew the facility application."</span>,
+  <span class="jk">"confirmed"</span>: <span class="jn">true</span>
+}</pre></div>
+    </div>
+  </div>
+</section>
+
+<footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. Proposed design; JSON values are sample data.</footer>
+</div>
+
+</html>
