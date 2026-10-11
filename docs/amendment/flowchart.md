@@ -1,5 +1,7 @@
 # Collateral Amendment: Process Flow (draft)
 
+> **From the PL/SQL:** [`amendment-approval-flow.html`](amendment-approval-flow.html) (open in a browser) has the amendment and approval flow read from the save procedures and the approve trigger, with the payload per type and data-safety issues. Image for slides: [`amendment-approval-flow.png`](amendment-approval-flow.png).
+
 > **Status: draft.** Based on the screenshots only. It will be rewritten once the PL/SQL behind the Oracle Forms screens is reviewed. Nodes marked *(to confirm)* match the open questions in [`collateral-amendment.md` §6.2](collateral-amendment.md#62-to-confirm-against-the-plsql).
 
 ```mermaid
