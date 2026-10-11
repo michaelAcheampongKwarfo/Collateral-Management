@@ -1,5 +1,7 @@
 # Collateral Creation: Process Flow
 
+> **Submit flow and payload:** [`submit-flow.html`](submit-flow.html) (open in a browser) has a swimlane version of the Submit trigger, the fields and `TB_COLLATERAL` columns per collateral type, the `PRC_APP_ENQ` parameters and the proposed Angular request body. A slide-ready image is in [`submit-flow.png`](submit-flow.png).
+
 > **Source:** the simplified PL/SQL behind the Oracle Forms *Collateral Creation* screen (customer and type lookups, the per-type lookups, and the five submit procedures). The submit procedure is the same for all five collateral types; only the mandatory fields and the stored columns differ.
 >
 > Rendered images for slides: [`flowchart-1-screen.png`](flowchart-1-screen.png) · [`flowchart-2-submit.png`](flowchart-2-submit.png)

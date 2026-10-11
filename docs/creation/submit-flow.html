@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creation Submit Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: a technical brief in the prototype's enterprise style. Swimlane flowchart first, then the payload by collateral type, then the procedure call and open questions. */
+:root{
+  --bg:#E6EBF2; --surface:#F9FAFC; --surface-2:#F1F4F8; --sunken:#E7ECF2;
+  --fg:#13223A; --muted:#5A6A80; --faint:#8593A6; --line:#D5DCE6; --edge:#6B7A90;
+  --primary:#0B5CAD; --primary-soft:#E3ECF8; --navy:#0F2342; --navy-soft:#E4E9F1;
+  --green:#1D7A4C; --green-soft:#E4F3EB; --amber:#9A5A00; --amber-soft:#FFF4E0; --rose:#B4234F; --rose-soft:#FCEBF1;
+  --font-ui:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1522; --surface:#151E2E; --surface-2:#1A2436; --sunken:#111A28;
+  --fg:#E5ECF5; --muted:#9AA9BE; --faint:#6E7D93; --line:#2A3850; --edge:#8A9AB2;
+  --primary:#6AAEF2; --primary-soft:#16304F; --navy:#C9D6EA; --navy-soft:#1E2A3F;
+  --green:#5CC892; --green-soft:#143326; --amber:#E9B15C; --amber-soft:#352812; --rose:#F08AAB; --rose-soft:#3A1A26; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.55;padding:32px 24px 56px}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{text-wrap:balance;margin:0}
+h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700}
+h3{font-size:15px;font-weight:700}
+p{margin:0}
+.mono,code{font-family:var(--font-mono);font-size:.92em}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+.lead{color:var(--muted);max-width:72ch;margin-top:6px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tag{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--surface);border:1px solid var(--line);color:var(--muted)}
+.tag b{color:var(--fg);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.card-head p{color:var(--muted);font-size:14px;margin-top:3px;max-width:75ch}
+
+/* flowchart */
+.fig{margin:0;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:760px;height:auto;color:var(--edge)}
+.fig figcaption{font-size:13px;color:var(--muted);margin-top:10px;max-width:90ch}
+.lane-bg{fill:var(--surface-2)} .lane-bg.alt{fill:var(--surface)}
+.lane-h{fill:var(--navy-soft)}
+.lane-t{fill:var(--fg);font:700 12px var(--font-ui);letter-spacing:.06em;text-transform:uppercase}
+.lane-s{fill:var(--muted);font:500 11px var(--font-mono)}
+.lane-div{stroke:var(--line);stroke-width:1}
+.n{stroke-width:1.4}
+.n-ui{fill:var(--surface);stroke:var(--edge)}
+.n-proc{fill:var(--primary-soft);stroke:var(--primary)}
+.n-db{fill:var(--navy-soft);stroke:var(--navy)}
+.n-dec{fill:var(--amber-soft);stroke:var(--amber)}
+.n-err{fill:var(--rose-soft);stroke:var(--rose)}
+.n-ok{fill:var(--green-soft);stroke:var(--green)}
+.n-start{fill:var(--navy);stroke:var(--navy)}
+.t{fill:var(--fg);font:600 13px var(--font-ui)}
+.t-mono{fill:var(--fg);font:600 12.5px var(--font-mono)}
+.t-sub{fill:var(--muted);font:500 11px var(--font-ui)}
+.t-subm{fill:var(--muted);font:500 10.5px var(--font-mono)}
+.t-inv{fill:var(--bg);font:700 13px var(--font-ui)}
+.t-ok{fill:var(--green);font:700 13px var(--font-ui)}
+.t-err{fill:var(--rose);font:700 13px var(--font-ui)}
+.edge{fill:none;stroke:currentColor;stroke-width:1.5}
+.edge-l{fill:var(--muted);font:600 11px var(--font-ui)}
+.edge-yes{fill:var(--green);font:700 11px var(--font-ui)}
+.edge-no{fill:var(--rose);font:700 11px var(--font-ui)}
+.edge-data{fill:var(--primary);font:600 10.5px var(--font-mono)}
+.step-c{fill:var(--fg)} .step-t{fill:var(--bg);font:700 10.5px var(--font-mono)}
+.arrowhead{fill:currentColor}
+
+/* payload */
+.tabs{display:flex;gap:4px;padding:4px;background:var(--sunken);border-radius:10px;flex-wrap:wrap;align-self:flex-start}
+.tabs button{border:0;background:none;font:600 13.5px var(--font-ui);color:var(--muted);padding:7px 14px;border-radius:7px;cursor:pointer;display:flex;gap:7px;align-items:center}
+.tabs button .c{font:600 11.5px var(--font-mono);color:var(--faint)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(19,34,58,.08)}
+.tabs button:focus-visible,.copy:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.pay{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface-2);padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tr.grp td{background:var(--surface-2);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-block:6px}
+td.k{font-family:var(--font-mono);font-size:12.5px;color:var(--primary);white-space:nowrap}
+td.col{font-family:var(--font-mono);font-size:12px;white-space:nowrap}
+td .note{display:block;color:var(--muted);font-size:12px}
+.req{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.req.y{background:var(--rose-soft);color:var(--rose)}
+.req.s{background:var(--navy-soft);color:var(--navy)}
+.req.o{background:var(--sunken);color:var(--muted)}
+.warn{color:var(--amber);font-weight:600}
+.code{position:relative;background:var(--navy);color:#E5ECF5;border-radius:8px;padding:16px 18px;font:500 12.5px/1.6 var(--font-mono);overflow-x:auto;margin:0;white-space:pre}
+:root[data-theme="dark"] .code{background:#0A111D}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .code{background:#0A111D}}
+.code .jk{color:#8CC4FF}.code .js{color:#A8E6B8}.code .jn{color:#FFD28A}.code .jc{color:#8593A6}
+.code-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+.code-head span{font-size:12.5px;color:var(--muted)}
+.copy{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 12px var(--font-ui);border-radius:7px;padding:5px 10px;cursor:pointer}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lookups{display:flex;flex-wrap:wrap;gap:6px}
+.lk{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--surface-2)}
+.lk b{font-family:var(--font-mono);font-weight:600;color:var(--primary);margin-right:4px}
+.srv{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.srv div{border:1px solid var(--line);border-radius:8px;padding:9px 12px;background:var(--surface-2);min-width:0}
+.srv b{display:block;font:600 12.5px var(--font-mono)}
+.srv span{font-size:12.5px;color:var(--muted)}
+.params td:first-child{font-family:var(--font-mono);color:var(--faint);width:42px}
+.dir{font-size:11px;font-weight:700;border-radius:99px;padding:1px 8px}
+.dir.in{background:var(--primary-soft);color:var(--primary)}.dir.out{background:var(--green-soft);color:var(--green)}.dir.nil{background:var(--sunken);color:var(--faint)}
+.confirm{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.confirm div{border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:8px;padding:12px 14px;background:var(--surface-2);font-size:14px}
+.confirm b{display:block;margin-bottom:3px}
+footer{font-size:12.5px;color:var(--muted)}
+@media (max-width:860px){.pay{grid-template-columns:1fr}}
+@media (max-width:640px){body{padding:20px 16px 40px}h1{font-size:24px}.card{padding:18px 16px}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">Collateral Management · Creation (LRSK)</div>
+  <h1>What happens when Submit is pressed</h1>
+  <p class="lead">The Oracle Forms submit logic for a new collateral, read from the PL/SQL breakdown. The same nine steps run for all five collateral types. Only the required fields and the columns written to <code>TB_COLLATERAL</code> change by type.</p>
+  <div class="meta"><span class="tag">Source: <b>creation PL/SQL breakdown</b></span><span class="tag">Writes: <b class="mono">TB_COLLATERAL</b></span><span class="tag">Calls: <b class="mono">PRC_APP_ENQ</b>, <b class="mono">PRC_APPROVAL_COMMENTS</b></span></div>
+</header>
+
+<section class="card" aria-labelledby="h-flow">
+  <div class="card-head"><div><h2 id="h-flow">Submit flow</h2><p>Three lanes: what the screen does, what the approval procedures do, and what is written to the database. Numbers match the steps in the PL/SQL.</p></div></div>
+  <figure class="fig">
+    <svg viewBox="0 0 1000 1000" role="img" aria-label="Submit validates required fields, raises an approval request with PRC_APP_ENQ and attaches comments, then if the response code is S deletes any earlier row, inserts the collateral into TB_COLLATERAL with approval flag N, commits, shows success and clears the screen; otherwise it shows the error and saves nothing.">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="arrowhead"/></marker>
+      </defs>
+      <!-- lanes -->
+      <rect class="lane-bg" x="0" y="0" width="400" height="1000"/>
+      <rect class="lane-bg alt" x="400" y="0" width="320" height="1000"/>
+      <rect class="lane-bg" x="720" y="0" width="280" height="1000"/>
+      <rect class="lane-h" x="0" y="0" width="1000" height="48"/>
+      <line class="lane-div" x1="400" y1="0" x2="400" y2="1000"/><line class="lane-div" x1="720" y1="0" x2="720" y2="1000"/>
+      <text class="lane-t" x="20" y="22">Screen</text><text class="lane-s" x="20" y="38">Forms today · Angular next</text>
+      <text class="lane-t" x="420" y="22">Approval procedures</text><text class="lane-s" x="420" y="38">PL/SQL packages</text>
+      <text class="lane-t" x="740" y="22">Database</text><text class="lane-s" x="740" y="38">TB_COLLATERAL</text>
+
+      <!-- edges (drawn first, under nodes) -->
+      <path class="edge" d="M120 110 V135" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 187 V219" marker-end="url(#ah)"/>
+      <path class="edge" d="M200 265 H230" marker-end="url(#ah)"/>
+      <text class="edge-no" x="206" y="257">No</text>
+      <path class="edge" d="M310 291 V332" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 311 V395 H450" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="128" y="334">Yes</text>
+      <text class="edge-data" x="250" y="388">all values</text>
+      <path class="edge" d="M560 421 V470" marker-end="url(#ah)"/>
+      <text class="edge-data" x="570" y="442">APPSEQ_V</text><text class="edge-data" x="570" y="456">RESPONSE_CODE</text>
+      <path class="edge" d="M560 522 V552" marker-end="url(#ah)"/>
+      <path class="edge" d="M470 600 H390" marker-end="url(#ah)"/>
+      <text class="edge-no" x="420" y="592">No</text>
+      <path class="edge" d="M310 626 V672" marker-end="url(#ah)"/>
+      <path class="edge" d="M650 600 H750" marker-end="url(#ah)"/>
+      <text class="edge-yes" x="664" y="592">Yes</text>
+      <path class="edge" d="M860 626 V660" marker-end="url(#ah)"/>
+      <path class="edge" d="M860 724 V760" marker-end="url(#ah)"/>
+      <path class="edge" d="M800 780 H220" marker-end="url(#ah)"/>
+      <text class="edge-l" x="500" y="772">record saved, awaiting approval</text>
+      <path class="edge" d="M120 806 V840" marker-end="url(#ah)"/>
+      <path class="edge" d="M120 892 V930" marker-end="url(#ah)"/>
+
+      <!-- Screen lane -->
+      <rect class="n n-start" x="35" y="70" width="170" height="40" rx="20"/>
+      <text class="t-inv" x="120" y="95" text-anchor="middle">Submit pressed</text>
+
+      <rect class="n n-ui" x="20" y="135" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="157" text-anchor="middle">Validate required fields</text>
+      <text class="t-sub" x="120" y="174" text-anchor="middle">NOT NULL check, per type</text>
+
+      <polygon class="n n-dec" points="120,219 200,265 120,311 40,265"/>
+      <text class="t" x="120" y="262" text-anchor="middle">All filled?</text>
+      <text class="t-sub" x="120" y="277" text-anchor="middle">every required field</text>
+
+      <rect class="n n-err" x="230" y="239" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="261" text-anchor="middle">Show what's missing</text>
+      <text class="t-sub" x="310" y="278" text-anchor="middle">message per empty field</text>
+      <rect class="n n-err" x="245" y="332" width="130" height="36" rx="18"/>
+      <text class="t-err" x="310" y="355" text-anchor="middle">Back to the form</text>
+
+      <rect class="n n-err" x="230" y="574" width="160" height="52" rx="8"/>
+      <text class="t" x="310" y="596" text-anchor="middle">Show the error</text>
+      <text class="t-subm" x="310" y="613" text-anchor="middle">RESPONSE_MESSAGE</text>
+      <rect class="n n-err" x="245" y="672" width="130" height="36" rx="18"/>
+      <text class="t-err" x="310" y="695" text-anchor="middle">Nothing saved</text>
+
+      <rect class="n n-ui" x="20" y="754" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="776" text-anchor="middle">Show success message</text>
+      <text class="t-subm" x="120" y="793" text-anchor="middle">from PRC_APP_ENQ</text>
+      <rect class="n n-ui" x="20" y="840" width="200" height="52" rx="8"/>
+      <text class="t" x="120" y="862" text-anchor="middle">Clear the screen</text>
+      <text class="t-sub" x="120" y="879" text-anchor="middle">ready for the next collateral</text>
+      <rect class="n n-ok" x="35" y="930" width="170" height="40" rx="20"/>
+      <text class="t-ok" x="120" y="955" text-anchor="middle">Pending approval</text>
+
+      <!-- Approval lane -->
+      <rect class="n n-proc" x="450" y="369" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="391" text-anchor="middle">PRC_APP_ENQ</text>
+      <text class="t-sub" x="560" y="408" text-anchor="middle">raise the approval request</text>
+      <rect class="n n-proc" x="450" y="470" width="220" height="52" rx="8"/>
+      <text class="t-mono" x="560" y="492" text-anchor="middle">PRC_APPROVAL_COMMENTS</text>
+      <text class="t-subm" x="560" y="509" text-anchor="middle">APPSEQ_V, TEMP_REF</text>
+      <polygon class="n n-dec" points="560,552 650,600 560,648 470,600"/>
+      <text class="t-mono" x="560" y="597" text-anchor="middle">RESPONSE_CODE</text>
+      <text class="t" x="560" y="614" text-anchor="middle">= 'S' ?</text>
+
+      <!-- Database lane -->
+      <rect class="n n-db" x="750" y="574" width="220" height="52" rx="8"/>
+      <text class="t" x="860" y="596" text-anchor="middle">Delete any earlier row</text>
+      <text class="t-sub" x="860" y="613" text-anchor="middle">same collateral no. (resubmit)</text>
+      <rect class="n n-db" x="750" y="660" width="220" height="64" rx="8"/>
+      <text class="t-mono" x="860" y="682" text-anchor="middle">INSERT TB_COLLATERAL</text>
+      <text class="t-subm" x="860" y="699" text-anchor="middle">APPROVAL_FLAG = 'N'</text>
+      <text class="t-subm" x="860" y="714" text-anchor="middle">APP_REF = APPSEQ_V</text>
+      <rect class="n n-db" x="800" y="760" width="120" height="40" rx="8"/>
+      <text class="t-mono" x="860" y="785" text-anchor="middle">COMMIT</text>
+
+      <!-- step numbers from the PL/SQL -->
+      <g><circle class="step-c" cx="20" cy="135" r="10"/><text class="step-t" x="20" y="139" text-anchor="middle">1</text></g>
+      <g><circle class="step-c" cx="450" cy="369" r="10"/><text class="step-t" x="450" y="373" text-anchor="middle">2</text></g>
+      <g><circle class="step-c" cx="450" cy="470" r="10"/><text class="step-t" x="450" y="474" text-anchor="middle">3</text></g>
+      <g><circle class="step-c" cx="560" cy="552" r="10"/><text class="step-t" x="560" y="556" text-anchor="middle">4</text></g>
+      <g><circle class="step-c" cx="750" cy="574" r="10"/><text class="step-t" x="750" y="578" text-anchor="middle">5</text></g>
+      <g><circle class="step-c" cx="750" cy="660" r="10"/><text class="step-t" x="750" y="664" text-anchor="middle">5</text></g>
+      <g><circle class="step-c" cx="800" cy="760" r="10"/><text class="step-t" x="800" y="764" text-anchor="middle">6</text></g>
+      <g><circle class="step-c" cx="20" cy="754" r="10"/><text class="step-t" x="20" y="758" text-anchor="middle">7</text></g>
+      <g><circle class="step-c" cx="20" cy="840" r="10"/><text class="step-t" x="20" y="844" text-anchor="middle">8</text></g>
+      <g><circle class="step-c" cx="230" cy="574" r="10"/><text class="step-t" x="230" y="578" text-anchor="middle">9</text></g>
+    </svg>
+    <figcaption>A collateral is saved only when <code>PRC_APP_ENQ</code> answers <code>S</code>. It is saved with <code>APPROVAL_FLAG = 'N'</code>, so it waits in the approval queue, linked to the request by <code>APP_REF</code>. Red boxes are the two ways the submit stops without saving.</figcaption>
+  </figure>
+</section>
+
+<section class="card" aria-labelledby="h-pay">
+  <div class="card-head"><div><h2 id="h-pay">Payload by collateral type</h2><p>The fields each type sends, the <code>TB_COLLATERAL</code> column each one lands in, and whether the PL/SQL requires it. On the right is the request body proposed for the Angular API.</p></div></div>
+  <div class="tabs" role="tablist" aria-label="Collateral type" id="tabs"></div>
+  <div class="pay">
+    <div class="tbl-wrap"><table id="fields" aria-label="Fields for the selected collateral type"><thead><tr><th>Field on screen</th><th>JSON key</th><th>TB_COLLATERAL column</th><th>PL/SQL</th></tr></thead><tbody></tbody></table></div>
+    <div class="side">
+      <div><div class="code-head"><span><code>POST /collaterals</code> request body</span><button class="copy" id="copy" type="button">Copy JSON</button></div><pre class="code" id="json"></pre></div>
+      <div><h3 style="margin-bottom:8px">Lists the screen loads</h3><div class="lookups" id="lookups"></div></div>
+    </div>
+  </div>
+  <div>
+    <h3 style="margin-bottom:4px">Set by the system, never sent from the screen</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:10px">Same for every type. In Angular these move to the server, so the browser can't change them.</p>
+    <div class="srv">
+      <div><b>COLLATERAL_NO</b><span>Generated: <code>GET_BATCHNO</code></span></div>
+      <div><b>COLL_DESC</b><span>Collateral type description</span></div>
+      <div><b>APPROVAL_FLAG</b><span><code>'N'</code>, waiting for approval</span></div>
+      <div><b>APP_REF</b><span><code>APPSEQ_V</code> from <code>PRC_APP_ENQ</code></span></div>
+      <div><b>BRANCH_CODE</b><span><code>BRA</code>, the posting branch</span></div>
+      <div><b>POSTED_BY</b><span>Signed-in user (<code>USERNAME</code>)</span></div>
+      <div><b>POSTING_SYS_DATE</b><span>Posting date (<code>DATE</code> / <code>GET_POSTINGDATE</code>)</span></div>
+      <div><b>POSTING_SYS_TIME</b><span><code>SYSDATE</code></span></div>
+      <div><b>POSTING_TERMINAL</b><span><code>HOSTNAME</code></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-enq">
+  <div class="card-head"><div><h2 id="h-enq">PRC_APP_ENQ call</h2><p>Step 2. The same 19 positional parameters for every type. Only the currency name differs (<code>CURRENCY</code> or <code>CURRENCY_CODE</code>).</p></div></div>
+  <div class="tbl-wrap"><table class="params"><thead><tr><th>#</th><th>Value passed</th><th>Meaning</th><th>Direction</th></tr></thead><tbody id="params"></tbody></table></div>
+  <p style="font-size:14px;color:var(--muted)">Step 3 then calls <code>PRC_APPROVAL_COMMENTS(APPSEQ_V, TEMP_REF)</code> to attach the screen's comments to the same request.</p>
+</section>
+
+<section class="card" aria-labelledby="h-conf">
+  <div class="card-head"><div><h2 id="h-conf">To confirm with the PL/SQL team</h2><p>Points in the breakdown that look unexpected, or that the Angular build needs a decision on.</p></div></div>
+  <div class="confirm">
+    <div><b>Property insert columns</b>The property INSERT lists the insurance columns (<code>POLICY_TYPE</code>, <code>INS_COMPANY</code>, <code>INS_CODE</code>, <code>POLICY_NO</code>). Location, ownership, forced sale value, valuer and valuation date are validated but not inserted. Which columns does the real code write?</div>
+    <div><b>Comments before the check</b><code>PRC_APPROVAL_COMMENTS</code> runs before <code>RESPONSE_CODE</code> is checked. If the request fails, are the comments left behind?</div>
+    <div><b>Delete then insert</b>Step 5 deletes any row with the same collateral number before inserting. This is what lets a returned request be resubmitted, but it also drops the earlier row's history.</div>
+    <div><b>Fields saved but not required</b>Insurance saves <code>POLICY_NO</code> without requiring it. Guarantee saves the account and the underlying collateral type without requiring them. Should they be required?</div>
+    <div><b>Approval request ID</b>Is <code>APPSEQ_V</code> returned by <code>PRC_APP_ENQ</code>, or generated before the call?</div>
+    <div><b>Typos in the breakdown</b>Shares inserts <code>FOLIO_START_N</code>, and its block is titled "submit guarantee collateral". Probably copy slips. Confirm against the source.</div>
+  </div>
+</section>
+
+<footer>Prepared for the Oracle Forms → Angular migration of Collateral Management. JSON values are sample data.</footer>
+</div>
+
+<script>
+(()=>{
+const COMMON=[
+  ["Customer number","customerNumber","CUSTOMER_NUMBER","y","043468"],
+  ["Collateral type","collateralType","COLL_TYPE","y",null],
+  ["Amount considered","amountConsidered","AMOUNT_CONSIDERED","y",null],
+  ["Review date","reviewDate","REVIEW_DATE","y","2027-04-07"],
+  ["Expiry date","expiryDate","EXP_DATE","y","2027-10-07"],
+  ["Comment","comments","COMMENTS","o",""],
+];
+const TYPES=[
+  {code:"C01",name:"Cash",amount:800,lookups:[["G_LEDGER","customer's accounts with a balance"],["VW_ALL_LEDGER","balances of the chosen account"]],rows:[
+    ["Source account","accountNumber","ACCOUNT_NUMBER · PLEDGE_ACCOUNT","y","00422004346801"],
+    ["Currency","currency","CURRENCY","y","GHS","From the chosen account"],
+    ["Account description",null,"AC_DESC","s",null,"From the chosen account"],
+    ["Account balance",null,"AMOUNT","s",null,"BAL at submit"],
+    ["Amount available",null,"AMT_AVAIL","s",null,"AMT, cash only"]]},
+  {code:"C02",name:"Insurance",amount:9000,lookups:[["ICC","insurance companies"],["POL","policy types"]],rows:[
+    ["Account number","accountNumber","ACCOUNT_NUMBER","y","00422004346801"],
+    ["Insurance company","insuranceCompany","INS_COMPANY","y","104"],
+    ["Insurance code","insuranceCode","INS_CODE","y","ENT-2291"],
+    ["Policy type","policyType","POLICY_TYPE","y","02"],
+    ["Policy number","policyNo","POLICY_NO","o","LA-2025-0412"],
+    ["Sum assured","amount","AMOUNT","o",10000]]},
+  {code:"C03",name:"Property",amount:120000,lookups:[["PRO","property types"],["PRS","sub-types (land, P01)"]],warn:true,rows:[
+    ["Property type","propertyType","not in INSERT","y","P01","Validated but not inserted"],
+    ["Sub property type","subPropertyType","not in INSERT","o","01"],
+    ["Ownership name","ownershipName","not in INSERT","y","ROSE T. NYEMAH"],
+    ["Location","location","not in INSERT","y","Weija, Accra"],
+    ["Market value","amount","AMOUNT","y",150000],
+    ["Forced sale value","forcedSaleValue","not in INSERT","y",125000],
+    ["Valuer name","valuerName","not in INSERT","y","Meridian Property Consult"],
+    ["Valuer contact","valuerContact","not in INSERT","y","0244 000 111"],
+    ["Valuation date","valuationDate","not in INSERT","y","2026-09-20"]]},
+  {code:"C04",name:"Guarantee",amount:500000,lookups:[["ICC","financial institutions"],["G_LEDGER","customer's accounts"],["TB_CURRENCY","currencies"],["ACT","deposit types (not 9)"],["COL","C01, C02, C03, C05"]],rows:[
+    ["Financial institution","financialInstitution","COMPANY","y","101"],
+    ["Account number","accountNumber","ACCOUNT_NUMBER","o","00422004346801","ac_no"],
+    ["Branch",null,"BRANCH","s",null,"From the chosen account"],
+    ["Currency","currency","CURRENCY","y","010"],
+    ["Deposit type","depositType","DEPOSITE_TYPE","y","01"],
+    ["Underlying collateral type","underlyingType","PROPERTY_TYPE","o","C01","COLA_TYPE"],
+    ["Interest rate (%)","interestRate","INTEREST_RATE","y",7.25],
+    ["Number of months","months","NO_OF_MONTHS","y",24],
+    ["Guarantee amount","amount","AMOUNT","y",650000],
+    ["Folio number","folioNo","FOLIO_NO","y","9921"],
+    ["Folio start number","folioStart","FOLIO_START_NO","y","10"],
+    ["Folio end number","folioEnd","FOLIO_END_NO","y","40"]]},
+  {code:"C05",name:"Shares",amount:25000,lookups:[["SHA","shares / stock types"],["IND","index types"]],rows:[
+    ["Security code","securityCode","SEC_CODE","y","ACB"],
+    ["Index","indexNo","INDEX_NO","y","01"],
+    ["Market value","marketValue","MARKET_VALUE","y",40000],
+    ["Number of shares","units","NO_SHARE","y",2000],
+    ["Amount","amount","AMOUNT","y",40000],
+    ["Folio number","folioNo","FOLIO_NO","y","5512"],
+    ["Folio start number","folioStart","FOLIO_START_NO","y","1"],
+    ["Folio end number","folioEnd","FOLIO_END_NO","y","20"],
+    ["Account number","accountNumber","ACCOUNT_NUMBER","o","00422004346801","acc_number"]]},
+];
+const PARAMS=[
+  ["GET_PROCESS_CODE(FRMCODE)","Process code of the creation screen","in"],["APPSEQ_V","Approval request ID, used as APP_REF","out"],
+  ["CUSTOMER_NUMBER","Customer","in"],["BRANCH_CODE","Posting branch","in"],["AMOUNT_CONSIDERED","Amount the request is for","in"],
+  ["NULL","Not used","nil"],["CURRENCY","Currency (CURRENCY_CODE for property and shares)","in"],["NULL","Not used","nil"],
+  ["USERNAME","Signed-in user","in"],["TERMINAL_ID","Terminal","in"],["TERMINAL_IP","Terminal IP address","in"],
+  ["NULL","Not used","nil"],["NULL","Not used","nil"],["CHNCODE","Channel code","in"],
+  ["NULL","Not used","nil"],["NULL","Not used","nil"],["NULL","Not used","nil"],
+  ["RESPONSE_CODE","S = success, anything else = failure","out"],["RESPONSE_MESSAGE","Message shown to the user","out"]];
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const REQ={y:["Required","y"],o:["Optional","o"],s:["From system","s"]};
+$("#params").innerHTML=PARAMS.map((p,i)=>`<tr><td>${i+1}</td><td class="col">${p[0]}</td><td>${p[1]}</td><td><span class="dir ${p[2]}">${{in:"In",out:"Returned",nil:"—"}[p[2]]}</span></td></tr>`).join("");
+let cur=0;
+function body(t){
+  const o={};COMMON.forEach(r=>o[r[1]]=r[1]==="collateralType"?t.code:r[1]==="amountConsidered"?t.amount:r[4]);
+  const d={};t.rows.forEach(r=>{if(r[1])d[r[1]]=r[4]});o[t.name.toLowerCase()]=d;return o;
+}
+function hl(json){return esc(json).replace(/(&quot;[^&]*?&quot;)(\s*:)?|(-?\d+(?:\.\d+)?)/g,(m,s,colon,n)=>s?(colon?`<span class="jk">${s}</span>${colon}`:`<span class="js">${s}</span>`):`<span class="jn">${n}</span>`)}
+function render(){
+  const t=TYPES[cur];
+  $("#tabs").querySelectorAll("button").forEach((b,i)=>{b.setAttribute("aria-selected",i===cur);b.tabIndex=i===cur?0:-1});
+  const row=r=>`<tr><td>${esc(r[0])}${r[5]?`<span class="note">${esc(r[5])}</span>`:""}</td><td class="k">${r[1]?esc(r[1]):'<span style="color:var(--faint)">—</span>'}</td><td class="col">${r[2]==="not in INSERT"?'<span class="warn">not in INSERT</span>':esc(r[2])}</td><td><span class="req ${REQ[r[3]][1]}">${REQ[r[3]][0]}</span></td></tr>`;
+  $("#fields tbody").innerHTML=`<tr class="grp"><td colspan="4">Every type</td></tr>${COMMON.map(row).join("")}<tr class="grp"><td colspan="4">${esc(t.name)} · ${t.code}</td></tr>${t.rows.map(row).join("")}`;
+  $("#json").innerHTML=hl(JSON.stringify(body(t),null,2));
+  $("#lookups").innerHTML=[["COL","collateral types"],...t.lookups].map(l=>`<span class="lk"><b>${esc(l[0])}</b>${esc(l[1])}</span>`).join("");
+}
+$("#tabs").innerHTML=TYPES.map((t,i)=>`<button role="tab" id="tab-${t.code}" aria-controls="fields">${t.name}<span class="c">${t.code}</span></button>`).join("");
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;cur=[...$("#tabs").children].indexOf(b);render()});
+$("#tabs").addEventListener("keydown",e=>{const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(!d)return;cur=(cur+d+TYPES.length)%TYPES.length;render();$("#tabs").children[cur].focus()});
+$("#copy").addEventListener("click",async()=>{const b=$("#copy"),txt=JSON.stringify(body(TYPES[cur]),null,2);
+  try{await navigator.clipboard.writeText(txt);b.textContent="Copied"}catch(e){const r=document.createRange();r.selectNodeContents($("#json"));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press Ctrl+C"}
+  setTimeout(()=>b.textContent="Copy JSON",1800)});
+render();
+})();
+</script>
+
+</html>
