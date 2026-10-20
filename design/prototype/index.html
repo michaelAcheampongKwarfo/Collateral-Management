@@ -1664,7 +1664,7 @@ function apActionBar(mode){
   if(isOwn(P.item))return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${cmt}${sep}${exit}</div>`;
   return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>(${P.comments.length})</span>`:""}</button>${sep}
     <button class="btn act-amber" id="apReturn" title="Send back to the submitter for correction">${icon("refresh")}Return</button>
-    <button class="btn act-rose" id="apDismiss" title="End the request for good">${icon("ban")}Dismiss</button>
+    <button class="btn act-rose" id="apDismiss" title="End the request for good">${icon("ban")}Reject</button>
     <button class="btn act-green" id="apAuth">${icon("check")}Authorize</button>${sep}${exit}</div>`;
 }
 function apRows(){
@@ -1677,7 +1677,7 @@ function apRows(){
 const kindBadge=k=>`<span class="kind ${KIND[k].cls}">${KIND[k].label}</span>`;
 function apListHtml(){
   const{rows,counts}=apRows();
-  return `<div class="page-head"><div><h1>Approvals</h1><p>Requests waiting for a decision. Open one to check it, then return, dismiss or authorize it.</p></div>${apActionBar("list")}</div>
+  return `<div class="page-head"><div><h1>Approvals</h1><p>Requests waiting for a decision. Open one to check it, then return, reject or authorize it.</p></div>${apActionBar("list")}</div>
   <section class="card" aria-labelledby="apS1"><div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="apS1">Search requests</h2><p>Filter by customer name, customer number or collateral number.</p></div></div>
     <div class="card-body"><div class="quick"><div class="quick-in">${icon("search")}<input class="input" id="apQ" aria-label="Search by customer or collateral" placeholder="Customer or collateral no." title="e.g. Nyemah, 046378 or 2606304232" value="${esc(P.q)}"></div></div></div></section>
   <section class="card" aria-labelledby="apS2"><div class="card-head wrap"><div><h2 id="apS2">Pending requests</h2><p>${rows.length} request${rows.length===1?"":"s"} waiting. Oldest requests are at the bottom.</p></div>
@@ -1701,7 +1701,7 @@ function apDetailHtml(){
   const lead={create:"Check the new collateral against its documents, then decide.",amend:"Changed fields are highlighted with their current value underneath. Check each change, then decide.",cancel:"Check the collateral and the reason for closing it, then decide."}[it.kind];
   return `<div class="page-head"><div><button class="back" data-apback><svg class="i flip"><use href="#i-chev"/></svg>Back to approvals</button>
     <h1>${KIND[it.kind].label} approval <span class="mono h1-no">${it.no}</span></h1><p>${lead}</p></div>${apActionBar("detail")}</div>
-  ${isOwn(it)?`<div class="return-banner own-banner" role="note">${icon("lock")}<div><b>You submitted this request, so you can't decide on it.</b> Another officer must return, dismiss or authorize it (maker-checker).<span class="hint">In the prototype, switch user from the top bar to try it as the approver.</span></div></div>`:""}
+  ${isOwn(it)?`<div class="return-banner own-banner" role="note">${icon("lock")}<div><b>You submitted this request, so you can't decide on it.</b> Another officer must return, reject or authorize it (maker-checker).<span class="hint">In the prototype, switch user from the top bar to try it as the approver.</span></div></div>`:""}
   <section class="card" aria-labelledby="apR"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="apR">Request</h2><p>Who asked for what, and when.</p></div></div>
     <div class="card-body"><div class="figs" style="--tc:var(${t.tc})">
       ${cell("Request",kindBadge(it.kind))}${cell("Submitted by",`<span class="mono">${it.by}</span>`)}${cell("Submitted on",it.on)}
@@ -1711,7 +1711,7 @@ function apDetailHtml(){
     <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
   ${it.kind==="cancel"?`<section class="card reason-card ro-reason" aria-labelledby="apX"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="apX">Closure reason</h2><p>As entered by <span class="mono">${it.by}</span> on ${it.on}.</p></div></div><div class="card-body"><blockquote class="reason-quote">${esc(it.reason)}</blockquote></div></section>`:""}
   <div class="form-wrap"><section class="card" id="apForm" style="--tc:var(${t.tc})"></section><aside class="rail" id="apRail"></aside></div>
-  <div class="foot-note">${icon("info")}Every field is read only.${isOwn(it)?"":" Return or dismiss with a reason, or authorize after the verification checklist."}</div>`;
+  <div class="foot-note">${icon("info")}Every field is read only.${isOwn(it)?"":" Return or reject with a reason, or authorize after the verification checklist."}</div>`;
 }
 function renderApForm(){
   const it=P.item,t=apType(it),st=apState(it);
@@ -1724,7 +1724,7 @@ function renderApRail(){
   const it=P.item,st=apState(it),ch=apChanges(it);
   let h=isOwn(it)?"":`<div class="card decision"><div class="card-body"><h3>Decision</h3>
     <ul class="dec-list"><li><span class="kind k-amend">Return</span>Send back with a reason. It reappears in the submitter's Returned queue to correct and resubmit.</li>
-      <li><span class="kind k-cancel">Dismiss</span>End the request for good, with a reason and a final confirmation.</li>
+      <li><span class="kind k-cancel">Reject</span>End the request for good, with a reason and a final confirmation.</li>
       <li><span class="kind k-ok">Authorize</span>Apply it, after ticking every item on the verification checklist (${verifyItems(it).length} items).</li></ul>
   </div></div>`;
   if(ch.length)h+=`<div class="card"><div class="card-body"><h3>Requested changes</h3><div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
@@ -1767,7 +1767,7 @@ function decide(it,action,reason){
   if(it.kind==="create"){
     if(ok){const v={...it.values};if(it.type==="C03"){v.collAmount=v.marketValue;delete v.marketValue}if(it.type==="C05"){v.stockAmount=v.secAmount;delete v.secAmount}
       AM.unshift({no:it.no,cust:it.cust,type:it.type,by:ME.code,appr:nowStamp(),values:v,lookups:{...it.lookups},status:"Approved",docs:it.docs});}
-    if(row){row.status=ok?"Approved":"Dismissed";row.date=ok?nowStamp():null}
+    if(row){row.status=ok?"Approved":"Rejected";row.date=ok?nowStamp():null}
   }else if(it.kind==="amend"){
     if(ok){it.rec.values={...it.values};it.rec.lookups={...it.lookups};it.rec.appr=nowStamp();it.rec.by=ME.code}
     it.rec.status="Approved";
@@ -1784,15 +1784,15 @@ function doneModal(ic,title,text){
 function verifyModal(it,mode){
   const items=verifyItems(it),dismiss=mode==="dismiss";
   openLayer(`<div class="modal verify" role="dialog" aria-modal="true" aria-labelledby="vfT" style="width:min(560px,100%)">
-    <header><div><h2 id="vfT">${dismiss?"Dismiss this request?":"Verify before authorizing"}</h2><p class="hint" style="margin:2px 0 0">${KIND[it.kind].label} · <span class="mono">${it.no}</span> · ${esc(custBy(it.cust).name)}</p></div><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <header><div><h2 id="vfT">${dismiss?"Reject this request?":"Verify before authorizing"}</h2><p class="hint" style="margin:2px 0 0">${KIND[it.kind].label} · <span class="mono">${it.no}</span> · ${esc(custBy(it.cust).name)}</p></div><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
     <div class="mb">
-      ${dismiss?`<div class="field" id="vfReasonF"><label for="vfReason">Dismissal reason<span class="req">*</span></label><textarea class="input" id="vfReason" maxlength="300" placeholder="e.g. Customer withdrew the facility application."></textarea><span class="hint" id="vfReasonMsg">Required. The submitter sees this exactly as written.</span></div>
-        <label class="tick vf-final" for="vfFinal"><input type="checkbox" id="vfFinal"><span><b>Dismiss permanently</b><br><span class="hint">The request leaves the queue and can't be resubmitted. ${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values."}</span></span></label>`
+      ${dismiss?`<div class="field" id="vfReasonF"><label for="vfReason">Rejection reason<span class="req">*</span></label><textarea class="input" id="vfReason" maxlength="300" placeholder="e.g. Customer withdrew the facility application."></textarea><span class="hint" id="vfReasonMsg">Required. The submitter sees this exactly as written.</span></div>
+        <label class="tick vf-final" for="vfFinal"><input type="checkbox" id="vfFinal"><span><b>Reject permanently</b><br><span class="hint">The request leaves the queue and can't be resubmitted. ${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values."}</span></span></label>`
       :`<div class="vf-head"><span>Verification</span><span>Confirm</span></div>
         <ul class="vf-list">${items.map((t,i)=>`<li><label for="vf${i}"><span>${esc(t)}</span><input type="checkbox" id="vf${i}" data-vf></label></li>`).join("")}</ul>
         <div class="vf-foot"><span class="hint"><b id="vfCount">0</b> of ${items.length} confirmed</span><button class="link-btn" id="vfAll">Tick all</button></div>`}
     </div>
-    <footer><button class="btn" data-close>Back</button>${dismiss?`<button class="btn act-red" id="vfGo" disabled>${icon("ban")}Dismiss request</button>`:`<button class="btn act-green" id="vfGo" disabled>${icon("check")}Authorize</button>`}</footer></div>`);
+    <footer><button class="btn" data-close>Back</button>${dismiss?`<button class="btn act-red" id="vfGo" disabled>${icon("ban")}Reject request</button>`:`<button class="btn act-green" id="vfGo" disabled>${icon("check")}Authorize</button>`}</footer></div>`);
   const go=$("#vfGo"),sync=()=>{
     if(dismiss)go.disabled=!($("#vfReason").value.trim()&&$("#vfFinal").checked);
     else{const n=[...document.querySelectorAll("[data-vf]")].filter(c=>c.checked).length;$("#vfCount").textContent=n;go.disabled=n<items.length;}
@@ -1802,7 +1802,7 @@ function verifyModal(it,mode){
   (dismiss?$("#vfReason"):$("#vf0")).focus();
   go.addEventListener("click",()=>{
     if(dismiss){const v=$("#vfReason").value.trim();decide(it,"dismiss",v);
-      doneModal(`<div class="warn-ic">${icon("ban")}</div>`,"Request dismissed",`The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> has left the queue. <span class="mono">${it.by}</span> sees your reason.`);}
+      doneModal(`<div class="warn-ic">${icon("ban")}</div>`,"Request rejected",`The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> has left the queue. <span class="mono">${it.by}</span> sees your reason.`);}
     else{decide(it,"authorize");doneModal(`<div class="success-ic">${icon("check")}</div>`,RESULT[it.kind][0],`Collateral <span class="mono">${it.no}</span> for ${esc(custBy(it.cust).name)} ${RESULT[it.kind][1]}`);}
   });
 }
@@ -1880,7 +1880,7 @@ retView.addEventListener("input",e=>{if(e.target.id==="rtQ"){RT.q=e.target.value
 apView.addEventListener("input",e=>{if(e.target.id==="apQ"){P.q=e.target.value;const pos=e.target.selectionStart;renderAp();const q=$("#apQ");q.focus();q.setSelectionRange(pos,pos)}});
 apView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
-  if(T("#apHelp")){openDrawer("Help · Approvals",`<ol><li>The queue lists every request waiting for authorization: new collaterals, amendments and cancellations. Filter by request type or search by customer or collateral.</li><li>Select <b>›</b> to open a request. Everything is read only. Amendments highlight each changed field with its current value underneath. Cancellations show the closure reason.</li><li>Check the details and documents, then decide.</li><li><b>Return</b> sends it back to the submitter with a reason to correct and resubmit. <b>Dismiss</b> ends it for good, with a reason and a final confirmation. <b>Authorize</b> applies it once every item on the verification checklist is ticked.</li></ol>`);return}
+  if(T("#apHelp")){openDrawer("Help · Approvals",`<ol><li>The queue lists every request waiting for authorization: new collaterals, amendments and cancellations. Filter by request type or search by customer or collateral.</li><li>Select <b>›</b> to open a request. Everything is read only. Amendments highlight each changed field with its current value underneath. Cancellations show the closure reason.</li><li>Check the details and documents, then decide.</li><li><b>Return</b> sends it back to the submitter with a reason to correct and resubmit. <b>Reject</b> ends it for good, with a reason and a final confirmation. <b>Authorize</b> applies it once every item on the verification checklist is ticked.</li></ol>`);return}
   if(T("#apComment")){openDrawer("Comments",`<div class="field"><label for="apCmt">Add a comment</label><textarea class="input" id="apCmt" placeholder="e.g. Called the valuer to confirm the forced sale value"></textarea></div><div><button class="btn primary" id="apCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${P.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · ${esc(ME.name)}</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
     $("#apCmtAdd").addEventListener("click",()=>{const v=$("#apCmt").value.trim();if(!v)return;P.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAp();toast("Comment added.")});return}
   if(T("#apNew")){P.q="";P.filter="ALL";renderAp();toast("Search cleared.");return}
