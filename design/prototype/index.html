@@ -486,6 +486,8 @@ select.input{appearance:auto}
 .rec-title h2{margin:0}
 .btn.sm{height:32px;padding:0 12px;font-size:13px}
 .exports{display:flex;gap:8px}
+.exports .btn{background:var(--field);font-weight:600}
+.exports .btn svg{width:19px;height:19px}
 .enq-table .desc-cell{display:block;white-space:normal;min-width:170px;max-width:230px;font-size:12.5px;font-weight:500}
 .enq-table .desc-sub{display:block;margin-top:2px}
 .enq-table .desc-sub .tdot{margin-right:5px}
@@ -587,6 +589,8 @@ select.input{appearance:auto}
   <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></symbol>
   <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></symbol>
   <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M6 2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#D93025" stroke="none"/><path d="M14.5 2v4a1.5 1.5 0 0 0 1.5 1.5h4z" fill="#F4A79F" stroke="none"/><path d="M8.2 17.6c1.6-1 3.4-4.6 3.6-7.2.1-1.3-.9-1.4-1.1-.4-.3 1.7 1.9 4.7 4.6 5.2 1.4.3 1.6-.8.5-1-2-.4-6.5 1.2-7.6 3.1-.4.7.1 1 .9.3z" fill="none" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/></symbol>
+  <symbol id="i-xls" viewBox="0 0 24 24"><rect x="8" y="3" width="13" height="18" rx="2" fill="#21A366" stroke="none"/><path d="M14 3h5a2 2 0 0 1 2 2v3.5h-7z" fill="#33C481" stroke="none"/><path d="M14 15.5h7V19a2 2 0 0 1-2 2h-5z" fill="#185C37" stroke="none"/><rect x="3" y="6.5" width="11" height="11" rx="1.6" fill="#107C41" stroke="none"/><path d="M6.2 9.3l4.6 5.4M10.8 9.3l-4.6 5.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
@@ -2040,7 +2044,7 @@ function enqListHtml(){
     ${S_.open?filterPanelHtml():""}
   </div></section>
   <section class="card"><div class="card-head wrap"><div class="rec-title"><h2>${K.label} records</h2><span class="chip-count">${rows.length} record${rows.length===1?"":"s"}</span><button class="btn ghost sm" id="enRefresh">${icon("refresh")}Refresh</button></div>
-      <div class="right exports"><button class="btn sm" id="enPdf">${icon("file")}PDF</button><button class="btn sm" id="enXls">${icon("sheet")}Excel</button></div></div>
+      <div class="right exports"><button class="btn sm" id="enPdf">${icon("pdf")}PDF</button><button class="btn sm" id="enXls">${icon("xls")}Excel</button></div></div>
     <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r"><span class="sr">View</span></th></tr></thead><tbody>
       ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="open-btn" data-eopen="${r.no}" aria-label="View collateral ${r.no}">${icon("chev")}</button></td></tr>`).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collateral matches</b><span>Change the search or clear the filters.</span></div>`}</div>
@@ -2189,7 +2193,7 @@ function renderReport(){
         <button class="chip" data-rpshow="all" aria-pressed="${RP.show==="all"}">All <span class="n">${d.overdue.length+d.due.length}</span></button>
         <button class="chip q-overdue" data-rpshow="overdue" aria-pressed="${RP.show==="overdue"}">Overdue <span class="n">${d.overdue.length}</span></button>
         <button class="chip q-due" data-rpshow="due" aria-pressed="${RP.show==="due"}">Due <span class="n">${d.due.length}</span></button></div>
-        <button class="btn sm" id="rpPdf">${icon("file")}PDF</button><button class="btn sm" id="rpXls">${icon("sheet")}Excel</button></div></div>
+        <button class="btn sm" id="rpPdf">${icon("pdf")}PDF</button><button class="btn sm" id="rpXls">${icon("xls")}Excel</button></div></div>
     <div class="table-wrap">${total?`<table class="grid-table enq-table rp-table"><thead><tr>${RP_COLS.map(c=>`<th class="${c[2]?"num":""}">${c[0]}</th>`).join("")}</tr></thead><tbody>
       ${groups.filter(g=>g[2].length).map(([k,l,rows])=>`<tr class="grp g-${k}"><td colspan="${RP_COLS.length}">${l}<span class="n">${rows.length}</span></td></tr>
         ${rows.map(r=>`<tr>${RP_COLS.map(c=>`<td class="${c[2]?"num":""}">${c[1](r)}</td>`).join("")}</tr>`).join("")}`).join("")}
