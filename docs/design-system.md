@@ -58,15 +58,30 @@ Rules:
 | `--act-amber` | `#9A5A00` | `#E9B15C` |
 | `--act-rose` | `#B4234F` | `#F08AAB` |
 
-## Form layout: inline labels, two fields per row
+## Form layout: inline labels, fields sized to their values
 
-Changed after the presentation (October 2026): every label sits **on the same line** as its field, on the left, as in Oracle Forms.
+Changed after the presentation (October 2026): every label sits **on the same line** as its field, on the left, as in Oracle Forms, and each field is only as wide as the values it holds.
 
-- Each form section is a 12-column grid with **two fields per row** (6 columns each). Narration and other long text take the full row.
-- The label column is 150px wide by default; long labels wrap onto a second line. Hints, limits and errors sit under the field, in the field's column.
-- **Lookups (LOVs)** show the **code** and its **description** in two separate boxes: the code box opens the searchable list, the description box fills itself.
+| Field | Width |
+|---|---|
+| Amount | 160px (`GHS` + `4,000,000.00`) |
+| Date | 152px (`25-OCT-2026` + calendar button) |
+| Short code or number (insurance code, policy number, folio numbers, branch code) | 150px |
+| Phone number | 160px |
+| Percentage | 110px |
+| Count (months, number of shares) | 100px |
+| Account number LOV (code only) | 210px |
+| Currency, source branch | 210px |
+| Lookups, names, locations, product | Fill what is left of the row |
+| Narration | Full row |
+
+- Each section lists its fields in **rows**. Compact fields share a row; lookups and long text stretch to fill it. Standard rows: *Collateral amount · Next review date · Expiry review date*; *Insurance company · Insurance code*; *Policy type · Policy number · Sum assured*; *Valuation date · Market value · Forced sale value*; *Folio number · Folio start · Folio end*.
+- The first label in each row has a fixed 150px column so rows line up on the left; the labels after it take their own width.
+- Hints, limits and errors sit under the field.
+- **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens the searchable list. Auto-filled code values use the same style (`010 - SINKOR`).
 - Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
 - Auto-filled fields have a grey fill and a lock icon.
+- Side panels (required fields, balances, documents, decision, record) sit in a row **above** the form, so the form has the full page width.
 - On phones the label moves above the field and every field takes the full row.
 
 Sections:
@@ -142,7 +157,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Read-only record view (Cancellation)
 
-- The type form is rendered with the same layout, but values sit in grey boxes with no input border. Lookups show the code and the description in separate boxes; amounts are right-aligned in mono.
+- The type form is rendered with the same layout, but values sit in grey boxes with no input border. Lookups show `code - description` in one box; amounts are right-aligned in mono.
 - The form header says "Read only" and shows a lock instead of an edit icon.
 - The single editable input lives in its own card with a red left edge, so the eye goes straight to it.
 
@@ -188,7 +203,7 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 
 | Component | Behaviour | Angular Material equivalent |
 |---|---|---|
-| Lookup field (LOV) | Code box (opens a searchable dialog) next to a read-only description box. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | `mat-dialog` + `mat-table`, or `mat-autocomplete` for short lists |
+| Lookup field (LOV) | One box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`); clicking it opens a searchable dialog. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | `mat-dialog` + `mat-table`, or `mat-autocomplete` for short lists |
 | Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur | `matInput` + custom formatter directive |
 | Date input | Typed or picked; always shown as `DD-MON-YYYY`, placeholder `dd-mmm-yyyy`, matching Oracle | `mat-datepicker` with a custom `DD-MMM-YYYY` date format |
 | Required-fields panel | Count of required fields complete, a progress bar, and the fields still empty (each jumps to its field) | Standalone component |

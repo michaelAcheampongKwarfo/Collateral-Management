@@ -179,8 +179,6 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .err{font-size:12px;color:var(--danger);display:flex;gap:5px;align-items:center}
 .field.invalid .input,.field.invalid .lookup-btn{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
 .section{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
-#formCard .card-body{container-type:inline-size}
-@container (min-width:880px){.section{grid-template-columns:210px minmax(0,1fr);gap:28px}}
 .section-head p{max-width:62ch}
 .section-head{display:flex;flex-direction:column;gap:4px;padding-top:2px}
 .section-head .n{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--tc,var(--primary));letter-spacing:.06em}
@@ -348,8 +346,26 @@ tr.new td{background:var(--primary-soft)}
 .date-btn svg{width:16px;height:16px}
 .date-native{position:absolute;right:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
 .range .date-in{flex:1}
+/* Type forms: fields sized to their values, laid out in rows; lookups and long text fill what is left */
+.frows{display:flex;flex-direction:column;gap:14px}
+.frow{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-start}
+.frow > .field{display:grid;grid-template-columns:max-content var(--cw,minmax(0,1fr));column-gap:10px;row-gap:4px;align-items:center;align-content:start;flex:0 0 auto;min-width:0}
+.frow > .field:first-child{grid-template-columns:var(--lw,150px) var(--cw,minmax(0,1fr))}
+.frow > .field.grow{flex:1 1 var(--basis,240px);grid-template-columns:max-content minmax(0,1fr)}
+.frow > .field.grow:first-child{grid-template-columns:var(--lw,150px) minmax(0,1fr)}
+.frow > .field > :is(label,.lbl){grid-column:1;line-height:1.3}
+.frow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
+.frow > .field:has(textarea,.ro-multi){align-items:start}
+.frow > .field:has(textarea,.ro-multi) > :is(label,.lbl){padding-top:9px}
+.frow > .field .lbl-auto{display:none}
+@media (max-width:640px){.frow > .field,.frow > .field:first-child,.frow > .field.grow{flex:1 1 100%;grid-template-columns:minmax(0,1fr)!important}.frow > .field > *{grid-column:1!important}}
+/* Side panels sit in a row above the form, so the form has the full width */
+.form-wrap{grid-template-columns:minmax(0,1fr)!important}
+.form-wrap > .rail{order:-1;position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:start}
+.lookup-btn .lov-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lookup-btn .lov-v b{font-family:var(--font-mono);font-weight:600;font-size:13px}
 /* Collateral type LOV */
-.type-field{max-width:620px}
+.type-field{max-width:560px}
 /* Required-fields progress (Creation rail) */
 .req-prog{display:flex;align-items:baseline;gap:8px}
 .req-prog .req-n{font-size:22px;font-weight:600;letter-spacing:-.01em}
@@ -360,6 +376,10 @@ tr.new td{background:var(--primary-soft)}
 .req-left li::before{content:"";width:7px;height:7px;border-radius:50%;border:1.5px solid var(--danger);flex:none}
 .req-left .link-btn{font-size:13px;font-weight:500;color:var(--fg);text-align:left}
 .req-left .link-btn:hover{color:var(--primary);text-decoration:underline}
+.rail .req-left{flex-direction:row;flex-wrap:wrap;gap:6px}
+.rail .req-left li{border:1px solid var(--line);border-radius:99px;padding:2px 10px 2px 8px;font-size:12.5px}
+.rail .req-left li:last-child{border-bottom:1px solid var(--line)}
+.rail .req-left .link-btn{font-size:12.5px}
 .ok-line{display:flex;align-items:center;gap:6px;margin:10px 0 0;color:var(--success);font-weight:600;font-size:13px}
 .ok-line svg{width:16px;height:16px}
 /* Supporting documents: a count, the modal shows the list */
@@ -809,9 +829,9 @@ const TYPES=[
     {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
       {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:6,codeOnly:true},
       {id:"accName",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
-      {id:"product",label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
-      {id:"ccy",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
-      {id:"srcBranch",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`},
+      {id:"product",br:true,label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
+      {id:"ccy",w:"m",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
+      {id:"srcBranch",w:"m",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
     ]},
     COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
@@ -819,9 +839,9 @@ const TYPES=[
    sections:[
     {title:"Insurance details",desc:"The insurer and the policy assigned to the bank.",fields:[
       {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:6},
-      {id:"insCode",label:"Insurance code",type:"text",req:true,col:6},
-      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,col:6},
-      {id:"policyNo",label:"Policy number",type:"text",req:true,col:6},
+      {id:"insCode",w:"s",label:"Insurance code",type:"text",req:true,col:6},
+      {id:"policyType",br:true,label:"Policy type",type:"lookup",lov:"policyType",req:true,col:6},
+      {id:"policyNo",w:"s",label:"Policy number",type:"text",req:true,col:6},
       {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:6},
     ]},
     COLL({})]},
@@ -830,13 +850,13 @@ const TYPES=[
     {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
       {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
       {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
-      {id:"owner",label:"Ownership name",type:"text",req:true,col:6},
+      {id:"owner",br:true,label:"Ownership name",type:"text",req:true,col:6},
       {id:"location",label:"Location",type:"text",req:true,col:6,placeholder:"Street, town, plot number"},
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
       {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
       {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6,placeholder:"e.g. 0302678178"},
-      {id:"valDate",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"valDate",br:true,label:"Valuation date",type:"date",req:true,col:6},
       {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
       {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
     ]},
@@ -846,18 +866,18 @@ const TYPES=[
     {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
       {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
       {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
-      {id:"guarAccount",label:"Account number",type:"lookup",lov:"account",req:true,col:6},
-      {id:"branch",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} · ${s.lookups.guarAccount.branch}`,from:"account"},
-      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
+      {id:"guarAccount",br:true,label:"Account number",type:"lookup",lov:"account",req:true,col:6},
+      {id:"branch",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} - ${s.lookups.guarAccount.branch}`,from:"account"},
+      {id:"depositType",br:true,label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
       {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
     {title:"Terms and folio",desc:"Amount, rate and tenor of the guarantee, and its folio range.",fields:[
       {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:6},
       {id:"rate",label:"Interest rate",type:"percent",req:true,col:6},
       {id:"months",label:"Number of months",type:"int",req:true,col:6},
-      {id:"folioNo",label:"Folio number",type:"text",req:true,col:6},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:6},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:6},
+      {id:"folioNo",w:"s",br:true,label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",w:"s",label:"Folio start number",type:"text",req:true,col:6},
+      {id:"folioEnd",w:"s",label:"Folio end number",type:"text",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
@@ -865,14 +885,14 @@ const TYPES=[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:6},
+      {id:"units",br:true,label:"Number of shares / securities",type:"int",req:true,col:6},
       {id:"secAmount",label:"Security amount",type:"amount",req:true,col:6},
       {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
     ]},
     {title:"Folio",desc:"Folio reference and the certificate range pledged.",fields:[
-      {id:"folioNo",label:"Folio number",type:"text",req:true,col:6},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:6},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:6},
+      {id:"folioNo",w:"s",br:true,label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",w:"s",label:"Folio start number",type:"text",req:true,col:6},
+      {id:"folioEnd",w:"s",label:"Folio end number",type:"text",req:true,col:6},
     ]},
     COLL({})]},
 ];
@@ -924,7 +944,7 @@ function fetchCustomer(code){
 /* ---------- Step 2: type tiles ---------- */
 function renderTypes(){
   const t=typeBy(S.type);
-  $("#types").innerHTML=`<div class="lov-pair"><button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="code-v">${t.code}</span>`:`<span class="ph">Select</span>`}${icon("search")}</button><div class="ro lov-desc ${t?"":"empty"}"><span class="t">${t?esc(t.lovDesc):S.customer?"Description":"Find the customer first"}</span></div></div>`;
+  $("#types").innerHTML=`<button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="lov-v"><b>${t.code}</b> - ${esc(t.lovDesc)}</span>`:`<span class="ph">${S.customer?"Search and select":"Find the customer first"}</span>`}${icon("search")}</button>`;
   $("#typeHint").textContent=t?t.d:"Cash, insurance, property, guarantee or shares. Each opens its own form.";
 }
 /* scroll so the whole card, header included, sits under the sticky top bar */
@@ -940,21 +960,19 @@ function fieldHtml(t,f,st=S){
     const lk=f.type==="lookup"&&st.lookups[f.id];
     const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
     const chg=st.orig&&isChanged(f,st);
-    const box=lk?`<div class="lov-pair ${f.codeOnly?"code-only":""}" id="${id}"><div class="ro ro-view code-ro"><span class="t">${esc(lk.code)}</span></div>${f.codeOnly?"":`<div class="ro ro-view"><span class="t">${esc(lk.desc)}</span></div>`}</div>`
-      :`<div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${empty?"—":`<span class="t">${esc(val)}</span>`}</div>`;
-    return `<div class="field ${chg?"changed":""}" style="--col:${f.col}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span>${box}${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
+    const shown=lk&&f.codeOnly?lk.code:val;
+    const box=`<div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)||lk?"num-ish":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${empty?"—":`<span class="t">${esc(shown)}</span>`}</div>`;
+    return `<div class="field ${fcls(f)} ${chg?"changed":""}" style="${fsty(f)}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span>${box}${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
   }
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
   let ctl="";
   if(f.type==="lookup"){
     const row=st.lookups[f.id];const lov=LOVS[f.lov];
     const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
-    const btn=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code-v">${esc(row.code)}</span>`:`<span class="ph">${f.codeOnly?"Search and select":"Select"}</span>`}${icon("search")}</button>`;
-    ctl=f.codeOnly?`<div class="lov-pair code-only">${btn}</div>`
-      :`<div class="lov-pair">${btn}<div class="ro lov-desc ${row?"":"empty"}"><span class="t">${row?esc(row.desc):blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Description"}</span></div></div>`;
+    ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="lov-v">${f.codeOnly?`<b>${esc(row.code)}</b>`:`<b>${esc(row.code)}</b> - ${esc(row.desc)}`}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
   }else if(f.type==="derived"){
     const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
-    return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
+    return `<div class="field ${fcls(f)}" style="${fsty(f)}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
   }else if(f.type==="textarea"){
     ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
   }else if(f.type==="amount"){
@@ -975,8 +993,26 @@ function fieldHtml(t,f,st=S){
   else if(f.id==="amount"&&st.type==="C02")help=`<div class="hint">Up to the sum assured${parseAmt(st.values.sumAssured)!=null?` <span class="mono">${fmt(parseAmt(st.values.sumAssured))}</span>`:""}</div>`;
   else if(f.id==="amount"&&st.type==="C03")help=`<div class="hint">Up to the forced sale value${parseAmt(st.values.forcedSale)!=null?` <span class="mono">${fmt(parseAmt(st.values.forcedSale))}</span>`:""}</div>`;
   else if(f.id==="forcedSale")help=`<div class="hint">Up to the ${st.values.collAmount!=null&&st.values.marketValue==null?"collateral amount":"market value"}</div>`;
-  else if(f.id==="reviewDate")help=`<div class="hint">Must be before the expiry date</div>`;
-  return `<div class="field ${err?"invalid":""} ${chg?"changed":""}" style="--col:${f.col}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
+  else if(f.id==="reviewDate")help=`<div class="hint">Before the expiry date</div>`;
+  return `<div class="field ${fcls(f)} ${err?"invalid":""} ${chg?"changed":""}" style="${fsty(f)}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
+}
+/* Field widths follow the value: amounts, dates, codes and numbers are fixed; lookups and long text grow */
+const CW={amount:"160px",date:"152px",int:"100px",percent:"110px",tel:"160px"};
+function fsize(f){
+  if(f.type==="textarea")return{grow:1,basis:"100%"};
+  if(f.codeOnly)return{cw:"210px"};
+  if(f.w==="s")return{cw:"150px"};
+  if(f.w==="m")return{cw:"210px"};
+  if(CW[f.type])return{cw:CW[f.type]};
+  return{grow:1};
+}
+const fcls=f=>fsize(f).grow?"grow":"";
+const fsty=f=>{const z=fsize(f);return z.grow?(z.basis?`--basis:${z.basis}`:""):`--cw:${z.cw}`};
+/* a section's fields in rows: a field marked br, or a textarea, starts a new row */
+function rowsHtml(sec,fn){
+  const rows=[];
+  sec.fields.forEach((f,i)=>{const prev=sec.fields[i-1];if(!i||f.br||f.type==="textarea"||prev?.type==="textarea")rows.push([]);rows[rows.length-1].push(f)});
+  return `<div class="frows">${rows.map(r=>`<div class="frow">${r.map(fn).join("")}</div>`).join("")}</div>`;
 }
 const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
 
@@ -994,7 +1030,7 @@ function renderForm(){
       <div class="right"><span class="mono" style="font-size:12px;color:var(--muted)">${t.code} · ${esc(t.lovDesc)}</span></div></div>
     <div class="card-body">
       ${errList.length?`<div class="alert" role="alert" id="errSummary">${icon("alert")}<div><b>${errList.length} field${errList.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errList.slice(0,6).map(([k,m])=>`<li><a href="#f-${t.code}-${k}" data-jump="f-${t.code}-${k}">${esc(m)}</a></li>`).join("")}${errList.length>6?`<li>and ${errList.length-6} more</li>`:""}</ul></div></div>`:""}
-      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f)).join("")}</div></div>`).join("")}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f))}</div>`).join("")}
     </div>`;
 }
 
@@ -1291,22 +1327,22 @@ const AM_TYPES=[
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
       {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
       {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6},
-      {id:"valDate",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"valDate",br:true,label:"Valuation date",type:"date",req:true,col:6},
       {id:"collAmount",label:"Collateral amount",type:"amount",req:true,col:6},
       {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
     ]},COLL({})]),
   AMT("C04",[
     {title:"Guarantee details",desc:"The institution, currency and deposit behind the guarantee.",fields:[
       {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
-      {id:"branch",label:"Branch",type:"text",col:6},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"branch",w:"s",label:"Branch",type:"text",col:6},
+      {id:"currency",br:true,label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
       {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
     ]},TYPES[3].sections[1],COLL({})]),
   AMT("C05",[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:6},
+      {id:"units",br:true,label:"Number of shares / securities",type:"int",req:true,col:6},
       {id:"stockAmount",label:"Stock amount",type:"amount",req:true,col:6},
       {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
     ]},TYPES[4].sections[1],COLL({})]),
@@ -1354,7 +1390,7 @@ function isChanged(f,st){
 }
 function showVal(f,vals,lks){
   const v=vals[f.id];if(v==null||String(v).trim()==="")return"(blank)";
-  if(f.type==="lookup"){const l=lks[f.id];return l?`${l.code} · ${l.desc}`:v}
+  if(f.type==="lookup"){const l=lks[f.id];return l?`${l.code} - ${l.desc}`:v}
   if(f.type==="date")return fmtDate(v);
   if(f.type==="amount")return parseAmt(v)!=null?fmt(parseAmt(v)):v;
   if(f.type==="percent")return v+" %";
@@ -1477,7 +1513,7 @@ function renderAmForm(){
       <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${A.rec.no}</b></div></div>
     <div class="card-body">
       ${errs.length?`<div class="alert" role="alert" id="amErr">${icon("alert")}<div><b>${errs.length} field${errs.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errs.map(([k,m])=>`<li><a href="#a-${t.code}-${k}" data-jump="a-${t.code}-${k}">${esc(m)}</a></li>`).join("")}</ul></div></div>`:""}
-      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,A)).join("")}</div></div>`).join("")}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,A))}</div>`).join("")}
     </div>`;
 }
 
@@ -1804,7 +1840,7 @@ function renderApForm(){
   $("#apForm").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div>
       <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only${it.kind==="amend"?". Edited fields are highlighted.":"."}</p></div>
       <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${it.no}</b></div></div>
-    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,st)).join("")}</div></div>`).join("")}</div>`;
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
 }
 function renderApRail(){
   const it=P.item,st=apState(it),ch=apChanges(it);
@@ -2166,7 +2202,7 @@ function renderEnqDetailParts(){
   const x=E().item,r=x.r,t=r.isNew?typeBy(r.type):amTypeBy(r.type),st={readonly:true,pfx:"e",type:r.type,values:r.values,lookups:r.lookups,customer:x.cust,rec:r};
   $("#enForm2").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div><div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only.</p></div>
     <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${x.no}</b></div></div>
-    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div><div class="grid">${sec.fields.map(f=>fieldHtml(t,f,st)).join("")}</div></div>`).join("")}</div>`;
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
   $("#enRail").innerHTML=`<div class="card"><div class="card-body"><h3>Record</h3>
     <div class="kv"><span>Collateral no.</span><b class="mono">${x.no}</b></div><div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
     <div class="kv"><span>Status</span><b><span class="status ${STATUS_CLS[x.status]}">${x.status}</span></b></div>
