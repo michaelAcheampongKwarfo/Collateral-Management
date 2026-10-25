@@ -189,7 +189,8 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .section-title{font-size:14px;font-weight:700;color:var(--fg);margin:0}
 
 /* Step 1: customer */
-.cust-row{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start}
+.cust-row{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+#fld-customer{max-width:440px}
 .search{display:flex;gap:0}
 .search .input{border-top-right-radius:0;border-bottom-right-radius:0;font-family:var(--font-mono);letter-spacing:.04em}
 .search .btn{border-top-left-radius:0;border-bottom-left-radius:0;border-left:0;height:38px}
@@ -233,7 +234,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .tile[aria-checked="true"] .tick{display:grid}
 
 /* Step 3: dynamic form + rail */
-.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
 .type-chip{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--tc)}
 .type-chip .ic{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:var(--sunken)}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px}
@@ -320,6 +321,50 @@ tr.new td{background:var(--primary-soft)}
 }
 @media (max-width:640px){.types{grid-template-columns:repeat(2,minmax(0,1fr))}.grid > .field{grid-column:1/-1}.actionbar .sep{display:none}.actionbar .btn{min-width:0;flex:1 1 auto}.sample-pill{display:none}.card-head .right:not(.chips){display:none}.card-head .chips{width:100%}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- Post-presentation (Oct 2026): inline labels, code + description LOVs, DD-MON-YYYY dates ---------- */
+/* Every form field: label on the left, control on the right; hints and errors sit under the control */
+:is(.grid > .field,.field.inl){display:grid;grid-template-columns:var(--lw,150px) minmax(0,1fr);column-gap:12px;row-gap:4px;align-items:center;align-content:start}
+:is(.grid > .field,.field.inl) > :is(label,.lbl){grid-column:1;line-height:1.3}
+:is(.grid > .field,.field.inl) > :not(label):not(.lbl){grid-column:2;min-width:0}
+:is(.grid > .field,.field.inl):has(textarea,.ro-multi){align-items:start}
+:is(.grid > .field,.field.inl):has(textarea,.ro-multi) > :is(label,.lbl){padding-top:9px}
+:is(.grid > .field,.field.inl) .lbl-auto{display:none}
+@media (max-width:640px){:is(.grid > .field,.field.inl){grid-template-columns:minmax(0,1fr)}:is(.grid > .field,.field.inl) > *{grid-column:1!important}}
+/* LOV: the code and its description are separate boxes */
+.lov-pair{display:flex;gap:8px;min-width:0}
+.lov-pair > .lookup-btn{flex:0 0 auto;width:auto;min-width:118px;max-width:55%}
+.lov-pair.code-only > .lookup-btn{flex:1 1 auto;max-width:none}
+.lookup-btn .code-v{flex:1;font-family:var(--font-mono);font-size:13px;font-weight:600;white-space:nowrap}
+.lov-pair > .ro{flex:1 1 auto;min-width:0;width:auto}
+.lov-pair > .ro.code-ro{flex:0 0 auto;width:auto;min-width:72px;max-width:55%;font-family:var(--font-mono);font-weight:600}
+.lov-pair .lov-desc .t{overflow:hidden;text-overflow:ellipsis}
+/* Dates: typed or picked, always shown as DD-MON-YYYY */
+.date-in{position:relative;display:flex;min-width:0}
+.date-in .input{padding-right:38px;text-transform:uppercase;letter-spacing:.02em}
+.date-in .input::placeholder{text-transform:none;letter-spacing:0}
+.date-btn{position:absolute;right:1px;top:1px;bottom:1px;width:36px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.date-btn:hover{color:var(--primary)}
+.date-btn svg{width:16px;height:16px}
+.date-native{position:absolute;right:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
+.range .date-in{flex:1}
+/* Collateral type LOV */
+.type-field{max-width:620px}
+/* Required-fields progress (Creation rail) */
+.req-prog{display:flex;align-items:baseline;gap:8px}
+.req-prog .req-n{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.req-prog .req-n b{font-weight:600}
+.req-left{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.req-left li{display:flex;align-items:center;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line)}
+.req-left li:last-child{border-bottom:0}
+.req-left li::before{content:"";width:7px;height:7px;border-radius:50%;border:1.5px solid var(--danger);flex:none}
+.req-left .link-btn{font-size:13px;font-weight:500;color:var(--fg);text-align:left}
+.req-left .link-btn:hover{color:var(--primary);text-decoration:underline}
+.ok-line{display:flex;align-items:center;gap:6px;margin:10px 0 0;color:var(--success);font-weight:600;font-size:13px}
+.ok-line svg{width:16px;height:16px}
+/* Supporting documents: a count, the modal shows the list */
+.doc-count{display:flex;align-items:baseline;gap:8px;margin:0 0 12px;color:var(--muted);font-size:13px}
+.doc-count .n{font-size:22px;font-weight:600;color:var(--fg)}
 
 /* ---------- Amendment ---------- */
 .was{font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap;min-width:0}
@@ -648,18 +693,15 @@ select.input{appearance:auto}
         <div class="card-head"><div class="step" id="step1">1</div><div><h2 id="s1">Customer</h2><p>Enter the customer number or search for the customer.</p></div></div>
         <div class="card-body">
           <div class="cust-row">
-            <div class="field w-sm" id="fld-customer">
+            <div class="field inl" id="fld-customer" style="--lw:130px">
               <label for="custNo">Customer number<span class="req">*</span></label>
               <div class="search">
                 <input class="input" id="custNo" inputmode="numeric" autocomplete="off" placeholder="e.g. 056719" maxlength="10">
                 <button class="btn" id="custSearch" type="button" aria-label="Search customers"><svg class="i"><use href="#i-search"/></svg></button>
               </div>
-              <div class="hint" id="custHint" style="max-width:220px">Press Enter to fetch the customer.</div>
+              <div class="hint" id="custHint">Press Enter to fetch the customer.</div>
             </div>
-            <div class="field">
-              <span class="lbl">Customer profile</span>
-              <div id="custCard"></div>
-            </div>
+            <div id="custCard" aria-label="Customer profile"></div>
           </div>
         </div>
       </section>
@@ -667,7 +709,7 @@ select.input{appearance:auto}
       <!-- Step 2 -->
       <section class="card" aria-labelledby="s2">
         <div class="card-head"><div class="step" id="step2">2</div><div><h2 id="s2">Collateral type</h2><p>Each type opens its own set of details.</p></div></div>
-        <div class="card-body"><div class="types" role="radiogroup" aria-labelledby="s2" id="types"></div></div>
+        <div class="card-body"><div class="field inl type-field" style="--lw:130px"><label for="typeBtn">Collateral type<span class="req">*</span></label><div id="types"></div><div class="hint" id="typeHint"></div></div></div>
       </section>
 
       <!-- Step 3 -->
@@ -702,7 +744,24 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const icon=(n,cls="i")=>`<svg class="${cls}"><use href="#i-${n}"/></svg>`;
 const fmt=n=>Number(n).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 const MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
-const fmtDate=iso=>{if(!iso)return"";const[y,m,d]=iso.split("-");return `${d}-${MON[+m-1]}-${y}`};
+const ISO_RE=/^\d{4}-\d{2}-\d{2}$/;
+const fmtDate=iso=>{if(!iso)return"";if(!ISO_RE.test(iso))return String(iso);const[y,m,d]=iso.split("-");return `${d}-${MON[+m-1]}-${y}`};
+/* Dates are typed or picked as DD-MON-YYYY (25-OCT-2026) and kept as ISO (2026-10-25) underneath.
+   toIso: "" when empty, null when it isn't a real date. Also accepts 25/10/2026 and 2026-10-25. */
+function toIso(v){
+  v=String(v||"").trim();if(!v)return"";
+  let y,m,d,x;
+  if(x=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)){[y,m,d]=[+x[1],+x[2],+x[3]]}
+  else if(x=v.match(/^(\d{1,2})[-\/ .]([A-Za-z]{3})[-\/ .](\d{4})$/)){d=+x[1];m=MON.indexOf(x[2].toUpperCase())+1;y=+x[3]}
+  else if(x=v.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/)){d=+x[1];m=+x[2];y=+x[3]}
+  else return null;
+  const dt=new Date(Date.UTC(y,m-1,d));
+  if(!m||dt.getUTCFullYear()!==y||dt.getUTCMonth()!==m-1||dt.getUTCDate()!==d)return null;
+  return `${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+}
+/* the value a control stands for: ISO for date fields (or the raw text if it isn't a date yet) */
+const valOf=el=>{if(!el.hasAttribute("data-date"))return el.value;const r=toIso(el.value);return r===null?el.value.trim():r};
+const dateCtl=(attrs,iso)=>`<div class="date-in"><input class="input mono" type="text" data-date ${attrs} placeholder="dd-mmm-yyyy" maxlength="11" autocomplete="off" value="${esc(fmtDate(iso||""))}"><button type="button" class="date-btn" tabindex="-1" aria-label="Open calendar">${icon("calendar")}</button><input type="date" class="date-native" tabindex="-1" aria-hidden="true"></div>`;
 const parseAmt=v=>{const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n)?null:n};
 
 /* ---------- Sample reference data (stands in for the Oracle LOVs) ---------- */
@@ -732,37 +791,38 @@ const LOVS={
   guarCollType:{title:"Guarantee collateral types",rows:()=>[L("01","BANK GUARANTEE"),L("02","LIEN ON DEPOSIT"),L("03","STANDBY LETTER OF CREDIT")]},
   shareCode:{title:"Shares / securities",rows:()=>[L("ACB","ATLANTIC COMMERCIAL BANK PLC"),L("WCM","WEST COAST CEMENT LTD"),L("GBD","GOVT BOND 3Y 2027"),L("TPL","TROPIC PALM OIL PLC")]},
   shareIndex:{title:"Indices",rows:()=>[L("01","GSE COMPOSITE INDEX"),L("02","GSE FINANCIAL STOCKS INDEX"),L("03","FIXED INCOME (GFIM)")]},
-  account:{title:"Customer accounts",rows:s=>ACCOUNTS.filter(a=>a.cust===s.customer?.code).map(a=>Object.assign({},a,{desc:a.desc+" · "+a.prodDesc}))},
+  account:{title:"Customer accounts",rows:s=>ACCOUNTS.filter(a=>a.cust===s.customer?.code)},
 };
 
 /* ---------- Collateral type schemas (same shape the Angular dynamic form would read) ---------- */
 /* Layout: every section is a 12-column grid. `col` = columns the field spans, chosen from the
    length of its value. Every row adds up to 12, so left and right edges always line up. */
 const COLL=(o)=>({title:"Collateral details",desc:o.desc||"Value the bank will rely on, and when the collateral must be reviewed.",fields:[
-  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:4},
-  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true,col:4},
-  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:4},
-  {id:"comment",label:"Comment",type:"textarea",col:12,placeholder:"Optional notes for the approver"},
+  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:6},
+  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true,col:6},
+  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:6},
+  {id:"comment",label:"Narration",type:"textarea",col:12,placeholder:"Optional narration for the approver"},
 ]});
 const TYPES=[
   {code:"C01",name:"Cash",title:"Cash collateral",lovDesc:"CASH COLLATERALS",tc:"--t-cash",ic:"cash",d:"Lien on the customer's own deposit account",
    sections:[
     {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
-      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:8},
-      {id:"srcBranch",label:"Source branch",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`},
-      {id:"product",label:"Product",type:"derived",col:8,get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
-      {id:"ccy",label:"Currency",type:"derived",col:4,get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
+      {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:6,codeOnly:true},
+      {id:"accName",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
+      {id:"product",label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} · ${s.lookups.account.prodDesc}`},
+      {id:"ccy",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} · ${s.lookups.account.ccyDesc}`},
+      {id:"srcBranch",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} · ${s.lookups.account.branch}`},
     ]},
     COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
   {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
    sections:[
     {title:"Insurance details",desc:"The insurer and the policy assigned to the bank.",fields:[
-      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:8},
-      {id:"insCode",label:"Insurance code",type:"text",req:true,col:4},
-      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,col:4},
-      {id:"policyNo",label:"Policy number",type:"text",req:true,col:4},
-      {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:4},
+      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:6},
+      {id:"insCode",label:"Insurance code",type:"text",req:true,col:6},
+      {id:"policyType",label:"Policy type",type:"lookup",lov:"policyType",req:true,col:6},
+      {id:"policyNo",label:"Policy number",type:"text",req:true,col:6},
+      {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C03",name:"Property",title:"Property collateral",lovDesc:"PROPERTY COLLATERAL",tc:"--t-prop",ic:"home",d:"Land or buildings under a legal charge",
@@ -770,34 +830,34 @@ const TYPES=[
     {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
       {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
       {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
-      {id:"owner",label:"Ownership name",type:"text",req:true,col:5},
-      {id:"location",label:"Location",type:"text",req:true,col:7,placeholder:"Street, town, plot number"},
+      {id:"owner",label:"Ownership name",type:"text",req:true,col:6},
+      {id:"location",label:"Location",type:"text",req:true,col:6,placeholder:"Street, town, plot number"},
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
-      {id:"valuer",label:"Valuer name",type:"text",req:true,col:8},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:4,placeholder:"e.g. 0302678178"},
-      {id:"valDate",label:"Valuation date",type:"date",req:true,col:4},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
-      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:4},
+      {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6,placeholder:"e.g. 0302678178"},
+      {id:"valDate",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
+      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
    sections:[
     {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
-      {id:"guarAccount",label:"Account number",type:"lookup",lov:"account",req:true,col:8},
-      {id:"branch",label:"Branch",type:"derived",col:4,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} · ${s.lookups.guarAccount.branch}`,from:"account"},
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"guarAccount",label:"Account number",type:"lookup",lov:"account",req:true,col:6},
+      {id:"branch",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} · ${s.lookups.guarAccount.branch}`,from:"account"},
       {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
       {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
     {title:"Terms and folio",desc:"Amount, rate and tenor of the guarantee, and its folio range.",fields:[
-      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:4},
-      {id:"rate",label:"Interest rate",type:"percent",req:true,col:4},
-      {id:"months",label:"Number of months",type:"int",req:true,col:4},
-      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:6},
+      {id:"rate",label:"Interest rate",type:"percent",req:true,col:6},
+      {id:"months",label:"Number of months",type:"int",req:true,col:6},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:6},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
@@ -805,14 +865,14 @@ const TYPES=[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:4},
-      {id:"secAmount",label:"Security amount",type:"amount",req:true,col:4},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:6},
+      {id:"secAmount",label:"Security amount",type:"amount",req:true,col:6},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
     ]},
     {title:"Folio",desc:"Folio reference and the certificate range pledged.",fields:[
-      {id:"folioNo",label:"Folio number",type:"text",req:true,col:4},
-      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:4},
-      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:4},
+      {id:"folioNo",label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",label:"Folio start number",type:"text",req:true,col:6},
+      {id:"folioEnd",label:"Folio end number",type:"text",req:true,col:6},
     ]},
     COLL({})]},
 ];
@@ -863,9 +923,12 @@ function fetchCustomer(code){
 
 /* ---------- Step 2: type tiles ---------- */
 function renderTypes(){
-  $("#types").innerHTML=TYPES.map(t=>`<button type="button" class="tile" role="radio" aria-checked="${S.type===t.code}" data-type="${t.code}" style="--tc:var(${t.tc})" ${S.customer?"":"disabled"}>
-    <span class="code">${t.code}</span><span class="ic">${icon(t.ic)}</span><b>${t.name}</b><span class="d">${t.d}</span><span class="tick">${icon("check")}</span></button>`).join("");
+  const t=typeBy(S.type);
+  $("#types").innerHTML=`<div class="lov-pair"><button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="code-v">${t.code}</span>`:`<span class="ph">Select</span>`}${icon("search")}</button><div class="ro lov-desc ${t?"":"empty"}"><span class="t">${t?esc(t.lovDesc):S.customer?"Description":"Find the customer first"}</span></div></div>`;
+  $("#typeHint").textContent=t?t.d:"Cash, insurance, property, guarantee or shares. Each opens its own form.";
 }
+/* scroll so the whole card, header included, sits under the sticky top bar */
+function scrollToCard(el){const top=el.getBoundingClientRect().top+window.scrollY-($(".topbar").offsetHeight+14);window.scrollTo({top,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
 
 /* ---------- Step 3: dynamic form ---------- */
 const CCY={"010":"GHS","020":"USD","030":"EUR","040":"GBP"};
@@ -876,16 +939,19 @@ function fieldHtml(t,f,st=S){
   if(st.readonly){
     const lk=f.type==="lookup"&&st.lookups[f.id];
     const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
-    const body=empty?"—":lk?`<span class="code">${esc(lk.code)}</span><span class="t">${esc(lk.desc)}</span>`:`<span class="t">${esc(val)}</span>`;
     const chg=st.orig&&isChanged(f,st);
-    return `<div class="field ${chg?"changed":""}" style="--col:${f.col}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span><div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${body}</div>${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
+    const box=lk?`<div class="lov-pair ${f.codeOnly?"code-only":""}" id="${id}"><div class="ro ro-view code-ro"><span class="t">${esc(lk.code)}</span></div>${f.codeOnly?"":`<div class="ro ro-view"><span class="t">${esc(lk.desc)}</span></div>`}</div>`
+      :`<div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${empty?"—":`<span class="t">${esc(val)}</span>`}</div>`;
+    return `<div class="field ${chg?"changed":""}" style="--col:${f.col}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span>${box}${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
   }
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
   let ctl="";
   if(f.type==="lookup"){
     const row=st.lookups[f.id];const lov=LOVS[f.lov];
     const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
-    ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code">${esc(row.code)}</span><span class="desc">${esc(row.desc)}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
+    const btn=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="code-v">${esc(row.code)}</span>`:`<span class="ph">${f.codeOnly?"Search and select":"Select"}</span>`}${icon("search")}</button>`;
+    ctl=f.codeOnly?`<div class="lov-pair code-only">${btn}</div>`
+      :`<div class="lov-pair">${btn}<div class="ro lov-desc ${row?"":"empty"}"><span class="t">${row?esc(row.desc):blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Description"}</span></div></div>`;
   }else if(f.type==="derived"){
     const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
     return `<div class="field" style="--col:${f.col}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
@@ -899,8 +965,8 @@ function fieldHtml(t,f,st=S){
   }else if(f.type==="int"){
     ctl=`<input class="input amount" id="${id}" data-f="${f.id}" data-kind="int" inputmode="numeric" placeholder="0" value="${esc(v)}">`;
   }else{
-    const typ=f.type==="date"?"date":f.type==="tel"?"tel":"text";
-    ctl=`<input class="input" type="${typ}" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
+    if(f.type==="date")ctl=dateCtl(`id="${id}" data-f="${f.id}"`,v);
+    else ctl=`<input class="input" type="${f.type==="tel"?"tel":"text"}" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
   }
   let help="";const chg=st.orig&&isChanged(f,st);
   if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
@@ -939,15 +1005,12 @@ function renderRail(){
   if(!t){rail.hidden=true;$(".form-wrap").style.gridTemplateColumns="minmax(0,1fr)";return}
   rail.hidden=false;$(".form-wrap").style.gridTemplateColumns="";
   const req=requiredFields(t),done=req.filter(f=>hasValue(f.id)).length;
-  const amt=parseAmt(S.values.amount);
-  let html=`<div class="card"><div class="card-body"><h3>Summary</h3>
-    <div class="kv"><span>Collateral no.</span><b class="pend">Assigned on submit</b></div>
-    <div class="kv"><span>Customer</span><b>${esc(S.customer?.name||"")}</b></div>
-    <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
-    <div class="kv"><span>${t.code==="C01"?"Collateral amount":"Amount considered"}</span><b class="mono">${amt!=null?fmt(amt):"—"}</b></div>
-    <div class="kv"><span>Review / expiry</span><b>${S.values.reviewDate?fmtDate(S.values.reviewDate):"—"} / ${S.values.expiryDate?fmtDate(S.values.expiryDate):"—"}</b></div>
-    <div class="progress" aria-hidden="true"><i style="width:${req.length?done/req.length*100:0}%"></i></div>
-    <div class="hint">${done} of ${req.length} required fields complete</div></div></div>`;
+  const left=req.filter(f=>!hasValue(f.id));
+  let html=`<div class="card"><div class="card-body"><h3>Required fields</h3>
+    <div class="req-prog"><span class="req-n mono"><b>${done}</b> / ${req.length}</span><span class="hint">complete</span></div>
+    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${req.length}" aria-valuenow="${done}" aria-label="Required fields complete"><i style="width:${req.length?done/req.length*100:0}%"></i></div>
+    ${left.length?`<ul class="req-left" aria-label="Still to complete">${left.map(f=>`<li><button type="button" class="link-btn" data-jumpf="${f.id}">${esc(f.label)}</button></li>`).join("")}</ul>`
+      :`<p class="ok-line">${icon("check")}Every required field is complete</p>`}</div></div>`;
   if(t.rail==="balances"){
     const a=S.lookups.account;
     html+=`<div class="card"><div class="card-body"><h3>Account balances</h3>${a?`
@@ -1010,6 +1073,7 @@ function validate(){
   }
   for(const f of t.sections.flatMap(s=>s.fields)){
     if(["amount","percent","int"].includes(f.type)&&hasValue(f.id)&&parseAmt(S.values[f.id])==null)S.errors[f.id]=`${f.label} must be a number.`;
+    if(f.type==="date"&&hasValue(f.id)&&!ISO_RE.test(S.values[f.id]))S.errors[f.id]=`Enter the ${f.label.toLowerCase()} as dd-mmm-yyyy, e.g. 25-OCT-2026.`;
   }
   const br=businessRules(t.code,S.values,S.lookups);for(const k in br)if(!S.errors[k])S.errors[k]=br[k];
 }
@@ -1030,9 +1094,10 @@ const USERS=[{code:"K.ASARE",name:"K. Asare",role:"Collateral officer",ini:"KA",
 let ME=USERS[0];
 let DOCSEQ=4101;
 const nextRef=()=>`DOC-${DOCSEQ++}`;
+/* rails show how many documents there are; the documents modal lists them */
 function docsMini(list){
-  if(!list.length)return `<p class="hint" style="margin:0 0 10px">No documents yet. Valuation report, title deed, policy, certificate…</p>`;
-  return `<ul class="files" style="margin:0 0 10px">${list.slice(0,3).map(d=>`<li>${icon("clip")}<span>${esc(d.desc)}</span><span class="mono doc-ref">${esc(d.ref)}</span></li>`).join("")}${list.length>3?`<li class="more">and ${list.length-3} more</li>`:""}</ul>`;
+  const n=list.length;
+  return `<div class="doc-count"><span class="n mono">${n}</span><span>${n===1?"document":"documents"}${n?"":" yet"}</span></div>`;
 }
 function openDocs(o){
   let pending=null;
@@ -1042,13 +1107,13 @@ function openDocs(o){
   const body=$("#dmBody");
   const draw=()=>{
     body.innerHTML=(o.editable?`<form id="dmForm" class="grid dm-form" novalidate autocomplete="off">
-      <div class="field" style="--col:12"><span class="lbl">Document<span class="req">*</span></span>
+      <div class="field" style="--col:12;--lw:170px"><span class="lbl">Document<span class="req">*</span></span>
         <div class="dm-pick"><label class="drop dm-drop ${pending?"has-file":""}" for="dmFile" id="dmDrop">${icon(pending?"clip":"upload")}<span>${pending?`<b>${esc(pending)}</b> · choose another`:"<b>Choose a file</b> or drop it here"}</span></label><input type="file" id="dmFile" class="sr">
         <button type="button" class="btn" id="dmScan">${icon("scan")}Scan document</button></div></div>
-      <div class="field" style="--col:4"><label for="dmRef">Scanned document ref. no.</label><input class="input mono" id="dmRef" value="${nextRefPeek()}"></div>
-      <div class="field" style="--col:8"><label for="dmDesc">Document description<span class="req">*</span></label><input class="input" id="dmDesc" placeholder="e.g. Valuation report from CSSD, September 2026"></div>
-      <div class="field" style="--col:4"><label for="dmExp">Document expiry date</label><input class="input" type="date" id="dmExp"></div>
-      <div class="dm-actions" style="grid-column:span 8"><span class="err" id="dmErr" hidden></span><button type="button" class="btn ghost" id="dmClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("check")}Save document</button></div>
+      <div class="field" style="--col:12;--lw:170px"><label for="dmRef">Scanned document ref. no.</label><input class="input mono" id="dmRef" value="${nextRefPeek()}" style="max-width:220px"></div>
+      <div class="field" style="--col:12;--lw:170px"><label for="dmDesc">Document description<span class="req">*</span></label><input class="input" id="dmDesc" placeholder="e.g. Valuation report from CSSD, September 2026"></div>
+      <div class="field" style="--col:12;--lw:170px"><label for="dmExp">Document expiry date</label><div style="max-width:220px">${dateCtl('id="dmExp"',"")}</div></div>
+      <div class="dm-actions" style="grid-column:1/-1"><span class="err" id="dmErr" hidden></span><button type="button" class="btn ghost" id="dmClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("check")}Save document</button></div>
     </form>`:"")+
     `<div class="dm-head"><h3>Saved documents</h3><span class="chip-count">${o.docs.length}</span></div>
     ${o.docs.length?`<div class="table-wrap dm-table"><table><thead><tr><th>Ref.</th><th>Document</th><th>Expiry</th><th>Posted by</th><th>Posting date</th><th><span class="sr">Actions</span></th></tr></thead><tbody>
@@ -1067,7 +1132,7 @@ function openDocs(o){
     const desc=$("#dmDesc").value.trim(),err=$("#dmErr");
     if(!pending||!desc){err.hidden=false;err.innerHTML=icon("alert")+(!pending?"Choose or scan a file first.":"Enter a description for the document.");(pending?$("#dmDesc"):$("#dmDrop")).focus();return}
     const ref=$("#dmRef").value.trim()||nextRefPeek();if(ref===nextRefPeek())DOCSEQ++;
-    o.docs.unshift({ref,name:pending,desc,expiry:$("#dmExp").value||null,by:ME.code,date:fmtDate(todayIso())});
+    o.docs.unshift({ref,name:pending,desc,expiry:toIso($("#dmExp").value)||null,by:ME.code,date:fmtDate(todayIso())});
     pending=null;draw();o.onChange&&o.onChange();toast("Document saved.");$("#dmDrop").focus();
   });
   body.addEventListener("click",e=>{
@@ -1106,12 +1171,14 @@ $("#custNo").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault
 $("#custNo").addEventListener("change",e=>fetchCustomer(e.target.value));
 $("#custSearch").addEventListener("click",()=>openLov("Find customer",CUSTOMERS,r=>fetchCustomer(r.code),[["code","Customer no."],["name","Name"],["type","Type"]]));
 
-$("#types").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b||b.disabled)return;
-  if(S.type!==b.dataset.type){S.type=b.dataset.type;S.values={};S.lookups={};S.errors={};S.showErrors=false}
-  renderAll();$("#formCard").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});});
-$("#types").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key))return;const tiles=[...document.querySelectorAll(".tile")];const i=tiles.indexOf(document.activeElement);if(i<0)return;const n=tiles[(i+(e.key==="ArrowRight"||e.key==="ArrowDown"?1:-1)+tiles.length)%tiles.length];n.focus();e.preventDefault()});
+$("#types").addEventListener("click",e=>{const b=e.target.closest("[data-typelov]");if(!b||b.disabled)return;
+  openLov("Collateral types",TYPES.map(t=>({code:t.code,desc:t.lovDesc})),r=>{
+    if(S.type!==r.code){S.type=r.code;S.values={};S.lookups={};S.errors={};S.showErrors=false}
+    renderAll();scrollToCard($("#formCard"));
+  });});
 
-$("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=e.target.value;if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});
+$("#rail").addEventListener("click",e=>{const b=e.target.closest("[data-jumpf]");if(!b)return;const el=document.getElementById(`f-${S.type}-${b.dataset.jumpf}`);if(el){el.scrollIntoView({block:"center"});el.focus({preventScroll:true})}});
+$("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=valOf(e.target);if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});
 $("#formCard").addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k)return;const n=parseAmt(e.target.value);if(n==null)return;e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);S.values[e.target.dataset.f]=e.target.value;renderRail()});
 $("#formCard").addEventListener("click",e=>{
   const j=e.target.closest("[data-jump]");if(j){e.preventDefault();const el=document.getElementById(j.dataset.jump);el&&(el.scrollIntoView({block:"center"}),el.focus());return}
@@ -1133,6 +1200,11 @@ document.addEventListener("click",e=>{
     openLov(d.dataset.detail==="block"?"Blocked amounts":"Uncleared items",rows,()=>{},[["code","Reference"],["desc","Description"],["amt","Amount"]]);}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#scrim"))closeLayer()});
+document.addEventListener("click",e=>{const b=e.target.closest(".date-btn");if(!b)return;const w=b.closest(".date-in"),txt=w.querySelector("[data-date]"),nat=w.querySelector(".date-native");
+  nat.value=toIso(txt.value)||"";try{nat.showPicker()}catch(_){txt.focus()}});
+document.addEventListener("change",e=>{if(!e.target.classList.contains("date-native"))return;const txt=e.target.closest(".date-in").querySelector("[data-date]");
+  txt.value=fmtDate(e.target.value);txt.dispatchEvent(new Event("input",{bubbles:true}));txt.dispatchEvent(new Event("change",{bubbles:true}));txt.focus()});
+document.addEventListener("focusout",e=>{const t=e.target;if(!t.hasAttribute||!t.hasAttribute("data-date"))return;const iso=toIso(t.value);if(iso)t.value=fmtDate(iso)});
 function openDocsFor(ctx){
   if(ctx==="creation")openDocs({docs:S.docs,editable:true,sub:`New ${typeBy(S.type)?.name.toLowerCase()||""} collateral for ${S.customer?.name||"the customer"}`,onChange:renderRail});
   else if(ctx==="record")openDocs({docs:A.rec.docs,editable:!isCancel(),sub:`Collateral ${A.rec.no} · ${A.customer.name}`,onChange:renderAmRail});
@@ -1217,26 +1289,26 @@ const AM_TYPES=[
   AMT("C02",[TYPES[1].sections[0],COLL({})]),
   AMT("C03",[TYPES[2].sections[0],
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
-      {id:"valuer",label:"Valuer name",type:"text",req:true,col:8},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:4},
-      {id:"valDate",label:"Valuation date",type:"date",req:true,col:4},
-      {id:"collAmount",label:"Collateral amount",type:"amount",req:true,col:4},
-      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:4},
+      {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6},
+      {id:"valDate",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"collAmount",label:"Collateral amount",type:"amount",req:true,col:6},
+      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
     ]},COLL({})]),
   AMT("C04",[
     {title:"Guarantee details",desc:"The institution, currency and deposit behind the guarantee.",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:8},
-      {id:"branch",label:"Branch",type:"text",col:4},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:4},
-      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:8},
+      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
+      {id:"branch",label:"Branch",type:"text",col:6},
+      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
     ]},TYPES[3].sections[1],COLL({})]),
   AMT("C05",[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:4},
-      {id:"stockAmount",label:"Stock amount",type:"amount",req:true,col:4},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:4},
+      {id:"units",label:"Number of shares / securities",type:"int",req:true,col:6},
+      {id:"stockAmount",label:"Stock amount",type:"amount",req:true,col:6},
+      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
     ]},TYPES[4].sections[1],COLL({})]),
 ];
 const amTypeBy=c=>AM_TYPES.find(t=>t.code===c);
@@ -1298,14 +1370,15 @@ const MODS={
   amendment:{kind:"amend",label:"Amendment",title:"Amend a collateral",sub:"Search for an approved collateral, then open it to update its details.",openFor:"for amendment",verb:"amend"},
   cancellation:{kind:"cancel",label:"Cancellation",title:"Cancel a collateral",sub:"Search for an approved collateral, then open it to review it and record why it is being cancelled.",openFor:"to cancel it",verb:"cancel"},
 };
-const newState=(mod,pfx)=>({mod,view:"list",q:{cust:"",coll:""},qCust:null,filter:"ALL",sort:{k:"no",d:1},page:0,rec:null,pfx,readonly:mod.kind==="cancel",
-  type:null,customer:null,values:{},lookups:{},orig:null,origLookups:{},errors:{},showErrors:false,comments:[],files:[],reason:""});
+const newState=(mod,pfx)=>({mod,view:"list",q:{cust:"",coll:"",name:""},filter:"ALL",sort:{k:"no",d:1},page:0,rec:null,pfx,readonly:mod.kind==="cancel",
+  type:null,customer:null,values:{},lookups:{},orig:null,origLookups:{},errors:{},showErrors:false,comments:[],files:[],reason:"",reasonSel:"",reasonText:""});
 const STATES={amendment:newState(MODS.amendment,"a"),cancellation:newState(MODS.cancellation,"c")};
 let A=STATES.amendment;
 const isCancel=()=>A.mod.kind==="cancel";
 
 function amRows(){
-  let rows=AM.filter(r=>r.status!=="Cancelled"&&(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll)));
+  const nm=A.q.name.trim().toLowerCase();
+  let rows=AM.filter(r=>r.status!=="Cancelled"&&(!A.q.cust||r.cust===A.q.cust)&&(!A.q.coll||r.no.includes(A.q.coll))&&(!nm||custBy(r.cust).name.toLowerCase().includes(nm)));
   const counts={ALL:rows.length};TYPES.forEach(t=>counts[t.code]=rows.filter(r=>r.type===t.code).length);
   if(A.filter!=="ALL")rows=rows.filter(r=>r.type===A.filter);
   const key={no:r=>r.no,name:r=>custBy(r.cust).name,type:r=>r.type,amount:r=>amountOf(r)||0,considered:r=>parseAmt(r.values.amount)||0,review:r=>r.values.reviewDate,expiry:r=>r.values.expiryDate,by:r=>r.by}[A.sort.k];
@@ -1326,10 +1399,10 @@ function amActionBar(mode){
 }
 /* "Dirty" = something the user entered that New would reset and Submit would send */
 const isDirty=()=>isCancel()?!!A.reason.trim():changesOf(A).length>0;
-const submitWhy=()=>isCancel()?"Enter a cancellation reason to submit.":"Change at least one field to submit an amendment.";
+const submitWhy=()=>isCancel()?"Select a closure reason to submit.":"Change at least one field to submit an amendment.";
 const newTitle=()=>isCancel()?"Clear the closure reason":"Reset every field to its original value";
 function resetEntry(){
-  if(isCancel()){A.reason="";A.showErrors=false;$("#cxReason").outerHTML=reasonCardHtml();syncSubmit();$("#cxReasonIn").focus();toast("Closure reason cleared.");return}
+  if(isCancel()){A.reason="";A.reasonSel="";A.reasonText="";A.showErrors=false;$("#cxReason").outerHTML=reasonCardHtml();syncSubmit();$("#cxReasonSel").focus();toast("Closure reason cleared.");return}
   A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};A.showErrors=false;renderAmForm();renderAmRail();syncSubmit();toast("All fields reset to their original values.");
 }
 
@@ -1354,20 +1427,19 @@ function amListHtml(){
   A.page=Math.min(A.page,pages-1);
   const shown=rows.slice(A.page*PAGE,A.page*PAGE+PAGE);
   const th=(k,l,cls="")=>`<th class="${cls}" data-sort="${k}" ${A.sort.k===k?`aria-sort="${A.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${l} <span class="arr">${A.sort.k===k&&A.sort.d<0?"↓":"↑"}</span></th>`;
-  const qc=A.qCust;
   return `<div class="page-head"><div><h1>${A.mod.title}</h1><p>${A.mod.sub}</p></div>${amActionBar("list")}</div>
   <section class="card" aria-labelledby="amS1">
-    <div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="amS1">Search criteria</h2><p>Search by customer, collateral number or both. Leave both blank to list every approved collateral.</p></div></div>
+    <div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="amS1">Search criteria</h2><p>Search by collateral number, customer number or customer name. Leave them blank to list every approved collateral.</p></div></div>
     <div class="card-body"><form id="amSearch" class="grid" autocomplete="off">
-      <div class="field" style="--col:3"><label for="amCust">Customer number</label>
+      <div class="field" style="--col:4;--lw:132px"><label for="amColl">Collateral number</label><input class="input mono" id="amColl" placeholder="e.g. 2609184352" value="${esc(A.q.coll)}"></div>
+      <div class="field" style="--col:4;--lw:132px"><label for="amCust">Customer number</label>
         <div class="search"><input class="input" id="amCust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(A.q.cust)}"><button class="btn" type="button" id="amCustSearch" aria-label="Search customers">${icon("search")}</button></div></div>
-      <div class="field" style="--col:5"><span class="lbl">Customer name<span class="lbl-auto">Auto-filled</span></span><div class="ro ${qc?"":"empty"}"><span class="t">${qc?esc(qc.name):"Filled from customer number"}</span>${icon("lock")}</div></div>
-      <div class="field" style="--col:4"><label for="amColl">Collateral number</label><input class="input mono" id="amColl" placeholder="e.g. 2609184352" value="${esc(A.q.coll)}"></div>
+      <div class="field" style="--col:4;--lw:132px"><label for="amName">Customer name</label><input class="input" id="amName" placeholder="e.g. Toweh" value="${esc(A.q.name)}"></div>
       <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="amClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div>
     </form></div>
   </section>
   <section class="card" aria-labelledby="amS2">
-    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
+    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll||A.q.name?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
       <div class="right chips" role="group" aria-label="Filter by collateral type">
         <button class="chip" data-filter="ALL" aria-pressed="${A.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
         ${TYPES.map(t=>`<button class="chip" data-filter="${t.code}" aria-pressed="${A.filter===t.code}" style="--tc:var(${t.tc})"><span class="tdot"></span>${t.name} <span class="n">${counts[t.code]}</span></button>`).join("")}
@@ -1452,15 +1524,15 @@ function refreshField(f){
 function openAm(no){
   const r=AM.find(x=>x.no===no);if(!r)return;
   if(r.status!=="Approved"){toast(`${r.status}. This collateral can't be opened until that request is approved or rejected.`);return}
-  Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[],reason:""});
+  Object.assign(A,{view:"detail",rec:r,type:r.type,customer:custBy(r.cust),values:{...r.values},lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},errors:{},showErrors:false,comments:[],files:[],reason:"",reasonSel:"",reasonText:""});
   renderAm();window.scrollTo(0,0);
 }
 function backToList(){A.returnItem=null;A.view="list";A.rec=null;A.orig=null;renderAm();window.scrollTo(0,0)}
 function amFetch(){
-  const raw=$("#amCust").value.trim(),coll=$("#amColl").value.trim();
+  const raw=$("#amCust").value.trim(),coll=$("#amColl").value.trim(),name=$("#amName").value.trim();
   const cust=raw?raw.padStart(6,"0"):"";
   if(cust&&!custBy(cust)){toast(`No customer found with number ${cust}.`);return}
-  A.q={cust,coll};A.qCust=cust?custBy(cust):null;A.page=0;renderAm();
+  A.q={cust,coll,name};A.page=0;renderAm();
 }
 function amValidate(){
   const t=amTypeBy(A.type);A.errors={};
@@ -1468,6 +1540,7 @@ function amValidate(){
     const has=A.values[f.id]!=null&&String(A.values[f.id]).trim()!=="";
     if(f.req&&!has){const l=f.label.toLowerCase();A.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`}
     else if(NUMERIC.includes(f.type)&&has&&parseAmt(A.values[f.id])==null)A.errors[f.id]=`${f.label} must be a number.`;
+    else if(f.type==="date"&&has&&!ISO_RE.test(A.values[f.id]))A.errors[f.id]=`Enter the ${f.label.toLowerCase()} as dd-mmm-yyyy, e.g. 25-OCT-2026.`;
   }
   const br=businessRules(t.code,A.values,A.lookups);for(const k in br)if(!A.errors[k])A.errors[k]=br[k];
   return !Object.keys(A.errors).length;
@@ -1508,12 +1581,12 @@ amView.addEventListener("submit",e=>{if(e.target.id==="amSearch"){e.preventDefau
 amView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-sort]");if(th&&(e.key==="Enter"||e.key===" ")){e.preventDefault();th.click()}});
 amView.addEventListener("click",e=>{
   const T=s=>e.target.closest(s);let el;
-  if(T("#amHelp")&&isCancel()){openDrawer("Help · Collateral cancellation",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Select <b>›</b> on a row to open it. The collateral's details are shown read-only.</li><li>Check the closure summary, then enter the <b>closure reason</b>. Pick a common reason to fill the box, then edit it if needed.</li><li><b>Submit</b> asks you to confirm, then sends the cancellation for approval. The collateral stays active until it is approved.</li></ol><div class="hint">A collateral with an amendment or cancellation awaiting approval can't be opened in either module.</div>`);return}
-  if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>customer number</b>, <b>collateral number</b> or both, then select <b>Fetch</b>. Leave both blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
+  if(T("#amHelp")&&isCancel()){openDrawer("Help · Collateral cancellation",`<ol><li>Search by <b>collateral number</b>, <b>customer number</b> or <b>customer name</b>, then select <b>Fetch</b>. Leave them blank to list every approved collateral.</li><li>Select <b>›</b> on a row to open it. The collateral's details are shown read-only.</li><li>Check the closure summary, then pick the <b>closure reason</b> from the list. Choose <b>Other</b> to type your own.</li><li><b>Submit</b> asks you to confirm, then sends the cancellation for approval. The collateral stays active until it is approved.</li></ol><div class="hint">A collateral with an amendment or cancellation awaiting approval can't be opened in either module.</div>`);return}
+  if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>collateral number</b>, <b>customer number</b> or <b>customer name</b>, then select <b>Fetch</b>. Leave them blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
   if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="${isCancel()?"e.g. Customer's release request letter is attached":"e.g. Revaluation received from the valuer on 02-OCT-2026"}"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · ${esc(ME.name)}</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
     $("#amCmtAdd").addEventListener("click",()=>{const v=$("#amCmt").value.trim();if(!v)return;A.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAm();toast("Comment added.")});return}
   if(T("#amNew")&&A.view==="detail"){resetEntry();return}
-  if(T("#amNew")||T("#amClear")){A.q={cust:"",coll:""};A.qCust=null;A.filter="ALL";A.page=0;renderAm();toast("Search cleared.");return}
+  if(T("#amNew")||T("#amClear")){A.q={cust:"",coll:"",name:""};A.filter="ALL";A.page=0;renderAm();toast("Search cleared.");return}
   if(T("#amSubmit")){amSubmit();return}
   if(T("#amExit")){amExit();return}
   if(T("[data-back]")){amExit();return}
@@ -1524,7 +1597,6 @@ amView.addEventListener("click",e=>{
   if(el=T("[data-open]")){openAm(el.dataset.open);return}
   if(el=T("tr[data-row]")){openAm(el.dataset.row);return}
   if(el=T("[data-jump]")){e.preventDefault();const x=document.getElementById(el.dataset.jump);x&&(x.scrollIntoView({block:"center"}),x.focus());return}
-  if(el=T("[data-reason]")){setReason(el.dataset.reason,true);return}
   if(el=T("[data-viewdoc]")){toast(`${el.dataset.viewdoc} opens in the document viewer.`);return}
   if(T("#amUndoAll")){resetEntry();return}
   if(el=T("[data-revert]")){const id=el.dataset.revert;A.values[id]=A.orig[id];if(id in A.origLookups)A.lookups[id]=A.origLookups[id];
@@ -1541,19 +1613,23 @@ amView.addEventListener("click",e=>{
   }
 });
 amView.addEventListener("input",e=>{
-  if(e.target.id==="cxReasonIn"){setReason(e.target.value,false);return}
-  if(e.target.id==="amCust"){const c=custBy(e.target.value.trim().padStart(6,"0"));const ro=e.target.closest(".grid").querySelector(".ro");if(ro){ro.classList.toggle("empty",!c);ro.querySelector(".t").textContent=c?c.name:"Filled from customer number"}return}
+  if(e.target.id==="cxReasonIn"){setReasonText(e.target.value);return}
   const id=e.target.dataset.f;if(!id||A.view!=="detail")return;
-  A.values[id]=e.target.value;const f=fieldsOf(amTypeBy(A.type)).find(x=>x.id===id);
+  A.values[id]=valOf(e.target);const f=fieldsOf(amTypeBy(A.type)).find(x=>x.id===id);
   if(A.errors[id]&&String(e.target.value).trim()){delete A.errors[id];e.target.closest(".field").classList.remove("invalid");e.target.closest(".field").querySelector(".err")?.remove()}
   refreshField(f);renderAmRail();
 });
+amView.addEventListener("change",e=>{if(e.target.id==="cxReasonSel")setReasonSel(e.target.value)});
 amView.addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k||A.view!=="detail")return;const n=parseAmt(e.target.value);if(n==null)return;
   e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);A.values[e.target.dataset.f]=e.target.value;
   refreshField(fieldsOf(amTypeBy(A.type)).find(x=>x.id===e.target.dataset.f));renderAmRail()});
 
 /* ---------- CANCELLATION: read-only type form + closure summary + reason ---------- */
 const REASONS=["Facility fully repaid","Collateral replaced by another collateral","Collateral released to the customer","Captured in error"];
+const REJECT_REASONS=["Customer withdrew the request","Duplicate request","Collateral not acceptable to the bank","Documents could not be verified"];
+/* a reason picked from a list, or typed when "Other" is picked */
+const reasonSelect=(id,list,sel)=>`<select class="input" id="${id}"><option value="">Select a reason</option>${list.map(x=>`<option ${sel===x?"selected":""}>${esc(x)}</option>`).join("")}<option value="Other" ${sel==="Other"?"selected":""}>Other</option></select>`;
+const splitReason=(text,list)=>!text?{sel:"",text:""}:list.includes(text)?{sel:text,text:""}:{sel:"Other",text};
 const REASON_MAX=300;
 function ccyRow(st){const c=st.type==="C01"?st.lookups.account?.ccy:st.type==="C04"?st.values.currency:"010";return LOVS.currency.rows().find(r=>r.code===c)||{code:c,desc:""}}
 /* Closure figures named after the Oracle Forms closing screen; mapping to stored columns is to be confirmed */
@@ -1581,30 +1657,36 @@ function cxDetailHtml(){
   <div class="foot-note">${icon("info")}Fields marked <span class="req">*</span> are required. The cancellation goes for approval before it takes effect.</div>`;
 }
 function reasonCardHtml(){
-  const err=A.showErrors&&!A.reason.trim();
+  const other=A.reasonSel==="Other",errSel=A.showErrors&&!A.reasonSel,errTxt=A.showErrors&&other&&!A.reasonText.trim();
   return `<section class="card reason-card" id="cxReason" aria-labelledby="cxR"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="cxR">Cancellation</h2><p>The only thing you enter here. The reason goes to the approver and stays on the collateral's history.</p></div></div>
     <div class="card-body"><div class="grid">
-      <div class="field ${err?"invalid":""}" style="--col:12" id="cxReasonField"><label for="cxReasonIn">Closure reason<span class="req">*</span></label>
-        <div class="reason-chips" role="group" aria-label="Common reasons"><span class="hint">Common reasons:</span>${REASONS.map(x=>`<button type="button" class="chip" data-reason="${esc(x)}" aria-pressed="${A.reason===x}">${esc(x)}</button>`).join("")}</div>
-        <textarea class="input" id="cxReasonIn" maxlength="${REASON_MAX}" placeholder="Say why the collateral is being cancelled, e.g. the facility it secured was fully repaid on 30-SEP-2026.">${esc(A.reason)}</textarea>
-        <div class="reason-foot"><span id="cxReasonMsg" class="${err?"err":"hint"}">${err?icon("alert")+"Enter the closure reason.":"Required. The approver sees this exactly as written."}</span><span class="hint mono" id="cxCount">${A.reason.length} / ${REASON_MAX}</span></div>
+      <div class="field ${errSel?"invalid":""}" style="--col:12" id="cxReasonField"><label for="cxReasonSel">Closure reason<span class="req">*</span></label>
+        <div style="max-width:420px">${reasonSelect("cxReasonSel",REASONS,A.reasonSel)}</div>
+        ${errSel?`<span class="err">${icon("alert")}Select the closure reason.</span>`:`<span class="hint">Pick the reason, or Other to type it.</span>`}
       </div>
-      <div class="field" style="--col:4"><span class="lbl">Cancellation date<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t">${fmtDate(new Date().toISOString().slice(0,10))}</span>${icon("lock")}</div></div>
-      <div class="field" style="--col:4"><span class="lbl">Requested by<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t mono">${ME.code}</span>${icon("lock")}</div></div>
-      <div class="field" style="--col:4"><span class="lbl">Status after submit</span><div class="ro"><span class="t"><span class="status pending">Cancellation pending</span></span></div></div>
+      ${other?`<div class="field ${errTxt?"invalid":""}" style="--col:12" id="cxOtherField"><label for="cxReasonIn">Other reason<span class="req">*</span></label>
+        <textarea class="input" id="cxReasonIn" maxlength="${REASON_MAX}" placeholder="Say why the collateral is being cancelled.">${esc(A.reasonText)}</textarea>
+        <div class="reason-foot"><span id="cxReasonMsg" class="${errTxt?"err":"hint"}">${errTxt?icon("alert")+"Enter the reason.":"The approver sees this exactly as written."}</span><span class="hint mono" id="cxCount">${A.reasonText.length} / ${REASON_MAX}</span></div>
+      </div>`:""}
+      <div class="field" style="--col:6"><span class="lbl">Cancellation date<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t">${fmtDate(new Date().toISOString().slice(0,10))}</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:6"><span class="lbl">Requested by<span class="lbl-auto">Auto-filled</span></span><div class="ro"><span class="t mono">${ME.code}</span>${icon("lock")}</div></div>
+      <div class="field" style="--col:6"><span class="lbl">Status after submit</span><div class="ro"><span class="t"><span class="status pending">Cancellation pending</span></span></div></div>
     </div></div></section>`;
 }
-function setReason(v,fromChip){
-  A.reason=v.slice(0,REASON_MAX);
-  const ta=$("#cxReasonIn");if(fromChip&&ta){ta.value=A.reason;ta.focus();ta.setSelectionRange(A.reason.length,A.reason.length)}
-  $("#cxCount").textContent=`${A.reason.length} / ${REASON_MAX}`;
-  document.querySelectorAll("[data-reason]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.reason===A.reason)));
-  if(A.reason.trim()&&A.showErrors){$("#cxReasonField").classList.remove("invalid");const m=$("#cxReasonMsg");m.className="hint";m.textContent="Required. The approver sees this exactly as written."}
+function syncReason(){A.reason=A.reasonSel==="Other"?A.reasonText.trim():A.reasonSel}
+function setReasonSel(v){
+  A.reasonSel=v;syncReason();$("#cxReason").outerHTML=reasonCardHtml();syncSubmit();
+  if(v==="Other")$("#cxReasonIn").focus();else $("#cxReasonSel").focus();
+}
+function setReasonText(v){
+  A.reasonText=v.slice(0,REASON_MAX);syncReason();
+  $("#cxCount").textContent=`${A.reasonText.length} / ${REASON_MAX}`;
+  if(A.reasonText.trim()&&A.showErrors){$("#cxOtherField").classList.remove("invalid");const m=$("#cxReasonMsg");m.className="hint";m.textContent="The approver sees this exactly as written."}
   syncSubmit();
 }
 function cxSubmit(){
   const r=A.rec,t=amTypeBy(A.type),fg=closureFigures(A);
-  if(!A.reason.trim()){A.showErrors=true;$("#cxReason").outerHTML=reasonCardHtml();$("#cxReasonIn").focus();return}
+  if(!A.reason.trim()){A.showErrors=true;$("#cxReason").outerHTML=reasonCardHtml();(A.reasonSel==="Other"?$("#cxReasonIn"):$("#cxReasonSel")).focus();return}
   const acct=r.type==="C01"&&A.lookups.account?A.lookups.account.code:null;
   openLayer(`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="cxQ" aria-describedby="cxQd" style="width:min(520px,100%)"><div class="mb" style="padding:22px">
     <div class="warn-ic">${icon("ban")}</div>
@@ -1644,7 +1726,7 @@ const recBy=no=>AM.find(r=>r.no===no);
   const c1l={propType:LOVS.propType.rows().find(r=>r.code==="03"),propSub:LOVS.propSub.rows({values:{propType:"03"}}).find(r=>r.code==="032")};
   QUEUE.push(mk("create",{no:"2606304232",cust:"046378",type:"C03",by:"E.QUAYE",on:"06-OCT-2026",values:c1v,lookups:c1l,docs:[{ref:"DOC-4090",name:"Valuation_report_Weija.pdf",desc:"Valuation report, Weija plot",expiry:"2027-06-30",by:"E.QUAYE",date:"06-OCT-2026"},{ref:"DOC-4091",name:"Title_deed_Weija.pdf",desc:"Title deed",expiry:null,by:"E.QUAYE",date:"06-OCT-2026"}]}));
   const acc=ACCOUNTS.find(a=>a.code==="00515002203914");
-  QUEUE.push(mk("create",{no:"202610063104477",cust:"061104",type:"C01",by:"E.QUAYE",on:"06-OCT-2026",values:{account:acc.code,amount:F(5000),reviewDate:"2027-04-06",expiryDate:"2027-10-06",comment:""},lookups:{account:Object.assign({},acc,{desc:acc.desc+" · "+acc.prodDesc})},docs:[]}));
+  QUEUE.push(mk("create",{no:"202610063104477",cust:"061104",type:"C01",by:"E.QUAYE",on:"06-OCT-2026",values:{account:acc.code,amount:F(5000),reviewDate:"2027-04-06",expiryDate:"2027-10-06",comment:""},lookups:{account:acc},docs:[]}));
   const amend=(no,by,on,chg)=>{const r=recBy(no);const v={...r.values,...chg};r.status="Amendment pending";return mk("amend",{no,cust:r.cust,type:r.type,by,on,rec:r,values:v,lookups:{...r.lookups},orig:{...r.values},origLookups:{...r.lookups},docs:r.docs})};
   QUEUE.push(amend("2506303783","E.QUAYE","05-OCT-2026",{sumAssured:F(275000),amount:F(220000),expiryDate:"2028-06-27"}));
   QUEUE.push(amend("2310024084","K.ASARE","04-OCT-2026",{valuer:"Meridian Property Consult (re-valuation)",valDate:"2026-09-20",forcedSale:F(900000)}));
@@ -1790,22 +1872,24 @@ function verifyModal(it,mode){
   openLayer(`<div class="modal verify" role="dialog" aria-modal="true" aria-labelledby="vfT" style="width:min(560px,100%)">
     <header><div><h2 id="vfT">${dismiss?"Reject this request?":"Verify before authorizing"}</h2><p class="hint" style="margin:2px 0 0">${KIND[it.kind].label} · <span class="mono">${it.no}</span> · ${esc(custBy(it.cust).name)}</p></div><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
     <div class="mb">
-      ${dismiss?`<div class="field" id="vfReasonF"><label for="vfReason">Rejection reason<span class="req">*</span></label><textarea class="input" id="vfReason" maxlength="300" placeholder="e.g. Customer withdrew the facility application."></textarea><span class="hint" id="vfReasonMsg">Required. The submitter sees this exactly as written.</span></div>
+      ${dismiss?`<div class="field" id="vfReasonF"><label for="vfReasonSel">Rejection reason<span class="req">*</span></label>${reasonSelect("vfReasonSel",REJECT_REASONS,"")}<span class="hint" id="vfReasonMsg">Required. The submitter sees this reason.</span></div>
+        <div class="field" id="vfOtherF" hidden style="margin-top:12px"><label for="vfReason">Other reason<span class="req">*</span></label><textarea class="input" id="vfReason" maxlength="300" placeholder="Say why the request is rejected."></textarea></div>
         <label class="tick vf-final" for="vfFinal"><input type="checkbox" id="vfFinal"><span><b>Reject permanently</b><br><span class="hint">The request leaves the queue and can't be resubmitted. ${it.kind==="create"?"The collateral is not created.":"The collateral keeps its current values."}</span></span></label>`
       :`<div class="vf-head"><span>Verification</span><span>Confirm</span></div>
         <ul class="vf-list">${items.map((t,i)=>`<li><label for="vf${i}"><span>${esc(t)}</span><input type="checkbox" id="vf${i}" data-vf></label></li>`).join("")}</ul>
         <div class="vf-foot"><span class="hint"><b id="vfCount">0</b> of ${items.length} confirmed</span><button class="link-btn" id="vfAll">Tick all</button></div>`}
     </div>
     <footer><button class="btn" data-close>Back</button>${dismiss?`<button class="btn act-red" id="vfGo" disabled>${icon("ban")}Reject request</button>`:`<button class="btn act-green" id="vfGo" disabled>${icon("check")}Authorize</button>`}</footer></div>`);
+  const rejReason=()=>{const sel=$("#vfReasonSel")?.value||"";return sel==="Other"?$("#vfReason").value.trim():sel};
   const go=$("#vfGo"),sync=()=>{
-    if(dismiss)go.disabled=!($("#vfReason").value.trim()&&$("#vfFinal").checked);
+    if(dismiss){const sel=$("#vfReasonSel").value;$("#vfOtherF").hidden=sel!=="Other";go.disabled=!(rejReason()&&$("#vfFinal").checked)}
     else{const n=[...document.querySelectorAll("[data-vf]")].filter(c=>c.checked).length;$("#vfCount").textContent=n;go.disabled=n<items.length;}
   };
   const box=$("#scrim");box.addEventListener("input",sync);box.addEventListener("change",sync);
   $("#vfAll")?.addEventListener("click",()=>{document.querySelectorAll("[data-vf]").forEach(c=>c.checked=true);sync()});
-  (dismiss?$("#vfReason"):$("#vf0")).focus();
+  (dismiss?$("#vfReasonSel"):$("#vf0")).focus();
   go.addEventListener("click",()=>{
-    if(dismiss){const v=$("#vfReason").value.trim();decide(it,"dismiss",v);
+    if(dismiss){const v=rejReason();decide(it,"dismiss",v);
       doneModal(`<div class="warn-ic">${icon("ban")}</div>`,"Request rejected",`The ${KIND[it.kind].verb} request for <span class="mono">${it.no}</span> has left the queue. <span class="mono">${it.by}</span> sees your reason.`);}
     else{decide(it,"authorize");doneModal(`<div class="success-ic">${icon("check")}</div>`,RESULT[it.kind][0],`Collateral <span class="mono">${it.no}</span> for ${esc(custBy(it.cust).name)} ${RESULT[it.kind][1]}`);}
   });
@@ -1867,7 +1951,8 @@ function openReturned(id){
   }
   const mod=it.kind==="amend"?"amendment":"cancellation",st=STATES[mod];
   Object.assign(st,{view:"detail",rec:it.rec,type:it.type,customer:custBy(it.cust),values:{...it.values},lookups:{...it.lookups},
-    orig:{...it.rec.values},origLookups:{...it.rec.lookups},errors:{},showErrors:false,comments:[],files:[],reason:it.kind==="cancel"?it.reason:"",returnItem:it});
+    orig:{...it.rec.values},origLookups:{...it.rec.lookups},errors:{},showErrors:false,comments:[],files:[],reason:it.kind==="cancel"?it.reason:"",
+    reasonSel:it.kind==="cancel"?splitReason(it.reason,REASONS).sel:"",reasonText:it.kind==="cancel"?splitReason(it.reason,REASONS).text:"",returnItem:it});
   location.hash="#"+mod;go(mod);
 }
 function resubmitted(it){const i=RETURNED.indexOf(it);if(i>=0)RETURNED.splice(i,1);updateRetBadge()}
@@ -2009,8 +2094,10 @@ function enqActionBar(mode){
 }
 function filterPanelHtml(){
   const f=E().f,has=k=>ENQ_KINDS[EK].filters.includes(k);
-  const field=(col,lbl,ctl)=>`<div class="field" style="--col:${col}"><label>${lbl}</label>${ctl}</div>`;
-  const rng=(k,type,ph)=>`<div class="range"><input class="input ${type==="amount"?"amount":""}" type="${type==="amount"?"text":"date"}" ${type==="amount"?'inputmode="decimal"':""} data-ff="${k}From" value="${esc(f[k+"From"])}" aria-label="${FILTER_LABELS[k]} from" placeholder="${ph?"From":""}"><span>to</span><input class="input ${type==="amount"?"amount":""}" type="${type==="amount"?"text":"date"}" ${type==="amount"?'inputmode="decimal"':""} data-ff="${k}To" value="${esc(f[k+"To"])}" aria-label="${FILTER_LABELS[k]} to" placeholder="${ph?"To":""}"></div>`;
+  const field=(col,lbl,ctl)=>`<div class="field" style="--col:6;--lw:160px"><label>${lbl}</label>${ctl}</div>`;
+  const rng=(k,type,ph)=>type==="amount"
+    ?`<div class="range"><input class="input amount" type="text" inputmode="decimal" data-ff="${k}From" value="${esc(f[k+"From"])}" aria-label="${FILTER_LABELS[k]} from" placeholder="From"><span>to</span><input class="input amount" type="text" inputmode="decimal" data-ff="${k}To" value="${esc(f[k+"To"])}" aria-label="${FILTER_LABELS[k]} to" placeholder="To"></div>`
+    :`<div class="range">${dateCtl(`data-ff="${k}From" aria-label="${FILTER_LABELS[k]} from"`,f[k+"From"])}<span>to</span>${dateCtl(`data-ff="${k}To" aria-label="${FILTER_LABELS[k]} to"`,f[k+"To"])}</div>`;
   const parts=[];
   if(has("cust"))parts.push(field(4,"Customer ID",`<div class="search"><input class="input" data-ff="cust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(f.cust)}"><button class="btn" type="button" id="enCustLov" aria-label="Search customers">${icon("search")}</button></div>`));
   if(has("branch"))parts.push(field(4,"Branch",`<select class="input" data-ff="branch"><option value="">Any branch</option>${BRANCHES.map(b=>`<option value="${b.code}" ${f.branch===b.code?"selected":""}>${b.code} · ${b.desc}</option>`).join("")}</select>`));
@@ -2021,9 +2108,9 @@ function filterPanelHtml(){
   if(has("review"))parts.push(field(4,"Review date between",rng("review","date")));
   if(has("expiry"))parts.push(field(4,"Expiry date between",rng("expiry","date")));
   if(has("posted"))parts.push(field(4,"Posted date between",rng("posted","date")));
-  const fill=(3-parts.length%3)%3;
+  const fill=parts.length%2?3:0;
   return `<div class="filter-panel" id="enFilters"><div class="fp-head"><span>${icon("funnel")}<b>Advanced filters</b></span><button class="link-btn" id="enCloseF">${icon("x")}Close</button></div>
-    <form class="grid" id="enForm" autocomplete="off">${parts.join("")}${fill?`<div style="grid-column:span ${fill*4}"></div>`:""}
+    <form class="grid" id="enForm" autocomplete="off">${parts.join("")}${fill?`<div style="grid-column:span 6"></div>`:""}
     <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="enClearF">${icon("refresh")}Clear filters</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div></form></div>`;
 }
 function enqListHtml(){
@@ -2095,7 +2182,7 @@ function renderEnq(){
 }
 function enqOpen(no){const x=enqRecords().find(r=>r.no===no);if(!x)return;Object.assign(E(),{view:"detail",item:x});renderEnq();window.scrollTo(0,0)}
 function enqBack(){E().view="list";E().item=null;renderEnq();window.scrollTo(0,0)}
-function readFilters(){enqView.querySelectorAll("[data-ff]").forEach(i=>E().f[i.dataset.ff]=i.value.trim())}
+function readFilters(){enqView.querySelectorAll("[data-ff]").forEach(i=>E().f[i.dataset.ff]=String(valOf(i)).trim())}
 /* Hand a generated file to the viewer: the artifact viewer's downloads capability when present, a normal download otherwise */
 async function offerFile(filename,data){
   let dl=null;try{dl=await window.claude?.use?.("downloads")}catch(e){}
@@ -2177,10 +2264,10 @@ function renderReport(){
     <div class="actionbar" role="toolbar" aria-label="Screen actions"><button class="btn act-blue" id="rpHelp">${icon("help")}Help</button><span class="sep" aria-hidden="true"></span><button class="btn act-blue" id="rpNew" title="Reset the report parameters">${icon("plus")}New</button><button class="btn act-red" id="rpExit">${icon("close")}Exit</button></div></div>
   <section class="card" aria-labelledby="rpS1"><div class="card-head"><div class="step active">${icon("funnel")}</div><div><h2 id="rpS1">Parameters</h2><p>The report updates as you change them.</p></div></div>
     <div class="card-body"><div class="grid" id="rpForm">
-      <div class="field" style="--col:3"><label for="rpAsAt">As at</label><input class="input" type="date" id="rpAsAt" data-rp="asAt" value="${RP.asAt}"></div>
-      <div class="field" style="--col:3"><label for="rpWin">Due within</label><select class="input" id="rpWin" data-rp="win">${[30,60,90].map(n=>opt(n,`${n} days`,RP.win)).join("")}</select></div>
-      <div class="field" style="--col:3"><label for="rpBr">Branch</label><select class="input" id="rpBr" data-rp="branch">${opt("","All branches",RP.branch)}${BRANCHES.map(b=>opt(b.code,`${b.code} · ${b.desc}`,RP.branch)).join("")}</select></div>
-      <div class="field" style="--col:3"><label for="rpTy">Collateral type</label><select class="input" id="rpTy" data-rp="type">${opt("","All types",RP.type)}${TYPES.map(t=>opt(t.code,`${t.code} · ${t.name}`,RP.type)).join("")}</select></div>
+      <div class="field" style="--col:3;--lw:62px"><label for="rpAsAt">As at</label>${dateCtl('id="rpAsAt" data-rp="asAt"',RP.asAt)}</div>
+      <div class="field" style="--col:3;--lw:84px"><label for="rpWin">Due within</label><select class="input" id="rpWin" data-rp="win">${[30,60,90].map(n=>opt(n,`${n} days`,RP.win)).join("")}</select></div>
+      <div class="field" style="--col:3;--lw:56px"><label for="rpBr">Branch</label><select class="input" id="rpBr" data-rp="branch">${opt("","All branches",RP.branch)}${BRANCHES.map(b=>opt(b.code,`${b.code} · ${b.desc}`,RP.branch)).join("")}</select></div>
+      <div class="field" style="--col:3;--lw:104px"><label for="rpTy">Collateral type</label><select class="input" id="rpTy" data-rp="type">${opt("","All types",RP.type)}${TYPES.map(t=>opt(t.code,`${t.code} · ${t.name}`,RP.type)).join("")}</select></div>
     </div></div></section>
   <section class="card" aria-labelledby="rpS2"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="rpS2">Summary</h2><p>As at ${fmtDate(RP.asAt)}, across ${d.open.length} open collateral.</p></div></div>
     <div class="card-body"><div class="figs">
@@ -2207,7 +2294,9 @@ function rpExport(kind){
   writeExport(kind,{title:"Review due / overdue report",name:`review-due-overdue-${RP.asAt}`,head,body,right:RP_COLS.flatMap((c,i)=>c[2]?[i+1]:[]),
     meta:`As at ${fmtDate(RP.asAt)} · due within ${RP.win} days · ${d.overdue.length} overdue, ${d.due.length} due · Branch: ${RP.branch||"All"} · Type: ${RP.type||"All"}`});
 }
-rpView.addEventListener("change",e=>{const k=e.target.dataset.rp;if(!k)return;RP[k]=e.target.value||(k==="asAt"?todayIso():"");renderReport();$(`[data-rp="${k}"]`)?.focus()});
+rpView.addEventListener("change",e=>{const k=e.target.dataset.rp;if(!k)return;
+  if(k==="asAt"){const v=valOf(e.target);if(v&&!ISO_RE.test(v))toast("Enter the date as dd-mmm-yyyy, e.g. 25-OCT-2026.");RP.asAt=ISO_RE.test(v)?v:todayIso()}else RP[k]=e.target.value;
+  renderReport();$(`[data-rp="${k}"]`)?.focus()});
 rpView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#rpHelp")){openDrawer("Help · Review due / overdue",`<ol><li>The report lists <b>open</b> (approved, not cancelled) collateral whose next review date has passed, or falls within the period you choose.</li><li>Change <b>As at</b>, <b>Due within</b>, <b>Branch</b> or <b>Collateral type</b>; the report updates straight away.</li><li>The summary shows how many reviews are overdue or due, the amounts involved, the longest overdue review and the share reviewed on time.</li><li><b>PDF</b> and <b>Excel</b> export the rows shown. In production the same report is sent by the daily review job (see the training notes).</li></ol>`);return}

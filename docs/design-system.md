@@ -24,8 +24,8 @@ The bar always sits **on the right of the page header**, on every screen (entry,
 | 3 | New | Blue | Tinted |
 | 4 | Submit | Green | Solid (the only solid button) |
 | 5 | Exit | Red | Tinted (red border and text) |
-| — | Return *(Approvals only)* | Amber | Tinted, before Dismiss |
-| — | Dismiss *(Approvals only)* | Rose | Tinted (rose border and text, distinct from the red Exit), before the green Authorize |
+| — | Return *(Approvals only)* | Amber | Tinted, before Reject |
+| — | Reject *(Approvals only)* | Rose | Tinted (rose border and text, distinct from the red Exit), before the green Authorize |
 
 Which buttons each screen shows, and what New does there:
 
@@ -38,7 +38,7 @@ Which buttons each screen shows, and what New does there:
 | Approvals queue | Help, New, Exit | Clears the search |
 | Enquiry grids | Help, New, Exit | Clears the search and every filter |
 | Enquiry details | Help, Exit | Not shown (read only, as in Forms) |
-| Approval request | Help, Comment, Return, Dismiss, Authorize, Exit | Not shown. Authorize opens the verification checklist; Return and Dismiss ask for a reason |
+| Approval request | Help, Comment, Return, Reject, Authorize, Exit | Not shown. Authorize opens the verification checklist; Return and Reject ask for a reason |
 | Returned queue | Help, New, Exit | Clears the search |
 | Reports | Help, New, Exit | Resets the report parameters |
 | Approval request you submitted | Help, Comment, Exit | Not shown (maker-checker: someone else decides) |
@@ -58,31 +58,24 @@ Rules:
 | `--act-amber` | `#9A5A00` | `#E9B15C` |
 | `--act-rose` | `#B4234F` | `#F08AAB` |
 
-## Form layout: 12-column grid
+## Form layout: inline labels, two fields per row
 
-Every form section is a 12-column grid. Each field spans a number of columns that matches the length of its value, and **every row adds up to exactly 12**. Fields stay proportional to their content, and the left and right edges of every row line up.
+Changed after the presentation (October 2026): every label sits **on the same line** as its field, on the left, as in Oracle Forms.
 
-| Columns | Used for |
-|---|---|
-| 4 (one third) | Amounts, dates, codes, folio numbers, rates, counts, short lookups (policy type, currency), branch |
-| 5–7 | Paired descriptive values: ownership name / location, property type / sub-type, deposit type / collateral type |
-| 8 (two thirds) | Long-name lookups (source account, financial institution, insurance company), product, valuer name. Always paired with a 4-column field |
-| 12 (full row) | Comment |
-
-Standard row patterns:
-
-| Pattern | Example |
-|---|---|
-| 8 + 4 | Source account + Source branch · Financial institution + Branch · Insurance company + Insurance code |
-| 4 + 4 + 4 | Amount considered + Review date + Expiry date (the closing row of every collateral type) · Folio number + Start + End |
-| 6 + 6 | Property type + Sub property type · Share code + Index |
-| 12 | Comment |
+- Each form section is a 12-column grid with **two fields per row** (6 columns each). Narration and other long text take the full row.
+- The label column is 150px wide by default; long labels wrap onto a second line. Hints, limits and errors sit under the field, in the field's column.
+- **Lookups (LOVs)** show the **code** and its **description** in two separate boxes: the code box opens the searchable list, the description box fills itself.
+- Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
+- Auto-filled fields have a grey fill and a lock icon.
+- On phones the label moves above the field and every field takes the full row.
 
 Sections:
-- Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description.
-- When the form is wide (880px or more), section titles move into a left column and the fields sit to the right.
-- Auto-filled fields have a grey fill, a lock icon and an "Auto-filled" tag next to the label.
-- On phones every field takes the full row.
+- Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description above its fields.
+- After a collateral type is picked, the page scrolls so the whole form card, header included, sits under the top bar.
+
+Dates:
+- Every date is shown and typed as **DD-MON-YYYY** (for example `25-OCT-2026`); empty fields show the placeholder `dd-mmm-yyyy`.
+- Users can type the date (also accepted: `25/10/2026`) or pick it from the calendar button. A date that doesn't exist (`31-FEB-2027`) shows "Enter the … as dd-mmm-yyyy, e.g. 25-OCT-2026."
 
 ## Tokens
 
@@ -108,7 +101,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Search list (Amendment and Cancellation)
 
-- A **Search criteria** card on the 12-column grid, with **Fetch** and **Clear** under the fields. Criteria are optional; blank lists everything.
+- A **Search criteria** card with three fields: **Collateral number**, **Customer number** (with customer search) and **Customer name** (part of the name is enough). **Fetch** and **Clear** sit under the fields. Criteria are optional; blank lists everything.
 - A results card with type filter chips (with counts), sortable columns, 8 rows per page and a pager ("Showing 1–8 of 14", First, ‹, page, ›, Last).
 - Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
 - The **›** open button is the last column and stays pinned to the right edge. Clicking the row does the same.
@@ -117,7 +110,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 ### Quick search with funnel (Enquiry)
 
 - One search box, about 360px wide (customer name or number, collateral number, description, status), that filters as you type, with a solid blue **funnel** button beside it. Approvals and Returned use the same 360px box without the funnel.
-- The funnel opens an **Advanced filters** panel inside the same card, laid out on the 12-column grid (three fields per row; ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
+- The funnel opens an **Advanced filters** panel inside the same card, laid out two fields per row with inline labels (ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
 - Applied filters appear as chips under the search box, each with its own ×, plus **Clear all**. The funnel shows a red count of active filters.
 
 ### Data grid toolbar (Enquiry)
@@ -149,7 +142,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Read-only record view (Cancellation)
 
-- The type form is rendered with the same 12-column layout, but values sit in grey boxes with no input border. Lookups show a code chip and description; amounts are right-aligned in mono.
+- The type form is rendered with the same layout, but values sit in grey boxes with no input border. Lookups show the code and the description in separate boxes; amounts are right-aligned in mono.
 - The form header says "Read only" and shows a lock instead of an edit icon.
 - The single editable input lives in its own card with a red left edge, so the eye goes straight to it.
 
@@ -165,13 +158,13 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 - **Editable** (Creation, Amendment): a form with **Choose a file** / drop zone and **Scan document**, *Scanned document ref. no.* (pre-filled with the next number, editable), *Document description** (pre-filled from the file name), *Document expiry date*, then **Save document** and **Clear**. Saved documents are stored straight away, as in Forms.
 - **View only** (Cancellation, Approvals): the table only.
 - The table lists Ref., Document (description over file name), Expiry, Posted by, Posting date, and per-row **View** and **Delete**. Delete needs a second click ("Confirm delete") instead of the Forms radio button plus Delete button. **Return** closes the modal.
-- The rail card shows the first three documents and a **Manage documents (n)** / **View documents (n)** button.
+- The rail card shows only **how many** documents there are, and a **Manage documents (n)** / **View documents (n)** button that opens this modal with the list.
 
 ### Approval request (Approvals)
 
 - The request opens on its entry screen's layout, read-only. Amendment requests highlight changed fields (**Changed** tag, amber outline, current value underneath).
-- A **Decision** card at the top of the rail explains Return, Dismiss and Authorize.
-- **Verification checklist** modal before Authorize: blue header row, one tick per item, counter and *Tick all*; the action stays disabled until all are ticked. Dismiss asks for a reason plus a "Dismiss permanently" tick.
+- A **Decision** card at the top of the rail explains Return, Reject and Authorize.
+- **Verification checklist** modal before Authorize: blue header row, one tick per item, counter and *Tick all*; the action stays disabled until all are ticked. Reject asks for a reason from a list plus a "Reject permanently" tick.
 
 ### Returned for correction (all entry screens)
 
@@ -183,11 +176,11 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 ### Maker-checker (Approvals)
 
 - Your own requests stay in the queue with *(you)* and a grey **Yours** tag.
-- Opening one shows a blue banner with a lock: you submitted it, so another officer must decide. Return, Dismiss and Authorize are left off the action bar.
+- Opening one shows a blue banner with a lock: you submitted it, so another officer must decide. Return, Reject and Authorize are left off the action bar.
 
 ### Report page (Reports)
 
-- **Parameters** card on the 12-column grid (four fields at 3 columns: As at, Due within, Branch, Collateral type). The report updates as they change; **New** resets them.
+- **Parameters** card with four inline fields on one row (As at, Due within, Branch, Collateral type). The report updates as they change; **New** resets them.
 - **Summary** strip using the figures grid: counts and amounts coloured by state (red overdue, amber due, green good).
 - Results table grouped by state, with a group header row and count, state chips (All / Overdue / Due), **PDF** and **Excel**, and a footer with the parameters and who ran it.
 
@@ -195,12 +188,16 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 
 | Component | Behaviour | Angular Material equivalent |
 |---|---|---|
-| Lookup field (LOV) | Button showing `code · description`. Opens a searchable dialog. Disabled until its parent field is set. | `mat-dialog` + `mat-table`, or `mat-autocomplete` for short lists |
+| Lookup field (LOV) | Code box (opens a searchable dialog) next to a read-only description box. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | `mat-dialog` + `mat-table`, or `mat-autocomplete` for short lists |
 | Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur | `matInput` + custom formatter directive |
-| Date input | Native date picker. Displayed as `DD-MON-YYYY` in tables, matching Oracle | `mat-datepicker` with a custom date format |
-| Type tiles | Radio group of cards | `mat-radio-group` with custom card template |
-| Summary panel | Live summary + required-field progress | Standalone component |
+| Date input | Typed or picked; always shown as `DD-MON-YYYY`, placeholder `dd-mmm-yyyy`, matching Oracle | `mat-datepicker` with a custom `DD-MMM-YYYY` date format |
+| Required-fields panel | Count of required fields complete, a progress bar, and the fields still empty (each jumps to its field) | Standalone component |
 | Drawer | Help and Comments slide in from the right | `mat-sidenav` (mode `over`) |
 | Status pill | *Approved* (green), *Pending approval* (amber) | `mat-chip` |
 
 PrimeNG offers equivalents for every row if the team prefers it. The choice of library is open.
+
+### Reasons from a list (Cancellation, Reject)
+
+- The **closure reason** at Cancellation and the **rejection reason** at Approvals are picked from a list of common reasons.
+- Picking **Other** shows a text box for the reason; it is then required. Any other choice needs no typing.
