@@ -2,6 +2,28 @@
 
 The visual rules used by the prototype, so the Angular build and later modules (Amendment, Cancellation) look the same.
 
+## Component library: @unionsg/ui
+
+The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.vercel.app), v1.6.0) sets the look of the form controls, buttons, lookups, data tables and tabs. The prototype follows it (October 2026). The library ships as React components; its documented class values (Tailwind) and plain CSS are what the Angular build should reproduce.
+
+| Library component | Used for in Collateral Management | Spec followed |
+|---|---|---|
+| TextInput | Every text, amount, date, phone and number field | 28px high, 4px corners, 1px `#d1d5db` border, 14px text; blue `#2563eb` border and 1px ring on focus; red `#f87171` border and 12px red message on error |
+| TextInput (read-only) | Auto-filled and view-only values | `#f9f8fa` fill, no border, semi-bold `#0f172a` text |
+| TextInput (disabled) | LOVs waiting for their parent field | `#f3f4f6` fill, `#e5e7eb` border, grey text, not-allowed cursor |
+| Label | Every field label | 14px, weight 500, `#374151`, right-aligned beside the input, red asterisk for required |
+| Width presets | Field widths (see Form layout) | Name 420, LOV 280, phone 240, short 240, amount 180, date 160 |
+| LOV | Collateral type and every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
+| Button | Action bar, Fetch, Clear, exports | `rounded-lg`, `px-4 py-2 text-sm font-medium`, white with coloured text and border, light tint on hover |
+| DataTable | Amendment, Cancellation, Approvals, Returned and Enquiry lists, and the customer's other collaterals | `#E9EFFB` sticky header (12px, semi-bold, not upper case), triangle sort icons, 12px `#334155` rows on `#f7f4f0`, light blue hover, small row-action buttons, footer pager |
+| Tabs | Enquiry: All / Running / Used collateral | Grey tab strip; active tab solid green-600 with white text; icon and count badge on each tab |
+
+Where the library has no rule, the prototype keeps the module's agreed choices:
+- **Submit and Authorize** are solid green (green-600). The library's generic primary button is indigo; green was agreed for Submit.
+- **Return** (amber) and **Reject** (rose) use the library's outlined button shape in their own colours.
+- **Dates** stay `DD-MON-YYYY`, as agreed, at the library's 160px date width, centred. The library's own example uses `DD/MM/YYYY`.
+- The customer search and the documents list stay as dialogs; the library LOV dropdown is for code lists.
+
 ## Principles
 
 1. **One task per page, in steps.** Customer, then type, then details. Each step shows a check mark once it is complete.
@@ -16,16 +38,18 @@ Every screen uses the same buttons, in the same order and colours. Each screen s
 
 The bar always sits **on the right of the page header**, on every screen (entry, list, details, approval, enquiry). When a long title pushes it onto its own row it stays right-aligned, so the buttons always end at the same edge.
 
-| Order | Button | Colour | Style |
+| Order | Button | Colour | @unionsg/ui style |
 |---|---|---|---|
-| 1 | Help | Blue | Tinted (blue border and text) |
-| 2 | Comment | Blue | Tinted |
+| 1 | Help | Blue | `search` variant: white, blue-700 text, blue-300 border |
+| 2 | Comment | Blue | `search` variant |
 | — | *divider* | | Separates the information actions from the record actions |
-| 3 | New | Blue | Tinted |
-| 4 | Submit | Green | Solid (the only solid button) |
-| 5 | Exit | Red | Tinted (red border and text) |
-| — | Return *(Approvals only)* | Amber | Tinted, before Reject |
-| — | Reject *(Approvals only)* | Rose | Tinted (rose border and text, distinct from the red Exit), before the green Authorize |
+| 3 | New | Blue | `search` variant |
+| 4 | Submit | Green | Solid green-600 (the only solid button) |
+| 5 | Exit | Red | `exit` variant: white, red-600 text, red-300 border |
+| — | Return *(Approvals only)* | Amber | Outlined, amber-700 text, amber-300 border, before Reject |
+| — | Reject *(Approvals only)* | Rose | Outlined, rose-700 text, rose-300 border (distinct from the red Exit), before the green Authorize |
+
+Other buttons: **Fetch** uses the library's `fetch` variant (sky-700 text, sky-300 border); **Back**, **Cancel** and dialog buttons use the `return` variant (grey).
 
 Which buttons each screen shows, and what New does there:
 
@@ -52,37 +76,38 @@ Rules:
 
 | Token | Light | Dark |
 |---|---|---|
-| `--act-blue` | `#0B5CAD` | `#6AAEF2` |
-| `--act-green` | `#1D7A4C` | `#3FB57A` |
-| `--act-red` | `#B42318` | `#F2867B` |
-| `--act-amber` | `#9A5A00` | `#E9B15C` |
-| `--act-rose` | `#B4234F` | `#F08AAB` |
+| `--u-blue` / `--u-blue-b` | `#1d4ed8` / `#93c5fd` | `#93c5fd` / `#2c4f86` |
+| `--u-sky` / `--u-sky-b` | `#0369a1` / `#7dd3fc` | `#7dd3fc` / `#1f5671` |
+| `--u-green` | `#16a34a` | `#22a85a` |
+| `--u-red` / `--u-red-b` | `#dc2626` / `#fca5a5` | `#fca5a5` / `#7f2a2a` |
+| `--u-amber` / `--u-amber-b` | `#b45309` / `#fcd34d` | `#fcd34d` / `#6b4a12` |
+| `--u-rose` / `--u-rose-b` | `#be123c` / `#fda4af` | `#fda4af` / `#7a2a3d` |
 
 ## Form layout: inline labels, fields sized to their values
 
-Changed after the presentation (October 2026): every label sits **on the same line** as its field, on the left, as in Oracle Forms, and each field is only as wide as the values it holds.
+Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a right-aligned label (136px) beside its input. Inputs keep the library's preset width for the value they hold.
 
-| Field | Width |
+| Field | Width (@unionsg/ui preset) |
 |---|---|
-| Amount | 150px (`GHS` + `4,000,000.00`) |
-| Date | 140px (`25-OCT-2026` + calendar button) |
-| Short code or number (insurance code, policy number, folio numbers, branch code) | 130px |
-| Phone number | 160px |
-| Percentage | 110px |
-| Count (months, number of shares) | 100px |
-| Account number LOV (code only) | 210px |
-| Currency, source branch | 196px |
-| Lookups, names, locations, product | Fill what is left of the row |
+| Lookup (LOV), including the account number | 280px |
+| Auto-filled code values (product, currency, branch) | 280px |
+| Account name | 420px (name) |
+| Amount | 180px, right-aligned, currency prefix |
+| Date | 160px, centred, calendar button |
+| Short code or number (insurance code, policy number, folio numbers, branch) | 240px (short) |
+| Phone number | 240px |
+| Percentage, count | 120px |
+| Names and free text (ownership, location, valuer) | Full row, up to 420px |
 | Narration | Full row |
 
-- Each section lists its fields in **rows**. Compact fields share a row; lookups and long text stretch to fill it. Standard rows: *Collateral amount · Next review date · Expiry review date*; *Insurance company · Insurance code*; *Policy type · Policy number · Sum assured*; *Valuation date · Market value · Forced sale value*; *Folio number · Folio start · Folio end*.
-- The first label in each row has a fixed 120px column so rows line up on the left; the labels after it take their own width, up to about 104px, and wrap onto a second line if longer.
+- Fields fill the grid left to right, two per row. *Collateral amount · Next review date* share a row, then *Expiry review date*; *Insurance company · Insurance code*; *Policy type · Policy number*.
+- Long labels wrap onto a second line inside their column.
 - Hints, limits and errors sit under the field.
-- **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens the searchable list. Auto-filled code values use the same style (`010 - SINKOR`).
+- **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).
 - Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
-- Auto-filled fields have a grey fill and a lock icon.
-- Side panels (required fields, balances, documents, decision, record) sit on the **right** of the form, 260px wide. At 1440px and wider every standard row fits on one line; on narrower screens the last field of a row moves to the next line.
-- On phones the label moves above the field and every field takes the full row.
+- Auto-filled fields use the library's read-only style (light fill, no border, semi-bold) with a lock icon.
+- Side panels (required fields, balances, documents, decision, record) sit on the **right** of the form, 240px wide.
+- Below 900px the grid becomes one column; on phones the label moves above the field and every field takes the full row.
 
 Sections:
 - Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description above its fields.
@@ -117,10 +142,10 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 ### Search list (Amendment and Cancellation)
 
 - A **Search criteria** card with three fields: **Collateral number**, **Customer number** (with customer search) and **Customer name** (part of the name is enough). **Fetch** and **Clear** sit under the fields. Criteria are optional; blank lists everything.
-- A results card with type filter chips (with counts), sortable columns, 8 rows per page and a pager ("Showing 1–8 of 14", First, ‹, page, ›, Last).
+- A results card with type filter chips (with counts), sortable columns and the @unionsg/ui DataTable footer: "Showing 1 to 10 of 14 records", ‹, page numbers (current page solid blue), › and **Per page** (5, 10 or 25; 10 by default).
 - Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
-- The **›** open button is the last column and stays pinned to the right edge. Clicking the row does the same.
-- Rows that can't be opened (*Amendment pending* or *Cancellation pending*) are muted and their **›** is disabled with a tooltip explaining why. A pending request in either module locks the record in **both**.
+- The **Action** column is last and stays pinned to the right edge. It holds the library's small row-action button: **Amend** (blue, edit style) in Amendment, **Cancel** (red, delete style) in Cancellation, **Review** in Approvals, **Correct** in Returned and **View** (grey) in Enquiry. Clicking the row does the same.
+- Rows that can't be opened (*Amendment pending* or *Cancellation pending*) are muted and their action button is disabled with a tooltip explaining why. A pending request in either module locks the record in **both**.
 
 ### Quick search with funnel (Enquiry)
 
@@ -135,7 +160,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Module sub-navigation (Enquiry)
 
-- A module with several screens gets an indented sub-list in the sidebar (All collateral, Running collateral, Used collateral) and a matching tab switcher at the top of the page. Both link to the same routes.
+- A module with several screens gets an indented sub-list in the sidebar (All collateral, Running collateral, Used collateral) and matching @unionsg/ui **Tabs** at the top of the page: an icon, the label and a record-count badge, with the active tab solid green. Both link to the same routes.
 
 ### Business-rule messages
 
@@ -201,16 +226,16 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 
 ## Components
 
-| Component | Behaviour | Angular Material equivalent |
+| Component | Behaviour | Angular build |
 |---|---|---|
-| Lookup field (LOV) | One box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`); clicking it opens a searchable dialog. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | `mat-dialog` + `mat-table`, or `mat-autocomplete` for short lists |
+| Lookup field (LOV) | @unionsg/ui LOV: one box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`), a dropdown with live search, and a × to clear. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | Angular port of the @unionsg/ui LOV (CDK overlay) |
 | Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur | `matInput` + custom formatter directive |
 | Date input | Typed or picked; always shown as `DD-MON-YYYY`, placeholder `dd-mmm-yyyy`, matching Oracle | `mat-datepicker` with a custom `DD-MMM-YYYY` date format |
 | Required-fields panel | Count of required fields complete, a progress bar, and the fields still empty (each jumps to its field) | Standalone component |
 | Drawer | Help and Comments slide in from the right | `mat-sidenav` (mode `over`) |
 | Status pill | *Approved* (green), *Pending approval* (amber) | `mat-chip` |
 
-PrimeNG offers equivalents for every row if the team prefers it. The choice of library is open.
+The look of inputs, buttons, LOVs, tables and tabs is fixed by @unionsg/ui (see the top of this page). The library is React; the Angular build reproduces its classes and CSS, for example as Angular components that share the same Tailwind classes.
 
 ### Reasons from a list (Cancellation, Reject)
 

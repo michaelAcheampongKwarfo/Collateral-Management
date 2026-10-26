@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 /* Layout: app shell (module sidebar + workspace). Workspace = page header, two step cards,
    dynamic collateral form with a sticky summary rail, then the customer's existing collaterals. */
@@ -26,8 +25,8 @@
   --t-cash:#1D7A4C; --t-ins:#6A4BC2; --t-prop:#B05E0C; --t-guar:#0B5CAD; --t-shares:#0D7A84;
   --shadow:0 1px 2px rgba(19,34,58,.06),0 4px 16px rgba(19,34,58,.05);
   --overlay:rgba(12,22,38,.42);
-  --font-body:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --r-sm:6px; --r-md:10px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -232,7 +231,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .tile[aria-checked="true"] .tick{display:grid}
 
 /* Step 3: dynamic form + rail */
-.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}
+.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:16px;align-items:start}
 .type-chip{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--tc)}
 .type-chip .ic{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:var(--sunken)}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px}
@@ -617,6 +616,200 @@ select.input{appearance:auto}
 .rp-table .rv{display:inline-block;margin:0}
 .rp-meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:4px}
 .rp-meta b{color:var(--fg);font-weight:600}
+
+/* ===== @unionsg/ui component layer (TextInput, Button, LOV, DataTable, Tabs) =====
+   Values follow https://unionsg-ui.vercel.app (v1.6.0). Colours are tokens so dark mode keeps working. */
+:root{
+  --u-label:#374151; --u-in-border:#d1d5db; --u-in-text:#1f2937; --u-ph:#d1d5db; --u-focus:#2563eb;
+  --u-ro-bg:#f9f8fa; --u-ro-text:#0f172a; --u-dis-bg:#f3f4f6; --u-dis-border:#e5e7eb; --u-dis-text:#9ca3af;
+  --u-err:#f87171; --u-err-text:#ef4444;
+  --u-tbl-bg:#f7f4f0; --u-tbl-line:rgba(226,232,240,.9); --u-th-bg:#E9EFFB; --u-th-hover:#dde6f9; --u-th-line:#cbd5e1; --u-th-text:#0f172a;
+  --u-td-text:#334155; --u-td-line:rgba(226,232,240,.6); --u-row-hover:rgba(239,246,255,.6); --u-slate-200:#e2e8f0; --u-slate-300:#cbd5e1;
+  --u-btn-bg:#ffffff;
+  --u-blue:#1d4ed8; --u-blue-b:#93c5fd; --u-blue-h:#eff6ff;
+  --u-sky:#0369a1; --u-sky-b:#7dd3fc; --u-sky-h:#f0f9ff;
+  --u-gray:#374151; --u-gray-b:#d1d5db; --u-gray-h:#f9fafb;
+  --u-red:#dc2626; --u-red-b:#fca5a5; --u-red-h:#fef2f2;
+  --u-amber:#b45309; --u-amber-b:#fcd34d; --u-amber-h:#fffbeb;
+  --u-rose:#be123c; --u-rose-b:#fda4af; --u-rose-h:#fff1f2;
+  --u-green:#16a34a; --u-green-h:#15803d; --u-indigo:#4f46e5; --u-indigo-h:#4338ca; --u-page:#2563eb;
+  --u-tab-bg:#f9fafb; --u-tab-line:#e5e7eb; --u-tab-text:#4b5563; --u-tab-badge:#e5e7eb;
+  --u-act-view:#4b5563; --u-act-view-b:#e5e7eb; --u-act-edit:#2563eb; --u-act-edit-b:#bfdbfe; --u-act-del:#ef4444; --u-act-del-b:#fecaca;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --u-label:#cbd5e1; --u-in-border:#3b4a63; --u-in-text:#e5ecf5; --u-ph:#5b6a80; --u-focus:#60a5fa;
+  --u-ro-bg:#1c2638; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
+  --u-err:#f87171; --u-err-text:#fca5a5;
+  --u-tbl-bg:#151e2e; --u-tbl-line:#26324a; --u-th-bg:#1b2a45; --u-th-hover:#223456; --u-th-line:#34425d; --u-th-text:#e5ecf5;
+  --u-td-text:#cbd5e1; --u-td-line:#222d42; --u-row-hover:rgba(37,99,235,.12); --u-slate-200:#34425d; --u-slate-300:#4b5a73;
+  --u-btn-bg:#151e2e;
+  --u-blue:#93c5fd; --u-blue-b:#2c4f86; --u-blue-h:#16304f;
+  --u-sky:#7dd3fc; --u-sky-b:#1f5671; --u-sky-h:#0f2b3b;
+  --u-gray:#cbd5e1; --u-gray-b:#3b4a63; --u-gray-h:#1c2638;
+  --u-red:#fca5a5; --u-red-b:#7f2a2a; --u-red-h:#3a1c1c;
+  --u-amber:#fcd34d; --u-amber-b:#6b4a12; --u-amber-h:#352812;
+  --u-rose:#fda4af; --u-rose-b:#7a2a3d; --u-rose-h:#3a1a26;
+  --u-green:#22a85a; --u-green-h:#2bbd68; --u-indigo:#6366f1; --u-indigo-h:#818cf8; --u-page:#3b82f6;
+  --u-tab-bg:#111a28; --u-tab-line:#26324a; --u-tab-text:#9aa9be; --u-tab-badge:#26324a;
+  --u-act-view:#cbd5e1; --u-act-view-b:#3b4a63; --u-act-edit:#93c5fd; --u-act-edit-b:#2c4f86; --u-act-del:#fca5a5; --u-act-del-b:#7f2a2a;
+}}
+:root[data-theme="dark"]{
+  --u-label:#cbd5e1; --u-in-border:#3b4a63; --u-in-text:#e5ecf5; --u-ph:#5b6a80; --u-focus:#60a5fa;
+  --u-ro-bg:#1c2638; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
+  --u-err:#f87171; --u-err-text:#fca5a5;
+  --u-tbl-bg:#151e2e; --u-tbl-line:#26324a; --u-th-bg:#1b2a45; --u-th-hover:#223456; --u-th-line:#34425d; --u-th-text:#e5ecf5;
+  --u-td-text:#cbd5e1; --u-td-line:#222d42; --u-row-hover:rgba(37,99,235,.12); --u-slate-200:#34425d; --u-slate-300:#4b5a73;
+  --u-btn-bg:#151e2e;
+  --u-blue:#93c5fd; --u-blue-b:#2c4f86; --u-blue-h:#16304f;
+  --u-sky:#7dd3fc; --u-sky-b:#1f5671; --u-sky-h:#0f2b3b;
+  --u-gray:#cbd5e1; --u-gray-b:#3b4a63; --u-gray-h:#1c2638;
+  --u-red:#fca5a5; --u-red-b:#7f2a2a; --u-red-h:#3a1c1c;
+  --u-amber:#fcd34d; --u-amber-b:#6b4a12; --u-amber-h:#352812;
+  --u-rose:#fda4af; --u-rose-b:#7a2a3d; --u-rose-h:#3a1a26;
+  --u-green:#22a85a; --u-green-h:#2bbd68; --u-indigo:#6366f1; --u-indigo-h:#818cf8; --u-page:#3b82f6;
+  --u-tab-bg:#111a28; --u-tab-line:#26324a; --u-tab-text:#9aa9be; --u-tab-badge:#26324a;
+  --u-act-view:#cbd5e1; --u-act-view-b:#3b4a63; --u-act-edit:#93c5fd; --u-act-edit-b:#2c4f86; --u-act-del:#fca5a5; --u-act-del-b:#7f2a2a;
+}
+body{font-size:14px}
+
+/* TextInput: 28px box, 4px radius, 14px text */
+.input,.lookup-btn,.ro{height:28px;border:1px solid var(--u-in-border);border-radius:4px;padding:0 10px;font-size:14px;line-height:1.25;color:var(--u-in-text);background:var(--field);font-family:var(--font-body)}
+.input::placeholder{color:var(--u-ph)}
+textarea.input{min-height:64px;padding:5px 10px}
+.input:hover,.lookup-btn:hover{border-color:var(--u-in-border)}
+.input:focus,.lookup-btn:focus,.lookup-btn:focus-visible{border-color:var(--u-focus);box-shadow:0 0 0 1px var(--u-focus);outline:none}
+.input.amount{font-family:var(--font-body);font-variant-numeric:tabular-nums}
+.search .input{font-family:var(--font-body);letter-spacing:0}
+.input:disabled,.lookup-btn:disabled{background:var(--u-dis-bg);border-color:var(--u-dis-border);color:var(--u-dis-text);cursor:not-allowed}
+.ro{background:var(--u-ro-bg);border-color:transparent;color:var(--u-ro-text);font-weight:600}
+.ro.empty{color:var(--u-dis-text);font-weight:500}
+.ro svg{width:12px;height:12px}
+.field.invalid .input,.field.invalid .lookup-btn{border-color:var(--u-err);box-shadow:0 0 0 1px var(--u-err)}
+.field.changed .input,.field.changed .lookup-btn{box-shadow:0 0 0 1px var(--chg)}
+.err{color:var(--u-err-text);font-size:12px}
+.affix .pre{left:10px;font-size:11px}.affix .post{right:10px}
+.affix .pre + .input{padding-left:42px}
+.date-in .input{text-align:center;padding-left:6px;padding-right:28px}
+.date-btn{width:28px}
+.input.mono{font-family:var(--font-body)}
+.search .btn{height:28px;padding:0 9px}
+.lov-search svg{top:7px}
+
+/* Labels: 14px / 500, right-aligned beside the input */
+.field label,.field .lbl{font-size:14px;font-weight:500;color:var(--u-label)}
+.req{color:var(--u-err-text);margin-left:2px}
+:is(.grid > .field,.field.inl,.ugrid > .field) > :is(label,.lbl){padding-top:0}
+@media (min-width:641px){:is(.grid > .field,.field.inl,.ugrid > .field) > :is(label,.lbl){text-align:right}}
+
+/* Form grid: two columns, each "label | input"; inputs keep their preset width */
+.ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-items:start}
+.ugrid > .field{display:grid;grid-template-columns:var(--lw,136px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+.ugrid > .field.full{grid-column:1/-1}
+.ugrid > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
+.ugrid > .field > :not(label):not(.lbl){grid-column:2;min-width:0;width:100%;max-width:var(--cw,none)}
+.ugrid > .field > :is(.hint,.err,.was){max-width:none}
+.ugrid > .field:has(textarea,.ro-multi){align-items:start}
+.ugrid > .field:has(textarea,.ro-multi) > :is(label,.lbl){padding-top:5px}
+.ugrid > .field .lbl-auto{display:none}
+@media (max-width:900px){.ugrid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.ugrid > .field{grid-template-columns:minmax(0,1fr)}.ugrid > .field > *{grid-column:1!important}.ugrid > .field > :not(label):not(.lbl){max-width:none}}
+.section{gap:12px}
+
+/* LOV: one box "code - description", search icon segment, clear (×) */
+.lookup-btn{gap:6px;padding-right:0;overflow:hidden}
+.lookup-btn .lov-v{font-size:14px}
+.lookup-btn .lov-v b{font-family:var(--font-body);font-weight:600;font-size:14px}
+.lookup-btn .ph{color:var(--u-ph)}
+.lookup-btn .lov-ic{align-self:stretch;display:grid;place-items:center;width:28px;border-left:1px solid var(--u-in-border);color:#6b7280;flex:0 0 auto}
+.lookup-btn .lov-ic svg{width:14px;height:14px}
+.lookup-btn .lov-x{display:grid;place-items:center;width:18px;height:18px;border-radius:99px;color:#9ca3af;flex:0 0 auto}
+.lookup-btn .lov-x:hover{background:var(--u-dis-bg);color:var(--u-in-text)}
+.lookup-btn .lov-x svg{width:12px;height:12px}
+#types{max-width:400px}
+.pop-scrim{background:transparent;display:block;padding:0}
+.lov-pop{position:fixed;z-index:51;background:var(--surface);border:1px solid var(--u-in-border);border-radius:6px;box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column;max-height:300px;overflow:hidden}
+.lov-pop-search{position:relative;padding:6px;border-bottom:1px solid var(--u-tab-line)}
+.lov-pop-search svg{position:absolute;left:14px;top:13px;width:14px;height:14px;color:#9ca3af}
+.lov-pop-search .input{padding-left:28px}
+.lov-pop-list{overflow:auto}
+.lov-pop .lov-table th{position:sticky;top:0;z-index:1}
+.lov-pop .lov-table td{padding:6px 10px;font-size:13px}
+.lov-pop .lov-table th{padding:6px 10px}
+.lov-table td:first-child{font-family:var(--font-body)}
+
+/* Buttons: rounded-lg, px-4 py-2 text-sm, white with coloured text and border */
+.btn{height:36px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:500;background:var(--u-btn-bg);border:1px solid var(--u-gray-b);color:var(--u-gray);gap:6px;transition:background-color .15s,border-color .15s}
+.btn:hover{background:var(--u-gray-h)}
+.btn.sm{height:32px;padding:0 12px;font-size:14px}
+.btn.icon{width:36px;padding:0}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--u-gray)}
+.btn.ghost:hover{background:var(--u-gray-h)}
+.btn.act-blue{background:var(--u-btn-bg);border-color:var(--u-blue-b);color:var(--u-blue)}
+.btn.act-blue:hover:not(:disabled){background:var(--u-blue-h);color:var(--u-blue)}
+.btn.act-fetch{background:var(--u-btn-bg);border-color:var(--u-sky-b);color:var(--u-sky)}
+.btn.act-fetch:hover:not(:disabled){background:var(--u-sky-h)}
+.btn.act-red{background:var(--u-btn-bg);border-color:var(--u-red-b);color:var(--u-red)}
+.btn.act-red:hover:not(:disabled){background:var(--u-red-h);color:var(--u-red)}
+.btn.act-amber{background:var(--u-btn-bg);border-color:var(--u-amber-b);color:var(--u-amber)}
+.btn.act-amber:hover:not(:disabled){background:var(--u-amber-h);color:var(--u-amber)}
+.btn.act-rose{background:var(--u-btn-bg);border-color:var(--u-rose-b);color:var(--u-rose)}
+.btn.act-rose:hover:not(:disabled){background:var(--u-rose-h);color:var(--u-rose)}
+.btn.act-green{background:var(--u-green);border-color:var(--u-green);color:#fff}
+.btn.act-green:hover:not(:disabled){background:var(--u-green-h);filter:none}
+.btn.primary{background:var(--u-indigo);border-color:var(--u-indigo);color:#fff}
+.btn.primary:hover{background:var(--u-indigo-h)}
+.btn.funnel{width:36px;height:36px;background:var(--u-btn-bg);border-color:var(--u-blue-b);color:var(--u-blue)}
+.btn.funnel:hover,.btn.funnel.on{background:var(--u-blue-h)}
+.btn:disabled{opacity:.5}
+.btn:focus-visible{outline:2px solid var(--u-focus);outline-offset:2px}
+
+/* DataTable: every data table takes the library header and row style */
+th,th.num{font-family:var(--font-body);background:var(--u-th-bg);color:var(--u-th-text);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;padding:10px 12px;border-bottom:1px solid var(--u-th-line)}
+td{color:var(--u-td-text);font-size:12px;padding:10px 12px;border-bottom:1px solid var(--u-td-line)}
+.card:has(> .table-wrap .grid-table){background:var(--u-tbl-bg)}
+.grid-table{font-size:12px}
+.grid-table th{position:sticky;top:0;z-index:2;background:var(--u-th-bg);color:var(--u-th-text);font-size:12px;font-weight:600;text-transform:none;letter-spacing:0;padding:10px 12px;border-bottom:1px solid var(--u-th-line)}
+.grid-table th[data-sort],.grid-table th[data-esort]{cursor:pointer;user-select:none}
+.grid-table th[data-sort]:hover,.grid-table th[data-esort]:hover{background:var(--u-th-hover)}
+.grid-table th.sticky-r{background:var(--u-th-bg);text-align:center}
+.grid-table td{color:var(--u-td-text);padding:10px 12px;border-bottom:1px solid var(--u-td-line);background:var(--u-tbl-bg)}
+.grid-table td.sticky-r{background:var(--u-tbl-bg);text-align:center}
+.grid-table tbody tr:hover td,.grid-table tbody tr:hover td.sticky-r{background:var(--u-row-hover)}
+.grid-table tbody tr:hover td.sticky-r{background:var(--u-tbl-bg)}
+.grid-table .cell-name{font-weight:600;color:var(--u-th-text)}
+.grid-table .sub{font-size:11px}
+th .arr{display:inline-flex;flex-direction:column;gap:1px;vertical-align:middle;margin-left:4px}
+th .arr i{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent}
+th .arr i.up{border-bottom:4px solid var(--u-slate-300)}
+th .arr i.dn{border-top:4px solid var(--u-slate-300)}
+th .arr i.up.on{border-bottom-color:var(--u-th-text)}
+th .arr i.dn.on{border-top-color:var(--u-th-text)}
+.row-act{padding:2px 8px;border-radius:4px;border:1px solid var(--u-act-view-b);background:var(--u-btn-bg);color:var(--u-act-view);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.row-act:hover:not(:disabled){background:var(--u-gray-h)}
+.row-act.edit{color:var(--u-act-edit);border-color:var(--u-act-edit-b)}
+.row-act.edit:hover:not(:disabled){background:var(--u-blue-h)}
+.row-act.del{color:var(--u-act-del);border-color:var(--u-act-del-b)}
+.row-act.del:hover:not(:disabled){background:var(--u-red-h)}
+.row-act:disabled{opacity:.45;cursor:not-allowed}
+.pager{background:var(--u-tbl-bg);border-top:1px solid var(--u-tbl-line);padding:14px 20px;font-size:12px;color:var(--u-td-text);border-radius:0 0 var(--r-md) var(--r-md)}
+.pager .pg{gap:4px}
+.pg-b{min-width:32px;height:32px;padding:0 6px;border-radius:8px;border:1px solid var(--u-slate-200);background:var(--u-btn-bg);color:var(--u-td-text);font-size:12px;font-weight:500;cursor:pointer;display:inline-grid;place-items:center}
+.pg-b:hover:not(:disabled):not(.on){background:var(--u-gray-h)}
+.pg-b.on{background:var(--u-page);border-color:var(--u-page);color:#fff;box-shadow:0 1px 2px rgba(37,99,235,.35)}
+.pg-b:disabled{opacity:.45;cursor:not-allowed}
+.pg-b svg{width:14px;height:14px}
+.pg-gap{padding:0 4px;color:var(--faint)}
+.pg-per{display:inline-flex;align-items:center;gap:6px}
+.pg-sel{height:28px;border:1px solid var(--u-slate-200);border-radius:6px;background:var(--u-btn-bg);color:var(--u-td-text);font:inherit;padding:0 6px}
+
+/* Tabs */
+.seg.utabs{display:flex;gap:0;padding:0 4px;background:var(--u-tab-bg);border:0;border-bottom:1px solid var(--u-tab-line);border-radius:8px 8px 0 0;align-self:stretch}
+.seg.utabs a{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;font-size:14px;font-weight:500;color:var(--u-tab-text);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:6px 6px 0 0;box-shadow:none}
+.seg.utabs a:hover:not(.on){color:var(--u-in-text);background:var(--u-gray-h)}
+.seg.utabs a.on{background:var(--u-green);color:#fff;border-bottom-color:var(--u-green);box-shadow:none}
+.seg.utabs a svg{width:14px;height:14px}
+.seg.utabs .tb{font-size:11px;font-weight:600;padding:0 7px;border-radius:99px;background:var(--u-tab-badge);color:var(--u-label);line-height:18px}
+.seg.utabs a.on .tb{background:rgba(255,255,255,.25);color:#fff}
 </style>
 </head>
 <body>
@@ -821,7 +1014,7 @@ const TYPES=[
    sections:[
     {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
       {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:6,codeOnly:true},
-      {id:"accName",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
+      {id:"accName",w:"name",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
       {id:"product",br:true,label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
       {id:"ccy",w:"m",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
       {id:"srcBranch",w:"m",br:true,label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
@@ -937,7 +1130,7 @@ function fetchCustomer(code){
 /* ---------- Step 2: type tiles ---------- */
 function renderTypes(){
   const t=typeBy(S.type);
-  $("#types").innerHTML=`<button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="lov-v"><b>${t.code}</b> - ${esc(t.lovDesc)}</span>`:`<span class="ph">${S.customer?"Search and select":"Find the customer first"}</span>`}${icon("search")}</button>`;
+  $("#types").innerHTML=`<button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="lov-v"><b>${t.code}</b> - ${esc(t.lovDesc)}</span>`:`<span class="ph">${S.customer?"Search and select":"Find the customer first"}</span>`}<span class="lov-ic">${icon("search")}</span></button>`;
   $("#typeHint").textContent=t?t.d:"Cash, insurance, property, guarantee or shares. Each opens its own form.";
 }
 /* scroll so the whole card, header included, sits under the sticky top bar */
@@ -962,7 +1155,7 @@ function fieldHtml(t,f,st=S){
   if(f.type==="lookup"){
     const row=st.lookups[f.id];const lov=LOVS[f.lov];
     const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
-    ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="lov-v">${f.codeOnly?`<b>${esc(row.code)}</b>`:`<b>${esc(row.code)}</b> - ${esc(row.desc)}`}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}${icon("search")}</button>`;
+    ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="lov-v">${f.codeOnly?`<b>${esc(row.code)}</b>`:`<b>${esc(row.code)}</b> - ${esc(row.desc)}`}</span><span class="lov-x" role="button" tabindex="-1" data-lovclear="${f.id}" aria-label="Clear ${esc(f.label)}">${icon("x")}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}<span class="lov-ic">${icon("search")}</span></button>`;
   }else if(f.type==="derived"){
     const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
     return `<div class="field ${fcls(f)}" style="${fsty(f)}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
@@ -990,23 +1183,25 @@ function fieldHtml(t,f,st=S){
   return `<div class="field ${fcls(f)} ${err?"invalid":""} ${chg?"changed":""}" style="${fsty(f)}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
 }
 /* Field widths follow the value: amounts, dates, codes and numbers are fixed; lookups and long text grow */
-const CW={amount:"150px",date:"140px",int:"100px",percent:"110px",tel:"160px"};
+/* Field widths are the @unionsg/ui TextInput presets: amount 180, date 160, short 240, phone 240, LOV 280, name 420.
+   Text and narration fields take the whole row. */
+const CW={amount:"180px",date:"160px",int:"120px",percent:"120px",tel:"240px",lookup:"280px",derived:"280px"};
 function fsize(f){
-  if(f.type==="textarea")return{grow:1,basis:"100%"};
-  if(f.codeOnly)return{cw:"210px"};
-  if(f.w==="s")return{cw:"130px"};
-  if(f.w==="m")return{cw:"196px"};
+  if(f.type==="textarea")return{full:1};
+  if(f.w==="s")return{cw:"240px"};
+  if(f.w==="name")return{cw:"420px"};
   if(CW[f.type])return{cw:CW[f.type]};
-  return{grow:1};
+  return{full:1,cw:"420px"};
 }
-const fcls=f=>fsize(f).grow?"grow":"";
-const fsty=f=>{const z=fsize(f);return z.grow?(z.basis?`--basis:${z.basis}`:""):`--cw:${z.cw}`};
-/* a section's fields in rows: a field marked br, or a textarea, starts a new row */
+const fcls=f=>fsize(f).full?"full":"";
+const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
+/* a section's fields on the library's two-column form grid: label right-aligned beside its input */
 function rowsHtml(sec,fn){
-  const rows=[];
-  sec.fields.forEach((f,i)=>{const prev=sec.fields[i-1];if(!i||f.br||f.type==="textarea"||prev?.type==="textarea")rows.push([]);rows[rows.length-1].push(f)});
-  return `<div class="frows">${rows.map(r=>`<div class="frow">${r.map(fn).join("")}</div>`).join("")}</div>`;
+  return `<div class="ugrid">${sec.fields.map(fn).join("")}</div>`;
 }
+/* clearing a LOV also clears the LOVs that depend on it */
+function lovClear(t,st,id){const fs=t.sections.flatMap(s=>s.fields),f=fs.find(x=>x.id===id);delete st.values[id];delete st.lookups[id];
+  for(const k in LOVS){if(LOVS[k].dependsOn===id){const dep=fs.find(x=>x.lov===k);if(dep){delete st.values[dep.id];delete st.lookups[dep.id]}}}}
 const fieldLabel=(t,id)=>t.sections.flatMap(s=>s.fields).find(f=>f.id===id)?.label||id;
 
 function renderForm(){
@@ -1176,19 +1371,31 @@ function openDocs(o){
   });
 }
 
-function openLov(title,rows,onPick,cols){
+function openLov(title,rows,onPick,cols,anchor){
   cols=cols||[["code","Code"],["desc","Description"]];
-  openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="lovT"><header><h2 id="lovT">${esc(title)}</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+  if(anchor)openLayer(lovPopHtml(title,cols,anchor),"pop-scrim");
+  else openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="lovT"><header><h2 id="lovT">${esc(title)}</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
     <div class="mb"><div class="lov-search">${icon("search")}<input class="input" id="lovQ" placeholder="Type to filter by code or description" autocomplete="off"></div>
     <div class="table-wrap"><table class="lov-table"><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join("")}</tr></thead><tbody id="lovBody"></tbody></table></div></div>
     <footer><span class="hint" style="margin-right:auto">↑ ↓ to move · Enter to select</span><button class="btn" data-close>Cancel</button></footer></div>`);
   let hl=0,shown=rows;
+  const move=()=>{const r=$("#lovBody tr.hl");r&&r.scrollIntoView({block:"nearest"})};
   const draw=()=>{const q=$("#lovQ").value.trim().toLowerCase();shown=rows.filter(r=>cols.some(c=>String(r[c[0]]).toLowerCase().includes(q)));hl=Math.min(hl,Math.max(shown.length-1,0));
     $("#lovBody").innerHTML=shown.length?shown.map((r,i)=>`<tr data-i="${i}" class="${i===hl?"hl":""}">${cols.map(c=>`<td>${esc(r[c[0]])}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${cols.length}" style="color:var(--muted);font-family:var(--font-body);font-weight:400">No matches.</td></tr>`};
   draw();$("#lovQ").focus();
   $("#lovQ").addEventListener("input",()=>{hl=0;draw()});
-  $("#lovQ").addEventListener("keydown",e=>{if(e.key==="ArrowDown"){hl=Math.min(hl+1,shown.length-1);draw();e.preventDefault()}else if(e.key==="ArrowUp"){hl=Math.max(hl-1,0);draw();e.preventDefault()}else if(e.key==="Enter"&&shown[hl]){e.preventDefault();const r=shown[hl];closeLayer();onPick(r)}});
+  $("#lovQ").addEventListener("keydown",e=>{if(e.key==="ArrowDown"){hl=Math.min(hl+1,shown.length-1);draw();move();e.preventDefault()}else if(e.key==="ArrowUp"){hl=Math.max(hl-1,0);draw();move();e.preventDefault()}else if(e.key==="Enter"&&shown[hl]){e.preventDefault();const r=shown[hl];closeLayer();onPick(r)}});
   $("#lovBody").addEventListener("click",e=>{const tr=e.target.closest("tr[data-i]");if(!tr)return;const r=shown[+tr.dataset.i];closeLayer();onPick(r)});
+}
+
+/* @unionsg/ui LOV: a searchable dropdown anchored under its field (flips above when there is no room) */
+function lovPopHtml(title,cols,anchor){
+  const r=anchor.getBoundingClientRect(),w=Math.max(r.width,cols.length>2?420:320),below=innerHeight-r.bottom,up=below<300&&r.top>below;
+  const left=Math.max(8,Math.min(r.left,innerWidth-w-8));
+  const pos=up?`bottom:${innerHeight-r.top+4}px`:`top:${r.bottom+4}px`;
+  return `<div class="lov-pop" role="dialog" aria-label="${esc(title)}" style="${pos};left:${left}px;width:${w}px">
+    <div class="lov-pop-search">${icon("search")}<input class="input" id="lovQ" placeholder="Search ${esc(title.toLowerCase())}…" autocomplete="off" aria-label="Search ${esc(title)}"></div>
+    <div class="lov-pop-list"><table class="lov-table"><thead><tr>${cols.map(c=>`<th>${c[1]}</th>`).join("")}</tr></thead><tbody id="lovBody"></tbody></table></div></div>`;
 }
 
 function openDrawer(title,body){
@@ -1204,13 +1411,14 @@ $("#types").addEventListener("click",e=>{const b=e.target.closest("[data-typelov
   openLov("Collateral types",TYPES.map(t=>({code:t.code,desc:t.lovDesc})),r=>{
     if(S.type!==r.code){S.type=r.code;S.values={};S.lookups={};S.errors={};S.showErrors=false}
     renderAll();scrollToCard($("#formCard"));
-  });});
+  },undefined,b);});
 
 $("#rail").addEventListener("click",e=>{const b=e.target.closest("[data-jumpf]");if(!b)return;const el=document.getElementById(`f-${S.type}-${b.dataset.jumpf}`);if(el){el.scrollIntoView({block:"center"});el.focus({preventScroll:true})}});
 $("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=valOf(e.target);if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});
 $("#formCard").addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k)return;const n=parseAmt(e.target.value);if(n==null)return;e.target.value=k==="amount"?fmt(n):k==="int"?String(Math.round(n)):n.toFixed(2);S.values[e.target.dataset.f]=e.target.value;renderRail()});
 $("#formCard").addEventListener("click",e=>{
   const j=e.target.closest("[data-jump]");if(j){e.preventDefault();const el=document.getElementById(j.dataset.jump);el&&(el.scrollIntoView({block:"center"}),el.focus());return}
+  const x=e.target.closest("[data-lovclear]");if(x){lovClear(typeBy(S.type),S,x.dataset.lovclear);renderForm();renderRail();return}
   const b=e.target.closest("[data-lov]");if(!b)return;
   const t=typeBy(S.type),f=t.sections.flatMap(s=>s.fields).find(x=>x.id===b.dataset.lov),lov=LOVS[f.lov];
   const cols=f.lov==="account"?[["code","Account no."],["prodDesc","Product"],["ccyDesc","Currency"]]:undefined;
@@ -1218,7 +1426,7 @@ $("#formCard").addEventListener("click",e=>{
     S.values[f.id]=r.code;S.lookups[f.id]=r;delete S.errors[f.id];
     for(const k in LOVS){if(LOVS[k].dependsOn===f.id){const dep=t.sections.flatMap(s=>s.fields).find(x=>x.lov===k);if(dep){delete S.values[dep.id];delete S.lookups[dep.id]}}}
     renderForm();renderRail();document.getElementById(`f-${t.code}-${f.id}`)?.focus();
-  },cols);
+  },cols,b);
 });
 
 document.addEventListener("click",e=>{
@@ -1393,7 +1601,18 @@ const origDisplay=(f,st)=>showVal(f,st.orig,st.origLookups);
 const changesOf=st=>fieldsOf(amTypeBy(st.type)).filter(f=>isChanged(f,st));
 
 /* ---------- state ---------- */
-const PAGE=8;
+let PAGE=10;
+/* @unionsg/ui DataTable footer: record range, prev / page bubbles / next, rows per page */
+function pagerHtml(total,page,attr){
+  const pages=Math.max(1,Math.ceil(total/PAGE)),nums=[];
+  for(let i=0;i<pages;i++)if(i===0||i===pages-1||Math.abs(i-page)<=1)nums.push(i);else if(nums[nums.length-1]!=="…")nums.push("…");
+  return `<div class="pager"><span>Showing ${total?page*PAGE+1:0} to ${Math.min(total,(page+1)*PAGE)} of ${total} records</span>
+    <div class="pg"><button class="pg-b" ${attr}="prev" aria-label="Previous page" ${page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button>
+    ${nums.map(n=>n==="…"?`<span class="pg-gap">…</span>`:`<button class="pg-b ${n===page?"on":""}" ${attr}="${n}" aria-label="Page ${n+1}" ${n===page?'aria-current="page"':""}>${n+1}</button>`).join("")}
+    <button class="pg-b" ${attr}="next" aria-label="Next page" ${page<pages-1?"":"disabled"}>${icon("chev")}</button></div>
+    <label class="pg-per">Per page: <select class="pg-sel" data-per>${[5,10,25].map(n=>`<option ${n===PAGE?"selected":""}>${n}</option>`).join("")}</select></label></div>`;
+}
+const pageTo=(cur,v)=>v==="prev"?cur-1:v==="next"?cur+1:+v;
 /* Amendment and Cancellation share the search list and record engine; the module decides wording and what is editable */
 const MODS={
   amendment:{kind:"amend",label:"Amendment",title:"Amend a collateral",sub:"Search for an approved collateral, then open it to update its details.",openFor:"for amendment",verb:"amend"},
@@ -1455,7 +1674,7 @@ function amListHtml(){
   const{rows,counts}=amRows(),pages=Math.max(1,Math.ceil(rows.length/PAGE));
   A.page=Math.min(A.page,pages-1);
   const shown=rows.slice(A.page*PAGE,A.page*PAGE+PAGE);
-  const th=(k,l,cls="")=>`<th class="${cls}" data-sort="${k}" ${A.sort.k===k?`aria-sort="${A.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${l} <span class="arr">${A.sort.k===k&&A.sort.d<0?"↓":"↑"}</span></th>`;
+  const th=(k,l,cls="")=>`<th class="${cls}" data-sort="${k}" ${A.sort.k===k?`aria-sort="${A.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${l} <span class="arr" aria-hidden="true"><i class="up ${A.sort.k===k&&A.sort.d>0?"on":""}"></i><i class="dn ${A.sort.k===k&&A.sort.d<0?"on":""}"></i></span></th>`;
   return `<div class="page-head"><div><h1>${A.mod.title}</h1><p>${A.mod.sub}</p></div>${amActionBar("list")}</div>
   <section class="card" aria-labelledby="amS1">
     <div class="card-head"><div class="step active">${icon("search")}</div><div><h2 id="amS1">Search criteria</h2><p>Search by collateral number, customer number or customer name. Leave them blank to list every approved collateral.</p></div></div>
@@ -1464,16 +1683,16 @@ function amListHtml(){
       <div class="field" style="--col:4;--lw:132px"><label for="amCust">Customer number</label>
         <div class="search"><input class="input" id="amCust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(A.q.cust)}"><button class="btn" type="button" id="amCustSearch" aria-label="Search customers">${icon("search")}</button></div></div>
       <div class="field" style="--col:4;--lw:132px"><label for="amName">Customer name</label><input class="input" id="amName" placeholder="e.g. Toweh" value="${esc(A.q.name)}"></div>
-      <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="amClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div>
+      <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="amClear">${icon("refresh")}Clear</button><button type="submit" class="btn act-fetch">${icon("search")}Fetch</button></div>
     </form></div>
   </section>
   <section class="card" aria-labelledby="amS2">
-    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll||A.q.name?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
+    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll||A.q.name?" match your search":""}. Select <b>${isCancel()?"Cancel":"Amend"}</b> to open one ${A.mod.openFor}.</p></div>
       <div class="right chips" role="group" aria-label="Filter by collateral type">
         <button class="chip" data-filter="ALL" aria-pressed="${A.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
         ${TYPES.map(t=>`<button class="chip" data-filter="${t.code}" aria-pressed="${A.filter===t.code}" style="--tc:var(${t.tc})"><span class="tdot"></span>${t.name} <span class="n">${counts[t.code]}</span></button>`).join("")}
       </div></div>
-    <div class="table-wrap">${shown.length?`<table class="grid-table"><thead><tr>${th("no","Collateral no.")}${th("name","Customer")}${th("type","Collateral type")}${th("amount","Amount","num")}${th("considered","Considered","num")}${th("review","Review / expiry")}${th("by","Status")}<th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+    <div class="table-wrap">${shown.length?`<table class="grid-table"><thead><tr>${th("no","Collateral no.")}${th("name","Customer")}${th("type","Collateral type")}${th("amount","Amount","num")}${th("considered","Considered","num")}${th("review","Review / expiry")}${th("by","Status")}<th class="sticky-r">Action</th></tr></thead><tbody>
       ${shown.map(r=>{const c=custBy(r.cust),t=typeBy(r.type),pend=r.status!=="Approved";return `<tr data-row="${r.no}" class="${pend?"is-pending":""}">
         <td class="mono">${r.no}</td>
         <td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
@@ -1482,10 +1701,9 @@ function amListHtml(){
         <td class="num">${fmt(parseAmt(r.values.amount))}</td>
         <td><div>${fmtDate(r.values.reviewDate)}</div><div class="sub">to ${fmtDate(r.values.expiryDate)}</div></td>
         <td><span class="status ${pend?"pending":""}">${r.status}</span><div class="sub">by <span class="mono">${r.by}</span></div></td>
-        <td class="sticky-r"><button class="open-btn" data-open="${r.no}" aria-label="Open collateral ${r.no} ${A.mod.openFor}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${icon("chev")}</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="row-act ${isCancel()?"del":"edit"}" data-open="${r.no}" aria-label="${isCancel()?"Cancel":"Amend"} collateral ${r.no}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${isCancel()?"Cancel":"Amend"}</button></td></tr>`}).join("")}
       </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collaterals match your search</b><span>Check the customer or collateral number, or clear the search to see all records.</span></div>`}</div>
-    <div class="pager"><span>Showing <b>${rows.length?A.page*PAGE+1:0}–${Math.min(rows.length,(A.page+1)*PAGE)}</b> of <b>${rows.length}</b></span>
-      <div class="pg"><button class="btn" data-page="first" ${A.page?"":"disabled"}>First</button><button class="btn icon" data-page="prev" aria-label="Previous page" ${A.page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button><span class="pg-n">Page ${A.page+1} of ${pages}</span><button class="btn icon" data-page="next" aria-label="Next page" ${A.page<pages-1?"":"disabled"}>${icon("chev")}</button><button class="btn" data-page="last" ${A.page<pages-1?"":"disabled"}>Last</button></div></div>
+    ${pagerHtml(rows.length,A.page,"data-page")}
   </section>`;
 }
 
@@ -1622,7 +1840,7 @@ amView.addEventListener("click",e=>{
   if(T("#amCustSearch")){openLov("Find customer",CUSTOMERS,r=>{$("#amCust").value=r.code;amFetch()},[["code","Customer no."],["name","Name"],["type","Type"]]);return}
   if(el=T("[data-filter]")){A.filter=el.dataset.filter;A.page=0;renderAm();return}
   if(el=T("[data-sort]")){const k=el.dataset.sort;A.sort=A.sort.k===k?{k,d:-A.sort.d}:{k,d:1};renderAm();return}
-  if(el=T("[data-page]")){const{rows}=amRows(),last=Math.ceil(rows.length/PAGE)-1;A.page={first:0,prev:A.page-1,next:A.page+1,last}[el.dataset.page];renderAm();return}
+  if(el=T("[data-page]")){A.page=pageTo(A.page,el.dataset.page);renderAm();return}
   if(el=T("[data-open]")){openAm(el.dataset.open);return}
   if(el=T("tr[data-row]")){openAm(el.dataset.row);return}
   if(el=T("[data-jump]")){e.preventDefault();const x=document.getElementById(el.dataset.jump);x&&(x.scrollIntoView({block:"center"}),x.focus());return}
@@ -1631,6 +1849,7 @@ amView.addEventListener("click",e=>{
   if(el=T("[data-revert]")){const id=el.dataset.revert;A.values[id]=A.orig[id];if(id in A.origLookups)A.lookups[id]=A.origLookups[id];
     const t=amTypeBy(A.type);for(const k in LOVS){if(LOVS[k].dependsOn===id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){A.values[dep.id]=A.orig[dep.id];A.lookups[dep.id]=A.origLookups[dep.id]}}}
     renderAmForm();renderAmRail();syncSubmit();return}
+  if(el=T("#amForm [data-lovclear]")){lovClear(amTypeBy(A.type),A,el.dataset.lovclear);renderAmForm();renderAmRail();syncSubmit();return}
   if(el=T("#amForm [data-lov]")){
     const t=amTypeBy(A.type),f=fieldsOf(t).find(x=>x.id===el.dataset.lov),lov=LOVS[f.lov];
     const cols=f.lov==="account"?[["code","Account no."],["prodDesc","Product"],["ccyDesc","Currency"]]:undefined;
@@ -1638,7 +1857,7 @@ amView.addEventListener("click",e=>{
       A.values[f.id]=r.code;A.lookups[f.id]=r;delete A.errors[f.id];
       for(const k in LOVS){if(LOVS[k].dependsOn===f.id){const dep=fieldsOf(t).find(x=>x.lov===k);if(dep){delete A.values[dep.id];delete A.lookups[dep.id]}}}
       renderAmForm();renderAmRail();syncSubmit();document.getElementById(`a-${t.code}-${f.id}`)?.focus();
-    },cols);
+    },cols,el);
   }
 });
 amView.addEventListener("input",e=>{
@@ -1800,12 +2019,12 @@ function apListHtml(){
       <button class="chip" data-apfilter="ALL" aria-pressed="${P.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
       ${Object.keys(KIND).map(k=>`<button class="chip" data-apfilter="${k}" aria-pressed="${P.filter===k}"><span class="kdot ${KIND[k].cls}"></span>${KIND[k].label} <span class="n">${counts[k]}</span></button>`).join("")}
     </div></div>
-    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>What's asked</th><th>Submitted</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>What's asked</th><th>Submitted</th><th class="sticky-r">Action</th></tr></thead><tbody>
       ${rows.map(it=>{const c=custBy(it.cust),t=typeBy(it.type);const ask=it.kind==="create"?"New collateral":it.kind==="amend"?`${apChanges(it).length} field${apChanges(it).length===1?"":"s"} changed`:`Close: ${esc(it.reason.length>34?it.reason.slice(0,34)+"…":it.reason)}`;
         return `<tr data-aprow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
         <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="num">${fmt(parseAmt(it.values.amount)||0)}</td>
         <td class="ask">${ask}</td><td><div>${it.on}</div><div class="sub">by <span class="mono">${it.by}</span>${it.by===ME.code?" (you)":""}</div>${it.by===ME.code?`<span class="rv rv-own" title="You submitted it, so another officer must decide">${icon("lock")}Yours</span>`:""}</td>
-        <td class="sticky-r"><button class="open-btn" data-apopen="${it.id}" aria-label="Open ${KIND[it.kind].verb} request for ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="row-act view" data-apopen="${it.id}" aria-label="Review ${KIND[it.kind].verb} request for ${it.no}">Review</button></td></tr>`}).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>${QUEUE.length?"No requests match your search":"Nothing waiting for approval"}</b><span>${QUEUE.length?"Clear the search to see every request.":"New requests from Creation, Amendment and Cancellation appear here."}</span></div>`}</div>
   </section>`;
 }
@@ -1964,12 +2183,12 @@ function renderReturned(){
       <button class="chip" data-rtfilter="ALL" aria-pressed="${RT.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
       ${Object.keys(KIND).map(k=>`<button class="chip" data-rtfilter="${k}" aria-pressed="${RT.filter===k}"><span class="kdot ${KIND[k].cls}"></span>${KIND[k].label} <span class="n">${counts[k]}</span></button>`).join("")}
     </div></div>
-    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>Return reason</th><th>Returned</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>Return reason</th><th>Returned</th><th class="sticky-r">Action</th></tr></thead><tbody>
       ${rows.map(it=>{const c=custBy(it.cust),t=typeBy(it.type),rs=it.retReason;
         return `<tr data-retrow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
         <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="num">${fmt(parseAmt(it.values.amount)||0)}</td>
         <td class="ask reason" title="${esc(rs)}">${esc(rs.length>70?rs.slice(0,70)+"…":rs)}</td><td><div>${it.retOn}</div><div class="sub">by <span class="mono">${it.retBy}</span></div></td>
-        <td class="sticky-r"><button class="open-btn" data-retopen="${it.id}" aria-label="Correct ${KIND[it.kind].verb} request ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="row-act edit" data-retopen="${it.id}" aria-label="Correct ${KIND[it.kind].verb} request ${it.no}">Correct</button></td></tr>`}).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>${RETURNED.length?"No returned requests match your search":"Nothing to correct"}</b><span>${RETURNED.length?"Clear the search to see every returned request.":"Requests an approver returns appear here with the reason."}</span></div>`}</div></section>`;
 }
 function openReturned(id){
@@ -2066,6 +2285,8 @@ const emptyF=()=>({cust:"",branch:"",coll:"",type:"",status:"",covFrom:"",covTo:
 const ENQ={all:null,running:null,used:null};
 Object.keys(ENQ).forEach(k=>ENQ[k]={kind:k,view:"list",q:"",quick:"",open:false,f:emptyF(),applied:emptyF(),sort:{k:"no",d:1},page:0,item:null});
 let EK="all";const E=()=>ENQ[EK];
+document.addEventListener("change",e=>{const s=e.target.closest("[data-per]");if(!s)return;PAGE=+s.value;A.page=0;
+  if(location.hash.startsWith("#enquiry")){E().page=0;renderEnq()}else renderAm()});
 const enqView=$("#view-enquiry");
 const STATUS_CLS={Active:"",Pending:"pending",Closed:"closed"};
 /* review-date state (training note 6): overdue, due within 30 days, or fine */
@@ -2091,6 +2312,7 @@ const COLS={
     ["cov","Amt considered",r=>fmt(r.cov),null,1],["coverage","Coverage value",r=>fmt(r.cov),r=>r.cov,1],["lused","Value used",r=>fmt(r.loan.used),r=>r.loan.used,1],
     ["acct","Loan account",r=>`<span class="mono">${r.loan.acct}</span>`,r=>r.loan.acct],["posted","Posted date",r=>r.loan.posted,r=>dmy(r.loan.posted)]],
 };
+const enqCount=k=>{const r=enqRecords();return k==="running"?r.filter(x=>x.status==="Active").length:k==="used"?r.filter(x=>x.status!=="Closed").reduce((a,x)=>a+x.loans.length,0):r.length};
 function enqRows(){
   const S_=E(),a=S_.applied,q=S_.q.trim().toLowerCase();
   let rows=enqRecords();
@@ -2140,14 +2362,14 @@ function filterPanelHtml(){
   const fill=parts.length%2?3:0;
   return `<div class="filter-panel" id="enFilters"><div class="fp-head"><span>${icon("funnel")}<b>Advanced filters</b></span><button class="link-btn" id="enCloseF">${icon("x")}Close</button></div>
     <form class="grid" id="enForm" autocomplete="off">${parts.join("")}${fill?`<div style="grid-column:span 6"></div>`:""}
-    <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="enClearF">${icon("refresh")}Clear filters</button><button type="submit" class="btn act-blue">${icon("search")}Fetch</button></div></form></div>`;
+    <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="enClearF">${icon("refresh")}Clear filters</button><button type="submit" class="btn act-fetch">${icon("search")}Fetch</button></div></form></div>`;
 }
 function enqListHtml(){
   const S_=E(),K=ENQ_KINDS[EK],rows=enqRows(),pages=Math.max(1,Math.ceil(rows.length/PAGE));S_.page=Math.min(S_.page,pages-1);
   const shown=rows.slice(S_.page*PAGE,S_.page*PAGE+PAGE),chips=activeChips(),cols=COLS[EK];
-  const th=c=>`<th class="${c[4]?"num":""}" data-esort="${c[0]}" ${S_.sort.k===c[0]?`aria-sort="${S_.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${c[1]} <span class="arr">${S_.sort.k===c[0]&&S_.sort.d<0?"↓":"↑"}</span></th>`;
+  const th=c=>`<th class="${c[4]?"num":""}" data-esort="${c[0]}" ${S_.sort.k===c[0]?`aria-sort="${S_.sort.d>0?"ascending":"descending"}"`:""} tabindex="0">${c[1]} <span class="arr" aria-hidden="true"><i class="up ${S_.sort.k===c[0]&&S_.sort.d>0?"on":""}"></i><i class="dn ${S_.sort.k===c[0]&&S_.sort.d<0?"on":""}"></i></span></th>`;
   return `<div class="page-head"><div><h1>${K.title}</h1><p>${K.sub}</p></div>${enqActionBar("list")}</div>
-  <div class="seg" role="tablist" aria-label="Enquiry type">${Object.entries(ENQ_KINDS).map(([k,v])=>`<a role="tab" href="${v.hash}" aria-selected="${k===EK}" class="${k===EK?"on":""}">${v.label}</a>`).join("")}</div>
+  <div class="seg utabs" role="tablist" aria-label="Enquiry type">${Object.entries(ENQ_KINDS).map(([k,v])=>`<a role="tab" href="${v.hash}" aria-selected="${k===EK}" class="${k===EK?"on":""}">${icon({all:"layers",running:"chart",used:"bank"}[k])}${v.label}<span class="tb">${enqCount(k)}</span></a>`).join("")}</div>
   <section class="card search-card"><div class="card-body">
     <div class="quick"><div class="quick-in">${icon("search")}<input class="input" id="enQ" placeholder="Search customer, collateral no., description…" title="Search by customer name or number, collateral number, description or status" value="${esc(S_.q)}" aria-label="Search collateral"></div>
       <button class="btn icon funnel ${S_.open?"on":""}" id="enFunnel" aria-expanded="${S_.open}" aria-controls="enFilters" title="Advanced filters">${icon("funnel")}${chips.length?`<span class="fbadge">${chips.length}</span>`:""}</button></div>
@@ -2161,11 +2383,10 @@ function enqListHtml(){
   </div></section>
   <section class="card"><div class="card-head wrap"><div class="rec-title"><h2>${K.label} records</h2><span class="chip-count">${rows.length} record${rows.length===1?"":"s"}</span><button class="btn ghost sm" id="enRefresh">${icon("refresh")}Refresh</button></div>
       <div class="right exports"><button class="btn sm" id="enPdf">${icon("pdf")}PDF</button><button class="btn sm" id="enXls">${icon("xls")}Excel</button></div></div>
-    <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r"><span class="sr">View</span></th></tr></thead><tbody>
-      ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="open-btn" data-eopen="${r.no}" aria-label="View collateral ${r.no}">${icon("chev")}</button></td></tr>`).join("")}
+    <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r">Action</th></tr></thead><tbody>
+      ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="row-act view" data-eopen="${r.no}" aria-label="View collateral ${r.no}">View</button></td></tr>`).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collateral matches</b><span>Change the search or clear the filters.</span></div>`}</div>
-    <div class="pager"><span>Showing <b>${rows.length?S_.page*PAGE+1:0}–${Math.min(rows.length,(S_.page+1)*PAGE)}</b> of <b>${rows.length}</b></span>
-      <div class="pg"><button class="btn" data-epage="first" ${S_.page?"":"disabled"}>First</button><button class="btn icon" data-epage="prev" aria-label="Previous page" ${S_.page?"":"disabled"}><svg class="i flip"><use href="#i-chev"/></svg></button><span class="pg-n">Page ${S_.page+1} of ${pages}</span><button class="btn icon" data-epage="next" aria-label="Next page" ${S_.page<pages-1?"":"disabled"}>${icon("chev")}</button><button class="btn" data-epage="last" ${S_.page<pages-1?"":"disabled"}>Last</button></div></div>
+    ${pagerHtml(rows.length,S_.page,"data-epage")}
   </section>`;
 }
 function enqDetailHtml(){
@@ -2258,7 +2479,7 @@ enqView.addEventListener("click",e=>{
   if(T("#enPdf")){exportRows("pdf");return}
   if(T("#enXls")){exportRows("xls");return}
   if(el=T("[data-esort]")){const k=el.dataset.esort,S_=E();S_.sort=S_.sort.k===k?{k,d:-S_.sort.d}:{k,d:1};renderEnq();return}
-  if(el=T("[data-epage]")){const n=Math.ceil(enqRows().length/PAGE)-1,S_=E();S_.page={first:0,prev:S_.page-1,next:S_.page+1,last:n}[el.dataset.epage];renderEnq();return}
+  if(el=T("[data-epage]")){const S_=E();S_.page=pageTo(S_.page,el.dataset.epage);renderEnq();return}
   if(el=T("[data-eopen]")){enqOpen(el.dataset.eopen);return}
   if(el=T("tr[data-erow]")){enqOpen(el.dataset.erow);return}
 });
