@@ -232,7 +232,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 .tile[aria-checked="true"] .tick{display:grid}
 
 /* Step 3: dynamic form + rail */
-.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
+.form-wrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:start}
 .type-chip{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--tc)}
 .type-chip .ic{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:var(--sunken)}
 .rail{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px}
@@ -339,29 +339,26 @@ tr.new td{background:var(--primary-soft)}
 .lov-pair .lov-desc .t{overflow:hidden;text-overflow:ellipsis}
 /* Dates: typed or picked, always shown as DD-MON-YYYY */
 .date-in{position:relative;display:flex;min-width:0}
-.date-in .input{padding-right:38px;text-transform:uppercase;letter-spacing:.02em}
+.date-in .input{padding-right:32px;text-transform:uppercase}
 .date-in .input::placeholder{text-transform:none;letter-spacing:0}
-.date-btn{position:absolute;right:1px;top:1px;bottom:1px;width:36px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.date-btn{position:absolute;right:1px;top:1px;bottom:1px;width:30px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
 .date-btn:hover{color:var(--primary)}
 .date-btn svg{width:16px;height:16px}
 .date-native{position:absolute;right:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
 .range .date-in{flex:1}
 /* Type forms: fields sized to their values, laid out in rows; lookups and long text fill what is left */
 .frows{display:flex;flex-direction:column;gap:14px}
-.frow{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:flex-start}
-.frow > .field{display:grid;grid-template-columns:max-content var(--cw,minmax(0,1fr));column-gap:10px;row-gap:4px;align-items:center;align-content:start;flex:0 0 auto;min-width:0}
-.frow > .field:first-child{grid-template-columns:var(--lw,150px) var(--cw,minmax(0,1fr))}
-.frow > .field.grow{flex:1 1 var(--basis,240px);grid-template-columns:max-content minmax(0,1fr)}
-.frow > .field.grow:first-child{grid-template-columns:var(--lw,150px) minmax(0,1fr)}
+.frow{display:flex;flex-wrap:wrap;gap:14px 14px;align-items:flex-start}
+.frow > .field{display:grid;grid-template-columns:fit-content(104px) var(--cw,minmax(0,1fr));column-gap:8px;row-gap:4px;align-items:center;align-content:start;flex:0 0 auto;min-width:0}
+.frow > .field:first-child{grid-template-columns:var(--lw,120px) var(--cw,minmax(0,1fr))}
+.frow > .field.grow{flex:1 1 var(--basis,220px);grid-template-columns:fit-content(130px) minmax(0,1fr)}
+.frow > .field.grow:first-child{grid-template-columns:var(--lw,120px) minmax(0,1fr)}
 .frow > .field > :is(label,.lbl){grid-column:1;line-height:1.3}
 .frow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
 .frow > .field:has(textarea,.ro-multi){align-items:start}
 .frow > .field:has(textarea,.ro-multi) > :is(label,.lbl){padding-top:9px}
 .frow > .field .lbl-auto{display:none}
 @media (max-width:640px){.frow > .field,.frow > .field:first-child,.frow > .field.grow{flex:1 1 100%;grid-template-columns:minmax(0,1fr)!important}.frow > .field > *{grid-column:1!important}}
-/* Side panels sit in a row above the form, so the form has the full width */
-.form-wrap{grid-template-columns:minmax(0,1fr)!important}
-.form-wrap > .rail{order:-1;position:static;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:start}
 .lookup-btn .lov-v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lookup-btn .lov-v b{font-family:var(--font-mono);font-weight:600;font-size:13px}
 /* Collateral type LOV */
@@ -376,10 +373,6 @@ tr.new td{background:var(--primary-soft)}
 .req-left li::before{content:"";width:7px;height:7px;border-radius:50%;border:1.5px solid var(--danger);flex:none}
 .req-left .link-btn{font-size:13px;font-weight:500;color:var(--fg);text-align:left}
 .req-left .link-btn:hover{color:var(--primary);text-decoration:underline}
-.rail .req-left{flex-direction:row;flex-wrap:wrap;gap:6px}
-.rail .req-left li{border:1px solid var(--line);border-radius:99px;padding:2px 10px 2px 8px;font-size:12.5px}
-.rail .req-left li:last-child{border-bottom:1px solid var(--line)}
-.rail .req-left .link-btn{font-size:12.5px}
 .ok-line{display:flex;align-items:center;gap:6px;margin:10px 0 0;color:var(--success);font-weight:600;font-size:13px}
 .ok-line svg{width:16px;height:16px}
 /* Supporting documents: a count, the modal shows the list */
@@ -831,7 +824,7 @@ const TYPES=[
       {id:"accName",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
       {id:"product",br:true,label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
       {id:"ccy",w:"m",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
-      {id:"srcBranch",w:"m",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
+      {id:"srcBranch",w:"m",br:true,label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
     ]},
     COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
@@ -997,12 +990,12 @@ function fieldHtml(t,f,st=S){
   return `<div class="field ${fcls(f)} ${err?"invalid":""} ${chg?"changed":""}" style="${fsty(f)}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
 }
 /* Field widths follow the value: amounts, dates, codes and numbers are fixed; lookups and long text grow */
-const CW={amount:"160px",date:"152px",int:"100px",percent:"110px",tel:"160px"};
+const CW={amount:"150px",date:"140px",int:"100px",percent:"110px",tel:"160px"};
 function fsize(f){
   if(f.type==="textarea")return{grow:1,basis:"100%"};
   if(f.codeOnly)return{cw:"210px"};
-  if(f.w==="s")return{cw:"150px"};
-  if(f.w==="m")return{cw:"210px"};
+  if(f.w==="s")return{cw:"130px"};
+  if(f.w==="m")return{cw:"196px"};
   if(CW[f.type])return{cw:CW[f.type]};
   return{grow:1};
 }

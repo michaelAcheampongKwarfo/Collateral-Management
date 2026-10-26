@@ -64,24 +64,24 @@ Changed after the presentation (October 2026): every label sits **on the same li
 
 | Field | Width |
 |---|---|
-| Amount | 160px (`GHS` + `4,000,000.00`) |
-| Date | 152px (`25-OCT-2026` + calendar button) |
-| Short code or number (insurance code, policy number, folio numbers, branch code) | 150px |
+| Amount | 150px (`GHS` + `4,000,000.00`) |
+| Date | 140px (`25-OCT-2026` + calendar button) |
+| Short code or number (insurance code, policy number, folio numbers, branch code) | 130px |
 | Phone number | 160px |
 | Percentage | 110px |
 | Count (months, number of shares) | 100px |
 | Account number LOV (code only) | 210px |
-| Currency, source branch | 210px |
+| Currency, source branch | 196px |
 | Lookups, names, locations, product | Fill what is left of the row |
 | Narration | Full row |
 
 - Each section lists its fields in **rows**. Compact fields share a row; lookups and long text stretch to fill it. Standard rows: *Collateral amount · Next review date · Expiry review date*; *Insurance company · Insurance code*; *Policy type · Policy number · Sum assured*; *Valuation date · Market value · Forced sale value*; *Folio number · Folio start · Folio end*.
-- The first label in each row has a fixed 150px column so rows line up on the left; the labels after it take their own width.
+- The first label in each row has a fixed 120px column so rows line up on the left; the labels after it take their own width, up to about 104px, and wrap onto a second line if longer.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens the searchable list. Auto-filled code values use the same style (`010 - SINKOR`).
 - Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
 - Auto-filled fields have a grey fill and a lock icon.
-- Side panels (required fields, balances, documents, decision, record) sit in a row **above** the form, so the form has the full page width.
+- Side panels (required fields, balances, documents, decision, record) sit on the **right** of the form, 260px wide. At 1440px and wider every standard row fits on one line; on narrower screens the last field of a row moves to the next line.
 - On phones the label moves above the field and every field takes the full row.
 
 Sections:
