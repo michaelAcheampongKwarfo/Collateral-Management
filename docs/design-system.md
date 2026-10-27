@@ -11,7 +11,7 @@ The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.verce
 | TextInput | Every text, amount, date, phone and number field | 28px high, 4px corners, 1px `#d1d5db` border, 14px text; blue `#2563eb` border and 1px ring on focus; red `#f87171` border and 12px red message on error |
 | TextInput (read-only) | Auto-filled and view-only values, and the customer's details | `#eceef2` fill (a shade deeper than the library's `#f9f8fa`, which hardly shows on the off-white cards), no border, semi-bold `#0f172a` text |
 | TextInput (disabled) | LOVs waiting for their parent field | `#f3f4f6` fill, `#e5e7eb` border, grey text, not-allowed cursor |
-| Label | Every field label | 14px, weight 500, `#374151`, right-aligned beside the input, red asterisk for required |
+| Label | Every field label | 14px, weight 500, `#374151`, left-aligned in a fixed column beside the input (the library right-aligns; we chose left), red asterisk for required |
 | Width presets | Field widths (see Form layout) | Name 420, LOV 280, phone 240, short 240, amount 180, date 160 |
 | LOV | Every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
 | Button | Action bar, Fetch, Clear, exports | `rounded-lg`, `px-4 py-2 text-sm font-medium`, white with coloured text and border, light tint on hover |
@@ -104,7 +104,7 @@ Rules:
 
 ## Form layout: inline labels, fields sized to their values
 
-Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a right-aligned label (144px) beside its input. Inputs keep the library's preset width for the value they hold.
+Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a left-aligned label (144px) beside its input. Inputs keep the library's preset width for the value they hold.
 
 | Field | Width (@unionsg/ui preset) |
 |---|---|

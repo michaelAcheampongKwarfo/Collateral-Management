@@ -702,7 +702,8 @@ textarea.input{min-height:64px;padding:5px 10px}
 .field label,.field .lbl{font-size:14px;font-weight:500;color:var(--u-label)}
 .req{color:var(--u-err-text);margin-left:2px}
 :is(.grid > .field,.field.inl,.ugrid > .field) > :is(label,.lbl){padding-top:0}
-@media (min-width:641px){:is(.grid > .field,.field.inl,.ugrid > .field) > :is(label,.lbl){text-align:right}}
+/* labels are left-aligned in their column */
+:is(.grid > .field,.field.inl,.ugrid > .field) > :is(label,.lbl){text-align:left}
 
 /* Form grid: two columns, each "label | input"; inputs keep their preset width */
 .ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-items:start}
@@ -756,14 +757,14 @@ textarea.input{min-height:64px;padding:5px 10px}
 .urow > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
 .urow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
 .urow > .field .lbl-auto{display:none}
-@media (min-width:641px){.urow > .field > :is(label,.lbl){text-align:right}}
+.urow > .field > :is(label,.lbl){text-align:left}
 @media (max-width:640px){.urow > .field,.urow > .field:first-child{flex:1 1 100%;grid-template-columns:minmax(0,1fr)}.urow > .field > *{grid-column:1!important}}
 .cust-ro .ro.num,.cust-grid .ro.num{font-family:var(--font-body)}
 /* Creation: the customer fields render inside #custCard (display:contents), so they join the same grid */
 #custCard > .field{display:grid;grid-template-columns:var(--lw,144px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
 #custCard > .field > .lbl{grid-column:1;line-height:1.25}
 #custCard > .field > .ro{grid-column:2;min-width:0;width:100%;max-width:var(--cw,none)}
-@media (min-width:641px){#custCard > .field > .lbl{text-align:right}}
+#custCard > .field > .lbl{text-align:left}
 @media (max-width:640px){#custCard > .field{grid-template-columns:minmax(0,1fr)}#custCard > .field > *{grid-column:1!important}}
 /* type tiles: the tick sits top-right, in place of the code, so it never covers the description */
 .tile .tick{top:10px;bottom:auto;right:10px}
