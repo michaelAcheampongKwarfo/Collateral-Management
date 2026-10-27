@@ -245,7 +245,7 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 | Component | Behaviour | Angular build |
 |---|---|---|
 | Lookup field (LOV) | @unionsg/ui LOV: one box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`), a dropdown with live search, and a × to clear. Disabled until its parent field is set. (Collateral type at Creation uses tiles instead.) | Angular port of the @unionsg/ui LOV (CDK overlay) |
-| Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur | `matInput` + custom formatter directive |
+| Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur. Read-only amounts and counts (e.g. Amount held, Collaterals) are right-aligned too | `matInput` + custom formatter directive |
 | Date input | Typed or picked; always shown as `DD-MON-YYYY`, placeholder `dd-mmm-yyyy`, matching Oracle | `mat-datepicker` with a custom `DD-MMM-YYYY` date format |
 | Required-fields panel | Count of required fields complete, a progress bar, and the fields still empty (each jumps to its field) | Standalone component |
 | Drawer | Help and Comments slide in from the right | `mat-sidenav` (mode `over`) |
