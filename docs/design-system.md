@@ -116,7 +116,8 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Short code or number (insurance code, policy number) | 240px (short) |
 | Phone number | 240px, @unionsg/ui PhoneInput: country selector (GH, LR, NG, SL), dial code, then the number |
 | Percentage, count | 120px |
-| Names and free text (ownership, location, valuer) | Full row, up to 420px |
+| Names and free text (ownership, valuer) | Full row, up to 420px |
+| GPS location (property) | 250px: `latitude, longitude` box plus a pin button that opens the location picker |
 | Narration | Full row |
 
 - Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
@@ -130,7 +131,7 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Guarantee | Guarantee amount · Interest rate · Number of months |
 | Guarantee, Shares | Folio number · Folio start · Folio end |
 | Shares | No. of shares · Security amount (Stock amount at Amendment) · Market value |
-| Property | Ownership name · Location (both fill the line) |
+| Property | Ownership name (fills the line) · GPS location 250px |
 | Property | Valuer name (fills the line) · Contact number (phone, 240px) |
 | Property | Valuation date · Market value (Collateral amount at Amendment) · Forced sale |
 - Long labels wrap onto a second line inside their column.
@@ -266,6 +267,18 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 | Status pill | *Approved* (green), *Pending approval* (amber) | `mat-chip` |
 
 The look of inputs, buttons, LOVs, tables and tabs is fixed by @unionsg/ui (see the top of this page). The library is React; the Angular build reproduces its classes and CSS, for example as Angular components that share the same Tailwind classes.
+
+### GPS location picker (Property)
+
+- The property's **GPS location** replaces the free-text location. The field holds `latitude, longitude` in decimal degrees to 6 places, e.g. `6.290500, -10.771200` (about 10 cm).
+- The pin button opens **Property location**:
+  - **Use my current location** reads the device's GPS (the browser asks permission first) and shows how accurate the fix is.
+  - **Latitude** and **Longitude** can be typed. Pasting `6.29, -10.77` into either box fills both.
+  - **Check on map** opens the point in OpenStreetMap in a new tab.
+- If permission is refused, the GPS is too slow, or the browser can't share a location, the picker says so and the officer types the coordinates instead.
+- Under the field, and in every read-only view (approval, cancellation, enquiry), **View on map** opens the point so the approver can check it.
+- Checks: required; latitude −90 to 90 and longitude −180 to 180.
+- Angular: `navigator.geolocation.getCurrentPosition` with `enableHighAccuracy`. A map preview (Leaflet or Google Maps) can be added inside the picker if the bank allows a map provider. The prototype links out instead, because the published prototype cannot load map tiles.
 
 ### Reasons from a list (Cancellation, Reject)
 

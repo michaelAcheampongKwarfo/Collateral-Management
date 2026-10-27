@@ -128,7 +128,7 @@ Legend: **Req** = mandatory (red asterisk in Forms). **LOV** = picked from a loo
 | Property details | Property type | LOV | Yes | |
 | | Sub property type | LOV | | Filtered by property type (assumed) |
 | | Ownership name | Text | Yes | |
-| | Location | Text | Yes | |
+| | GPS location | `latitude, longitude` from the GPS picker (device GPS or typed) | Yes | Was free text |
 | | Valuer name | Text | Yes | |
 | | Valuer contact number | Phone | Yes | Format hint: `0302678178` |
 | | Valuation date | Date | Yes | |

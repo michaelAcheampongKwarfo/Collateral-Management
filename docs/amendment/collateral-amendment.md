@@ -116,7 +116,7 @@ The Forms "Balance Info" block (source balance, available amount, used amount) m
 | Section | Field | Kind | Columns |
 |---|---|---|---|
 | Property details | Property type · Sub property type | LOV · LOV | 6 · 6 |
-| | Ownership name · Location | Text · Text | 5 · 7 |
+| | Ownership name · GPS location | Text · GPS picker (`latitude, longitude`) | 5 · 7 |
 | Valuation | Valuer name · Valuer contact number | Text · Phone | 8 · 4 |
 | | Valuation date · Collateral amount · Forced sale value | Date · Amount · Amount | 4 · 4 · 4 |
 | Collateral details | Amount considered · Review date · Expiry date | | 4 · 4 · 4 |

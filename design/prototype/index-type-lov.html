@@ -718,6 +718,20 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:900px){.ugrid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.ugrid > .field{grid-template-columns:minmax(0,1fr)}.ugrid > .field > *{grid-column:1!important}.ugrid > .field > :not(label):not(.lbl){max-width:none}}
 .section{gap:12px}
+/* GPS location */
+.gps-in .btn{color:var(--u-blue)}
+.gps-in .btn svg{width:16px;height:16px}
+.map-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--primary);text-decoration:none}
+.map-link:hover{text-decoration:underline}
+.map-link svg{width:13px;height:13px}
+.gps-hint:empty{display:none}
+.gps-ro{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gps-modal{width:min(460px,100%)}
+.gps-msg{font-size:12.5px;color:var(--muted);min-height:18px;margin:8px 0 6px}
+.gps-msg.ok{color:var(--success)}.gps-msg.bad{color:var(--u-err-text)}
+.gps-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+.gps-pair .field label{font-size:13px}
+.gps-err{margin-bottom:6px}
 /* top bar without the sidebar: module mark links home */
 .tb-brand{display:flex;text-decoration:none}
 .tb-brand .brand-mark{width:30px;height:30px;font-size:12px}
@@ -904,6 +918,8 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
   <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M6 2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#D93025" stroke="none"/><path d="M14.5 2v4a1.5 1.5 0 0 0 1.5 1.5h4z" fill="#F4A79F" stroke="none"/><path d="M8.2 17.6c1.6-1 3.4-4.6 3.6-7.2.1-1.3-.9-1.4-1.1-.4-.3 1.7 1.9 4.7 4.6 5.2 1.4.3 1.6-.8.5-1-2-.4-6.5 1.2-7.6 3.1-.4.7.1 1 .9.3z" fill="none" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/></symbol>
   <symbol id="i-xls" viewBox="0 0 24 24"><rect x="8" y="3" width="13" height="18" rx="2" fill="#21A366" stroke="none"/><path d="M14 3h5a2 2 0 0 1 2 2v3.5h-7z" fill="#33C481" stroke="none"/><path d="M14 15.5h7V19a2 2 0 0 1-2 2h-5z" fill="#185C37" stroke="none"/><rect x="3" y="6.5" width="11" height="11" rx="1.6" fill="#107C41" stroke="none"/><path d="M6.2 9.3l4.6 5.4M10.8 9.3l-4.6 5.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/></symbol>
 </svg>
@@ -1084,7 +1100,7 @@ const TYPES=[
       {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
       {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
       {id:"owner",row:"own",grow:1,label:"Ownership name",type:"text",req:true,col:6},
-      {id:"location",row:"own",grow:1,label:"Location",type:"text",req:true,col:6,placeholder:"Street, town, plot number"},
+      {id:"location",row:"own",cw:"250px",label:"GPS location",type:"gps",req:true,col:6},
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
       {id:"valuer",row:"valuer",grow:1,label:"Valuer name",type:"text",req:true,col:6},
@@ -1194,7 +1210,8 @@ function fieldHtml(t,f,st=S){
     const val=f.type==="derived"?f.get(st):showVal(f,st.values,st.lookups),empty=!val||val==="(blank)";
     const chg=st.orig&&isChanged(f,st);
     const shown=lk&&f.codeOnly?lk.code:val;
-    const box=`<div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)||lk?"num-ish":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${empty?"—":`<span class="t">${esc(shown)}</span>`}</div>`;
+    const box0=`<div class="ro ro-view ${f.type==="textarea"?"ro-multi":""} ${empty?"empty":""} ${["amount","percent","int"].includes(f.type)||lk?"num-ish":""} ${["amount","percent","int"].includes(f.type)?"num":""}" id="${id}">${empty?"—":`<span class="t">${esc(shown)}</span>`}</div>`;
+    const box=f.type==="gps"&&!empty?`<div class="gps-ro">${box0}${mapLink(st.values[f.id])}</div>`:box0;
     return `<div class="field ${fcls(f)} ${chg?"changed":""}" style="${fsty(f)}"><span class="lbl">${esc(f.label)}${chg?'<span class="chg-tag">Changed</span>':""}</span>${box}${chg?`<div class="was">Current <b>${esc(origDisplay(f,st))}</b></div>`:""}</div>`;
   }
   const lbl=`<label for="${id}">${esc(f.label)}${f.req?'<span class="req">*</span>':""}</label>`;
@@ -1217,6 +1234,7 @@ function fieldHtml(t,f,st=S){
     ctl=`<input class="input amount" id="${id}" data-f="${f.id}" data-kind="int" inputmode="numeric" placeholder="0" value="${esc(v)}">`;
   }else{
     if(f.type==="date")ctl=dateCtl(`id="${id}" data-f="${f.id}"`,v);
+    else if(f.type==="gps")ctl=gpsCtl(id,f,v);
     else if(f.type==="tel")ctl=phoneCtl(`id="${id}" data-f="${f.id}"`,v,f.placeholder);
     else ctl=`<input class="input" type="text" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
   }
@@ -1228,6 +1246,7 @@ function fieldHtml(t,f,st=S){
   else if(f.id==="amount"&&st.type==="C03")help=`<div class="hint">Up to the forced sale value${parseAmt(st.values.forcedSale)!=null?` <span class="mono">${fmt(parseAmt(st.values.forcedSale))}</span>`:""}</div>`;
   else if(f.id==="forcedSale")help=`<div class="hint">Up to the ${st.values.collAmount!=null&&st.values.marketValue==null?"collateral amount":"market value"}</div>`;
   else if(f.id==="reviewDate")help=`<div class="hint">Before the expiry date</div>`;
+  if(f.type==="gps")help+=`<div class="hint gps-hint">${mapLink(v)}</div>`;
   return `<div class="field ${fcls(f)} ${err?"invalid":""} ${chg?"changed":""}" style="${fsty(f)}" id="wrap-${id}">${chg?lbl.replace("</label>",'<span class="chg-tag">Edited</span></label>'):lbl}${ctl}${help}</div>`;
 }
 /* Field widths follow the value: amounts, dates, codes and numbers are fixed; lookups and long text grow */
@@ -1236,6 +1255,48 @@ function fieldHtml(t,f,st=S){
 const CW={amount:"180px",date:"160px",int:"120px",percent:"120px",tel:"240px",lookup:"280px",derived:"280px"};
 /* in a shared row each field is only as wide as its longest value:
    amount GHS 99,999,999.99 · date 25-OCT-2026 · count 9,999,999 · rate 99.99 % · folio 10-12 characters */
+/* GPS location: "latitude, longitude" in decimal degrees (6 places). The pin opens the picker:
+   the device's own GPS (the browser asks first), or coordinates typed or pasted from the valuation report. */
+const GPS_RE=/^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
+const gpsParse=v=>{const m=GPS_RE.exec(v||"");if(!m)return null;const lat=+m[1],lon=+m[2];return Math.abs(lat)<=90&&Math.abs(lon)<=180?{lat,lon}:null};
+const gpsFmt=(lat,lon)=>`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+const mapUrl=g=>`https://www.openstreetmap.org/?mlat=${g.lat}&mlon=${g.lon}#map=17/${g.lat}/${g.lon}`;
+const mapLink=v=>{const g=gpsParse(v);return g?`<a class="map-link" href="${mapUrl(g)}" target="_blank" rel="noopener">${icon("pin")}View on map</a>`:""};
+const gpsCtl=(id,f,v)=>`<div class="search gps-in"><input class="input mono" id="${id}" data-f="${f.id}" inputmode="decimal" placeholder="Latitude, longitude" value="${esc(v)}"><button class="btn" type="button" data-gps="${id}" aria-label="Pick the ${esc(f.label.toLowerCase())}" title="Pick the location">${icon("pin")}</button></div>`;
+function openGpsPicker(inputId){
+  const inp=document.getElementById(inputId),cur=gpsParse(inp.value);
+  openLayer(`<div class="modal gps-modal" role="dialog" aria-modal="true" aria-labelledby="gpsT"><header><h2 id="gpsT">Property location</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb"><p class="hint" style="margin:0 0 12px">At the property, use this device's GPS. Otherwise type or paste the coordinates from the valuation report.</p>
+      <button type="button" class="btn act-blue" id="gpsHere">${icon("locate")}Use my current location</button>
+      <div class="gps-msg" id="gpsMsg" role="status"></div>
+      <div class="gps-pair"><div class="field"><label for="gpsLat">Latitude</label><input class="input mono" id="gpsLat" inputmode="decimal" placeholder="6.290500" value="${cur?cur.lat.toFixed(6):""}"></div>
+        <div class="field"><label for="gpsLon">Longitude</label><input class="input mono" id="gpsLon" inputmode="decimal" placeholder="-10.771200" value="${cur?cur.lon.toFixed(6):""}"></div></div>
+      <div class="gps-err err" id="gpsErr" hidden></div>
+      <a class="map-link" id="gpsMap" target="_blank" rel="noopener" hidden>${icon("pin")}Check on map</a></div>
+    <footer><button class="btn" data-close>Cancel</button><button class="btn act-green" id="gpsUse">${icon("check")}Use this location</button></footer></div>`);
+  const lat=$("#gpsLat"),lon=$("#gpsLon"),msg=$("#gpsMsg"),err=$("#gpsErr"),map=$("#gpsMap");
+  const read=()=>gpsParse(`${lat.value},${lon.value}`);
+  const sync=()=>{const g=read();map.hidden=!g;if(g)map.href=mapUrl(g);err.hidden=true};
+  /* pasting "6.29, -10.77" into either box fills both */
+  const paste=e=>{const g=gpsParse(e.clipboardData?.getData("text"));if(!g)return;e.preventDefault();lat.value=g.lat.toFixed(6);lon.value=g.lon.toFixed(6);sync()};
+  lat.addEventListener("input",sync);lon.addEventListener("input",sync);lat.addEventListener("paste",paste);lon.addEventListener("paste",paste);sync();
+  $("#gpsHere").addEventListener("click",()=>{
+    if(!navigator.geolocation){msg.className="gps-msg bad";msg.textContent="This browser can't share its location. Type the coordinates instead.";return}
+    msg.className="gps-msg";msg.textContent="Getting your location…";
+    navigator.geolocation.getCurrentPosition(pos=>{const c=pos.coords;lat.value=c.latitude.toFixed(6);lon.value=c.longitude.toFixed(6);sync();
+        msg.className="gps-msg ok";msg.textContent=`Location found, accurate to about ${Math.round(c.accuracy)} m.`},
+      e=>{msg.className="gps-msg bad";msg.textContent=e.code===1?"Location access was refused. Allow it for this site, or type the coordinates.":e.code===3?"The GPS took too long to answer. Try again in the open, or type the coordinates.":"Your location isn't available right now. Type the coordinates instead."},
+      {enableHighAccuracy:true,timeout:15000,maximumAge:0});
+  });
+  $("#gpsUse").addEventListener("click",()=>{const g=read();
+    if(!g){err.hidden=false;err.innerHTML=icon("alert")+"Enter a latitude from -90 to 90 and a longitude from -180 to 180.";return}
+    closeLayer();inp.value=gpsFmt(g.lat,g.lon);inp.dispatchEvent(new Event("input",{bubbles:true}));inp.focus()});
+  (cur?lat:$("#gpsHere")).focus();
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-gps]");if(b)openGpsPicker(b.dataset.gps)});
+/* the map link under the field follows the value as it is typed or picked */
+document.addEventListener("input",e=>{if(!e.target.closest?.(".gps-in"))return;const h=e.target.closest(".field").querySelector(".gps-hint");if(h)h.innerHTML=mapLink(e.target.value)});
+
 /* @unionsg/ui PhoneInput: country selector and dial code in front of the number */
 const DIAL={GH:"+233",LR:"+231",NG:"+234",SL:"+232"};
 const phoneCtl=(attrs,v,ph)=>`<div class="phone-in"><select class="ph-cc" aria-label="Country" data-dial>${Object.keys(DIAL).map(k=>`<option>${k}</option>`).join("")}</select><span class="ph-dial">+233</span><input class="input" type="tel" inputmode="tel" ${attrs} placeholder="${esc(ph||"24 123 4567")}" value="${esc(v)}"></div>`;
@@ -1356,11 +1417,12 @@ function validate(){
   for(const f of requiredFields(t)){
     if(hasValue(f.id))continue;
     const l=f.label.toLowerCase();
-    S.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`;
+    S.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:f.type==="gps"?"Pick the GPS location of the property.":`Enter the ${l}.`;
   }
   for(const f of t.sections.flatMap(s=>s.fields)){
     if(["amount","percent","int"].includes(f.type)&&hasValue(f.id)&&parseAmt(S.values[f.id])==null)S.errors[f.id]=`${f.label} must be a number.`;
     if(f.type==="date"&&hasValue(f.id)&&!ISO_RE.test(S.values[f.id]))S.errors[f.id]=`Enter the ${f.label.toLowerCase()} as dd-mmm-yyyy, e.g. 25-OCT-2026.`;
+    if(f.type==="gps"&&hasValue(f.id)&&!gpsParse(S.values[f.id]))S.errors[f.id]="Pick the location, or enter it as latitude, longitude, e.g. 6.290500, -10.771200.";
   }
   const br=businessRules(t.code,S.values,S.lookups);for(const k in br)if(!S.errors[k])S.errors[k]=br[k];
 }
@@ -1625,9 +1687,9 @@ function mkRec(no,cust,type,by,appr,vals,lks){
 }
 const F=fmt;
 const AM=[
-  mkRec("2609184352","004997","C03","OPS.ADMIN","15-SEP-2025",{owner:"STERLING POINT ESTATES",location:"Plot 14, Tubman Boulevard, Sinkor",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-09",collAmount:F(5000000),forcedSale:F(4500000),amount:F(4000000),reviewDate:"2028-09-15",expiryDate:"2029-09-15"},{propType:["propType","03"],propSub:["propSub","031"]}),
-  mkRec("2310024084","019727","C03","E.QUAYE","31-OCT-2024",{owner:"COASTLINE BUILDERS LTD",location:"Warehouse 3, Freeport Road, Bushrod Island",valuer:"Meridian Property Consult",valuerTel:"0886441290",valDate:"2024-10-20",collAmount:F(1095500),forcedSale:F(950000),amount:F(876400),reviewDate:"2027-10-28",expiryDate:"2027-10-31"},{propType:["propType","02"],propSub:["propSub","023"]}),
-  mkRec("2606204210","056719","C03","OPS.ADMIN","27-SEP-2025",{owner:"ABENA MENSAH",location:"House 22, 9th Street, Sinkor",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-12",collAmount:F(210000),forcedSale:F(180000),amount:F(150000),reviewDate:"2027-06-16",expiryDate:"2028-06-16"},{propType:["propType","01"],propSub:["propSub","011"]}),
+  mkRec("2609184352","004997","C03","OPS.ADMIN","15-SEP-2025",{owner:"STERLING POINT ESTATES",location:"6.290500, -10.771200",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-09",collAmount:F(5000000),forcedSale:F(4500000),amount:F(4000000),reviewDate:"2028-09-15",expiryDate:"2029-09-15"},{propType:["propType","03"],propSub:["propSub","031"]}),
+  mkRec("2310024084","019727","C03","E.QUAYE","31-OCT-2024",{owner:"COASTLINE BUILDERS LTD",location:"6.346600, -10.803500",valuer:"Meridian Property Consult",valuerTel:"0886441290",valDate:"2024-10-20",collAmount:F(1095500),forcedSale:F(950000),amount:F(876400),reviewDate:"2027-10-28",expiryDate:"2027-10-31"},{propType:["propType","02"],propSub:["propSub","023"]}),
+  mkRec("2606204210","056719","C03","OPS.ADMIN","27-SEP-2025",{owner:"ABENA MENSAH",location:"6.293800, -10.779000",valuer:"CSSD Valuation Services",valuerTel:"0244512536",valDate:"2025-09-12",collAmount:F(210000),forcedSale:F(180000),amount:F(150000),reviewDate:"2027-06-16",expiryDate:"2028-06-16"},{propType:["propType","01"],propSub:["propSub","011"]}),
   mkRec("202509272578252","036551","C01","OPS.ADMIN","27-SEP-2025",{amount:F(50000),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00622503655101"]}),
   mkRec("202509272579098","008626","C01","OPS.ADMIN","27-SEP-2025",{amount:F(2000),reviewDate:"2026-10-24",expiryDate:"2027-09-27"},{account:["account","00422007781340"]}),
   mkRec("202509272617913","029265","C01","E.QUAYE","27-SEP-2025",{amount:F(95000),reviewDate:"2026-09-27",expiryDate:"2027-09-27"},{account:["account","00615003300912"]}),
@@ -1851,6 +1913,7 @@ function amValidate(){
     if(f.req&&!has){const l=f.label.toLowerCase();A.errors[f.id]=f.type==="lookup"?`Select the ${l}.`:f.type==="date"?`Choose the ${l}.`:`Enter the ${l}.`}
     else if(NUMERIC.includes(f.type)&&has&&parseAmt(A.values[f.id])==null)A.errors[f.id]=`${f.label} must be a number.`;
     else if(f.type==="date"&&has&&!ISO_RE.test(A.values[f.id]))A.errors[f.id]=`Enter the ${f.label.toLowerCase()} as dd-mmm-yyyy, e.g. 25-OCT-2026.`;
+    else if(f.type==="gps"&&has&&!gpsParse(A.values[f.id]))A.errors[f.id]="Pick the location, or enter it as latitude, longitude, e.g. 6.290500, -10.771200.";
   }
   const br=businessRules(t.code,A.values,A.lookups);for(const k in br)if(!A.errors[k])A.errors[k]=br[k];
   return !Object.keys(A.errors).length;
@@ -2039,7 +2102,7 @@ const recBy=no=>AM.find(r=>r.no===no);
 /* sample requests waiting today */
 (function seedQueue(){
   const mk=(kind,base)=>Object.assign({id:QSEQ++,kind},base);
-  const c1v={propType:"03",propSub:"032",owner:"ROSE T. NYEMAH",location:"Plot 7, Weija, Accra",valuer:"Tesy Valuation Consult",valuerTel:"0245678945",valDate:"2026-06-30",marketValue:F(180000),forcedSale:F(150000),amount:F(150000),reviewDate:"2026-06-30",expiryDate:"2027-06-30",comment:"Title deed verified at the Lands Commission."};
+  const c1v={propType:"03",propSub:"032",owner:"ROSE T. NYEMAH",location:"5.560000, -0.336000",valuer:"Tesy Valuation Consult",valuerTel:"0245678945",valDate:"2026-06-30",marketValue:F(180000),forcedSale:F(150000),amount:F(150000),reviewDate:"2026-06-30",expiryDate:"2027-06-30",comment:"Title deed verified at the Lands Commission."};
   const c1l={propType:LOVS.propType.rows().find(r=>r.code==="03"),propSub:LOVS.propSub.rows({values:{propType:"03"}}).find(r=>r.code==="032")};
   QUEUE.push(mk("create",{no:"2606304232",cust:"046378",type:"C03",by:"E.QUAYE",on:"06-OCT-2026",values:c1v,lookups:c1l,docs:[{ref:"DOC-4090",name:"Valuation_report_Weija.pdf",desc:"Valuation report, Weija plot",expiry:"2027-06-30",by:"E.QUAYE",date:"06-OCT-2026"},{ref:"DOC-4091",name:"Title_deed_Weija.pdf",desc:"Title deed",expiry:null,by:"E.QUAYE",date:"06-OCT-2026"}]}));
   const acc=ACCOUNTS.find(a=>a.code==="00515002203914");
@@ -2323,7 +2386,7 @@ const RISK={C01:"LOW",C02:"MEDIUM",C03:"MEDIUM",C04:"LOW",C05:"HIGH"};
 function collDesc(r){
   const v=r.values,l=r.lookups;
   return ({C01:()=>`CASH COLLATERAL - ${l.account?.prodDesc||""}`,C02:()=>`${l.policyType?.desc||"POLICY"} - ${v.policyNo||""}`,
-    C03:()=>`${l.propType?.desc||"PROPERTY"} - ${(v.location||"").split(",").slice(-1)[0].trim().toUpperCase()}`,
+    C03:()=>`${l.propType?.desc||"PROPERTY"} - ${(l.propSub?.desc||v.owner||"").toUpperCase()}`,
     C04:()=>`${l.depositType?.desc||"GUARANTEE"} - ${l.finInst?.desc||""}`,C05:()=>`${l.shareCode?.desc||"SHARES"} - ${v.units||0} UNITS`})[r.type]();
 }
 /* every collateral the bank knows about, with the figures the Forms enquiry shows */
