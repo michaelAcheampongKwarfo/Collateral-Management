@@ -343,7 +343,8 @@ tr.new td{background:var(--primary-soft)}
 .date-btn{position:absolute;right:1px;top:1px;bottom:1px;width:30px;border:0;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:0 var(--r-sm) var(--r-sm) 0}
 .date-btn:hover{color:var(--primary)}
 .date-btn svg{width:16px;height:16px}
-.date-native{position:absolute;right:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
+.date-native{position:absolute;right:1px;top:1px;bottom:1px;width:28px;height:auto;opacity:0;border:0;padding:0;margin:0;cursor:pointer;z-index:1;color-scheme:inherit}
+.date-native::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;margin:0;padding:0;cursor:pointer}
 .range .date-in{flex:1}
 /* Type forms: fields sized to their values, laid out in rows; lookups and long text fill what is left */
 .frows{display:flex;flex-direction:column;gap:14px}
@@ -704,7 +705,7 @@ textarea.input{min-height:64px;padding:5px 10px}
 
 /* Form grid: two columns, each "label | input"; inputs keep their preset width */
 .ugrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-items:start}
-.ugrid > .field{display:grid;grid-template-columns:var(--lw,136px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+.ugrid > .field{display:grid;grid-template-columns:var(--lw,144px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
 .ugrid > .field.full{grid-column:1/-1}
 .ugrid > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
 .ugrid > .field > :not(label):not(.lbl){grid-column:2;min-width:0;width:100%;max-width:var(--cw,none)}
@@ -718,7 +719,7 @@ textarea.input{min-height:64px;padding:5px 10px}
 /* one full-width line of compact fields (amount, review date, expiry date) */
 .urow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:start}
 .urow > .field{display:grid;grid-template-columns:fit-content(92px) var(--cw);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
-.urow > .field:first-child{grid-template-columns:var(--lw,136px) var(--cw)}
+.urow > .field:first-child{grid-template-columns:var(--lw,144px) var(--cw)}
 .urow > .field[style*="--cw:180px"]{--cw:170px!important}
 .urow > .field[style*="--cw:160px"]{--cw:140px!important}
 .urow > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
@@ -728,7 +729,7 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:640px){.urow > .field,.urow > .field:first-child{flex:1 1 100%;grid-template-columns:minmax(0,1fr)}.urow > .field > *{grid-column:1!important}}
 .cust-ro .ro.num,.cust-grid .ro.num{font-family:var(--font-body)}
 /* Creation: the customer fields render inside #custCard (display:contents), so they join the same grid */
-#custCard > .field{display:grid;grid-template-columns:var(--lw,136px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+#custCard > .field{display:grid;grid-template-columns:var(--lw,144px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
 #custCard > .field > .lbl{grid-column:1;line-height:1.25}
 #custCard > .field > .ro{grid-column:2;min-width:0;width:100%;max-width:var(--cw,none)}
 @media (min-width:641px){#custCard > .field > .lbl{text-align:right}}
@@ -806,6 +807,10 @@ th .arr i.up{border-bottom:4px solid var(--u-slate-300)}
 th .arr i.dn{border-top:4px solid var(--u-slate-300)}
 th .arr i.up.on{border-bottom-color:var(--u-th-text)}
 th .arr i.dn.on{border-top-color:var(--u-th-text)}
+.open-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--u-slate-200);background:var(--u-btn-bg);color:var(--u-act-edit);display:inline-grid;place-items:center;cursor:pointer;vertical-align:middle}
+.open-btn svg{width:14px;height:14px}
+.open-btn:hover:not(:disabled){background:var(--u-blue-h);border-color:var(--u-act-edit-b);color:var(--u-act-edit)}
+.open-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--u-btn-bg)}
 .row-act{padding:2px 8px;border-radius:4px;border:1px solid var(--u-act-view-b);background:var(--u-btn-bg);color:var(--u-act-view);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
 .row-act:hover:not(:disabled){background:var(--u-gray-h)}
 .row-act.edit{color:var(--u-act-edit);border-color:var(--u-act-edit-b)}
@@ -989,7 +994,7 @@ function toIso(v){
 }
 /* the value a control stands for: ISO for date fields (or the raw text if it isn't a date yet) */
 const valOf=el=>{if(!el.hasAttribute("data-date"))return el.value;const r=toIso(el.value);return r===null?el.value.trim():r};
-const dateCtl=(attrs,iso)=>`<div class="date-in"><input class="input mono" type="text" data-date ${attrs} placeholder="dd-mmm-yyyy" maxlength="11" autocomplete="off" value="${esc(fmtDate(iso||""))}"><button type="button" class="date-btn" tabindex="-1" aria-label="Open calendar">${icon("calendar")}</button><input type="date" class="date-native" tabindex="-1" aria-hidden="true"></div>`;
+const dateCtl=(attrs,iso)=>`<div class="date-in"><input class="input mono" type="text" data-date ${attrs} placeholder="dd-mmm-yyyy" maxlength="11" autocomplete="off" value="${esc(fmtDate(iso||""))}"><button type="button" class="date-btn" tabindex="-1" aria-label="Open calendar">${icon("calendar")}</button><input type="date" class="date-native" tabindex="-1" aria-label="Pick a date"></div>`;
 const parseAmt=v=>{const n=parseFloat(String(v).replace(/,/g,""));return isNaN(n)?null:n};
 
 /* ---------- Sample reference data (stands in for the Oracle LOVs) ---------- */
@@ -1041,7 +1046,7 @@ const TYPES=[
       {id:"ccy",w:"m",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
       {id:"srcBranch",w:"m",br:true,label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
     ]},
-    COLL({amountLabel:"Collateral amount",reviewLabel:"Next review date",expiryLabel:"Expiry review date",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
+    COLL({amountLabel:"Collateral amount",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
   {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
    sections:[
@@ -1460,8 +1465,10 @@ document.addEventListener("click",e=>{
     openLov(d.dataset.detail==="block"?"Blocked amounts":"Uncleared items",rows,()=>{},[["code","Reference"],["desc","Description"],["amt","Amount"]]);}
 });
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#scrim"))closeLayer()});
-document.addEventListener("click",e=>{const b=e.target.closest(".date-btn");if(!b)return;const w=b.closest(".date-in"),txt=w.querySelector("[data-date]"),nat=w.querySelector(".date-native");
-  nat.value=toIso(txt.value)||"";try{nat.showPicker()}catch(_){txt.focus()}});
+/* the transparent native input over the calendar button takes the click; it starts on the typed date */
+const dateSeed=e=>{const nat=e.target.closest?.(".date-native");if(!nat)return;nat.value=toIso(nat.closest(".date-in").querySelector("[data-date]").value)||""};
+document.addEventListener("pointerdown",dateSeed,true);document.addEventListener("focusin",dateSeed,true);
+document.addEventListener("click",e=>{const nat=e.target.closest(".date-native");if(!nat)return;try{nat.showPicker()}catch(_){/* the browser opens it itself */}});
 document.addEventListener("change",e=>{if(!e.target.classList.contains("date-native"))return;const txt=e.target.closest(".date-in").querySelector("[data-date]");
   txt.value=fmtDate(e.target.value);txt.dispatchEvent(new Event("input",{bubbles:true}));txt.dispatchEvent(new Event("change",{bubbles:true}));txt.focus()});
 document.addEventListener("focusout",e=>{const t=e.target;if(!t.hasAttribute||!t.hasAttribute("data-date"))return;const iso=toIso(t.value);if(iso)t.value=fmtDate(iso)});
@@ -1711,12 +1718,12 @@ function amListHtml(){
     </form></div>
   </section>
   <section class="card" aria-labelledby="amS2">
-    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll||A.q.name?" match your search":""}. Select <b>${isCancel()?"Cancel":"Amend"}</b> to open one ${A.mod.openFor}.</p></div>
+    <div class="card-head wrap"><div><h2 id="amS2">Approved collaterals</h2><p>${rows.length} record${rows.length===1?"":"s"}${A.q.cust||A.q.coll||A.q.name?" match your search":""}. Select <b>›</b> to open one ${A.mod.openFor}.</p></div>
       <div class="right chips" role="group" aria-label="Filter by collateral type">
         <button class="chip" data-filter="ALL" aria-pressed="${A.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
         ${TYPES.map(t=>`<button class="chip" data-filter="${t.code}" aria-pressed="${A.filter===t.code}" style="--tc:var(${t.tc})"><span class="tdot"></span>${t.name} <span class="n">${counts[t.code]}</span></button>`).join("")}
       </div></div>
-    <div class="table-wrap">${shown.length?`<table class="grid-table"><thead><tr>${th("no","Collateral no.")}${th("name","Customer")}${th("type","Collateral type")}${th("amount","Amount","num")}${th("considered","Considered","num")}${th("review","Review / expiry")}${th("by","Status")}<th class="sticky-r">Action</th></tr></thead><tbody>
+    <div class="table-wrap">${shown.length?`<table class="grid-table"><thead><tr>${th("no","Collateral no.")}${th("name","Customer")}${th("type","Collateral type")}${th("amount","Amount","num")}${th("considered","Considered","num")}${th("review","Review / expiry")}${th("by","Status")}<th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
       ${shown.map(r=>{const c=custBy(r.cust),t=typeBy(r.type),pend=r.status!=="Approved";return `<tr data-row="${r.no}" class="${pend?"is-pending":""}">
         <td class="mono">${r.no}</td>
         <td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
@@ -1725,7 +1732,7 @@ function amListHtml(){
         <td class="num">${fmt(parseAmt(r.values.amount))}</td>
         <td><div>${fmtDate(r.values.reviewDate)}</div><div class="sub">to ${fmtDate(r.values.expiryDate)}</div></td>
         <td><span class="status ${pend?"pending":""}">${r.status}</span><div class="sub">by <span class="mono">${r.by}</span></div></td>
-        <td class="sticky-r"><button class="row-act ${isCancel()?"del":"edit"}" data-open="${r.no}" aria-label="${isCancel()?"Cancel":"Amend"} collateral ${r.no}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${isCancel()?"Cancel":"Amend"}</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="open-btn" data-open="${r.no}" aria-label="Open collateral ${r.no} ${A.mod.openFor}" ${pend?`disabled title="${r.status}. It can't be opened until that request is approved or rejected."`:""}>${icon("chev")}</button></td></tr>`}).join("")}
       </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collaterals match your search</b><span>Check the customer or collateral number, or clear the search to see all records.</span></div>`}</div>
     ${pagerHtml(rows.length,A.page,"data-page")}
   </section>`;
@@ -1852,6 +1859,8 @@ amView.addEventListener("submit",e=>{if(e.target.id==="amSearch"){e.preventDefau
 amView.addEventListener("keydown",e=>{const th=e.target.closest("th[data-sort]");if(th&&(e.key==="Enter"||e.key===" ")){e.preventDefault();th.click()}});
 amView.addEventListener("click",e=>{
   const T=s=>e.target.closest(s);let el;
+  if(T("[data-reasonclear]")){setReasonSel("");return}
+  if(el=T("[data-reasonlov]")){openLov("Closure reasons",reasonRows(REASONS),r=>setReasonSel(r.desc),undefined,el);return}
   if(T("#amHelp")&&isCancel()){openDrawer("Help · Collateral cancellation",`<ol><li>Search by <b>collateral number</b>, <b>customer number</b> or <b>customer name</b>, then select <b>Fetch</b>. Leave them blank to list every approved collateral.</li><li>Select <b>›</b> on a row to open it. The collateral's details are shown read-only.</li><li>Check the closure summary, then pick the <b>closure reason</b> from the list. Choose <b>Other</b> to type your own.</li><li><b>Submit</b> asks you to confirm, then sends the cancellation for approval. The collateral stays active until it is approved.</li></ol><div class="hint">A collateral with an amendment or cancellation awaiting approval can't be opened in either module.</div>`);return}
   if(T("#amHelp")){openDrawer("Help · Collateral amendment",`<ol><li>Search by <b>collateral number</b>, <b>customer number</b> or <b>customer name</b>, then select <b>Fetch</b>. Leave them blank to list every approved collateral.</li><li>Filter by type or sort any column. Select <b>›</b> on a row to open it.</li><li>Change the fields that need updating. Each edited field is highlighted and keeps its original value underneath. Use <b>Undo</b> to put a value back.</li><li><b>Submit</b> sends the amendment for approval. The current values stay in force until it is approved.</li></ol><div class="hint">Records with an amendment awaiting approval can't be opened again until it is approved or rejected.</div>`);return}
   if(T("#amComment")){openDrawer("Comments",`<div class="field"><label for="amCmt">Add a comment for the approver</label><textarea class="input" id="amCmt" placeholder="${isCancel()?"e.g. Customer's release request letter is attached":"e.g. Revaluation received from the valuer on 02-OCT-2026"}"></textarea></div><div><button class="btn primary" id="amCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${A.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · ${esc(ME.name)}</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
@@ -1900,6 +1909,10 @@ amView.addEventListener("focusout",e=>{const k=e.target.dataset.kind;if(!k||A.vi
 const REASONS=["Facility fully repaid","Collateral replaced by another collateral","Collateral released to the customer","Captured in error"];
 const REJECT_REASONS=["Customer withdrew the request","Duplicate request","Collateral not acceptable to the bank","Documents could not be verified"];
 /* a reason picked from a list, or typed when "Other" is picked */
+/* closure reason: the standard LOV, coded 01.. with 99 for Other */
+const reasonRows=list=>[...list.map((x,i)=>({code:String(i+1).padStart(2,"0"),desc:x})),{code:"99",desc:"Other"}];
+const reasonLov=(id,list,sel)=>{const r=reasonRows(list).find(x=>x.desc===sel);
+  return `<button type="button" class="lookup-btn" id="${id}" data-reasonlov>${r?`<span class="lov-v"><b>${r.code}</b> - ${esc(r.desc)}</span><span class="lov-x" role="button" tabindex="-1" data-reasonclear aria-label="Clear closure reason">${icon("x")}</span>`:`<span class="ph">Search and select</span>`}<span class="lov-ic">${icon("search")}</span></button>`};
 const reasonSelect=(id,list,sel)=>`<select class="input" id="${id}"><option value="">Select a reason</option>${list.map(x=>`<option ${sel===x?"selected":""}>${esc(x)}</option>`).join("")}<option value="Other" ${sel==="Other"?"selected":""}>Other</option></select>`;
 const splitReason=(text,list)=>!text?{sel:"",text:""}:list.includes(text)?{sel:text,text:""}:{sel:"Other",text};
 const REASON_MAX=300;
@@ -1933,7 +1946,7 @@ function reasonCardHtml(){
   return `<section class="card reason-card" id="cxReason" aria-labelledby="cxR"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="cxR">Cancellation</h2><p>The only thing you enter here. The reason goes to the approver and stays on the collateral's history.</p></div></div>
     <div class="card-body"><div class="grid">
       <div class="field ${errSel?"invalid":""}" style="--col:12" id="cxReasonField"><label for="cxReasonSel">Closure reason<span class="req">*</span></label>
-        <div style="max-width:420px">${reasonSelect("cxReasonSel",REASONS,A.reasonSel)}</div>
+        <div style="max-width:420px">${reasonLov("cxReasonSel",REASONS,A.reasonSel)}</div>
         ${errSel?`<span class="err">${icon("alert")}Select the closure reason.</span>`:`<span class="hint">Pick the reason, or Other to type it.</span>`}
       </div>
       ${other?`<div class="field ${errTxt?"invalid":""}" style="--col:12" id="cxOtherField"><label for="cxReasonIn">Other reason<span class="req">*</span></label>
@@ -2043,12 +2056,12 @@ function apListHtml(){
       <button class="chip" data-apfilter="ALL" aria-pressed="${P.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
       ${Object.keys(KIND).map(k=>`<button class="chip" data-apfilter="${k}" aria-pressed="${P.filter===k}"><span class="kdot ${KIND[k].cls}"></span>${KIND[k].label} <span class="n">${counts[k]}</span></button>`).join("")}
     </div></div>
-    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>What's asked</th><th>Submitted</th><th class="sticky-r">Action</th></tr></thead><tbody>
+    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>What's asked</th><th>Submitted</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
       ${rows.map(it=>{const c=custBy(it.cust),t=typeBy(it.type);const ask=it.kind==="create"?"New collateral":it.kind==="amend"?`${apChanges(it).length} field${apChanges(it).length===1?"":"s"} changed`:`Close: ${esc(it.reason.length>34?it.reason.slice(0,34)+"…":it.reason)}`;
         return `<tr data-aprow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
         <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="num">${fmt(parseAmt(it.values.amount)||0)}</td>
         <td class="ask">${ask}</td><td><div>${it.on}</div><div class="sub">by <span class="mono">${it.by}</span>${it.by===ME.code?" (you)":""}</div>${it.by===ME.code?`<span class="rv rv-own" title="You submitted it, so another officer must decide">${icon("lock")}Yours</span>`:""}</td>
-        <td class="sticky-r"><button class="row-act view" data-apopen="${it.id}" aria-label="Review ${KIND[it.kind].verb} request for ${it.no}">Review</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="open-btn" data-apopen="${it.id}" aria-label="Open ${KIND[it.kind].verb} request for ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>${QUEUE.length?"No requests match your search":"Nothing waiting for approval"}</b><span>${QUEUE.length?"Clear the search to see every request.":"New requests from Creation, Amendment and Cancellation appear here."}</span></div>`}</div>
   </section>`;
 }
@@ -2207,12 +2220,12 @@ function renderReturned(){
       <button class="chip" data-rtfilter="ALL" aria-pressed="${RT.filter==="ALL"}">All <span class="n">${counts.ALL}</span></button>
       ${Object.keys(KIND).map(k=>`<button class="chip" data-rtfilter="${k}" aria-pressed="${RT.filter===k}"><span class="kdot ${KIND[k].cls}"></span>${KIND[k].label} <span class="n">${counts[k]}</span></button>`).join("")}
     </div></div>
-    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>Return reason</th><th>Returned</th><th class="sticky-r">Action</th></tr></thead><tbody>
+    <div class="table-wrap">${rows.length?`<table class="grid-table"><thead><tr><th>Request</th><th>Collateral no.</th><th>Customer</th><th>Collateral type</th><th class="num">Considered</th><th>Return reason</th><th>Returned</th><th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
       ${rows.map(it=>{const c=custBy(it.cust),t=typeBy(it.type),rs=it.retReason;
         return `<tr data-retrow="${it.id}"><td>${kindBadge(it.kind)}</td><td class="mono">${it.no}</td><td><div class="cell-name">${esc(c.name)}</div><div class="sub mono">${c.code}</div></td>
         <td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${t.code}</span></td><td class="num">${fmt(parseAmt(it.values.amount)||0)}</td>
         <td class="ask reason" title="${esc(rs)}">${esc(rs.length>70?rs.slice(0,70)+"…":rs)}</td><td><div>${it.retOn}</div><div class="sub">by <span class="mono">${it.retBy}</span></div></td>
-        <td class="sticky-r"><button class="row-act edit" data-retopen="${it.id}" aria-label="Correct ${KIND[it.kind].verb} request ${it.no}">Correct</button></td></tr>`}).join("")}
+        <td class="sticky-r"><button class="open-btn" data-retopen="${it.id}" aria-label="Correct ${KIND[it.kind].verb} request ${it.no}">${icon("chev")}</button></td></tr>`}).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("check")}</div><b>${RETURNED.length?"No returned requests match your search":"Nothing to correct"}</b><span>${RETURNED.length?"Clear the search to see every returned request.":"Requests an approver returns appear here with the reason."}</span></div>`}</div></section>`;
 }
 function openReturned(id){
@@ -2407,8 +2420,8 @@ function enqListHtml(){
   </div></section>
   <section class="card"><div class="card-head wrap"><div class="rec-title"><h2>${K.label} records</h2><span class="chip-count">${rows.length} record${rows.length===1?"":"s"}</span><button class="btn ghost sm" id="enRefresh">${icon("refresh")}Refresh</button></div>
       <div class="right exports"><button class="btn sm" id="enPdf">${icon("pdf")}PDF</button><button class="btn sm" id="enXls">${icon("xls")}Excel</button></div></div>
-    <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r">Action</th></tr></thead><tbody>
-      ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="row-act view" data-eopen="${r.no}" aria-label="View collateral ${r.no}">View</button></td></tr>`).join("")}
+    <div class="table-wrap">${shown.length?`<table class="grid-table enq-table"><thead><tr>${cols.map(th).join("")}<th class="sticky-r"><span class="sr">Open</span></th></tr></thead><tbody>
+      ${shown.map(r=>`<tr data-erow="${r.no}">${cols.map(c=>`<td class="${c[4]?"num":""}">${c[2](r)}</td>`).join("")}<td class="sticky-r"><button class="open-btn" data-eopen="${r.no}" aria-label="View collateral ${r.no}">${icon("chev")}</button></td></tr>`).join("")}
     </tbody></table>`:`<div class="empty-state"><div class="ic">${icon("search")}</div><b>No collateral matches</b><span>Change the search or clear the filters.</span></div>`}</div>
     ${pagerHtml(rows.length,S_.page,"data-epage")}
   </section>`;

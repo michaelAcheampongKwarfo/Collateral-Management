@@ -25,7 +25,7 @@ Where the library has no rule, the prototype keeps the module's agreed choices:
 - The customer search and the documents list stay as dialogs; the library LOV dropdown is for code lists.
 - **Collateral type** at Creation is picked from five tiles (icon, name, code, one-line description), not a LOV: with only five types, every option stays visible and is one click away.
 - **Customer details** at Creation (and the customer card on every other screen) are read-only inputs on the form grid: Customer number, Customer name, Customer type, Home branch, Collaterals and Amount held.
-- **Collateral amount, Next review date and Expiry review date** share one line; inside that line the amount is 170px and the dates 140px so the three fit beside the side panel at 1440px.
+- **Amount, Review date and Expiry date** share one line, with short labels (*Collateral amount* or *Amount considered*, *Review date*, *Expiry date*); inside that line the amount is 170px and the dates 140px so the three fit beside the side panel at 1440px.
 
 ## Principles
 
@@ -88,7 +88,7 @@ Rules:
 
 ## Form layout: inline labels, fields sized to their values
 
-Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a right-aligned label (136px) beside its input. Inputs keep the library's preset width for the value they hold.
+Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a right-aligned label (144px) beside its input. Inputs keep the library's preset width for the value they hold.
 
 | Field | Width (@unionsg/ui preset) |
 |---|---|
@@ -104,7 +104,7 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Narration | Full row |
 
 - Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
-- *Collateral amount · Next review date · Expiry review date* are one full-width line (amount 170px, dates 140px). On narrower screens the last date moves to the next line.
+- *Amount · Review date · Expiry date* are one full-width line (amount 170px, dates 140px). On narrower screens the last date moves to the next line.
 - Long labels wrap onto a second line inside their column.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).
@@ -119,7 +119,7 @@ Sections:
 
 Dates:
 - Every date is shown and typed as **DD-MON-YYYY** (for example `25-OCT-2026`); empty fields show the placeholder `dd-mmm-yyyy`.
-- Users can type the date (also accepted: `25/10/2026`) or pick it from the calendar button. A date that doesn't exist (`31-FEB-2027`) shows "Enter the … as dd-mmm-yyyy, e.g. 25-OCT-2026."
+- Users can type the date (also accepted: `25/10/2026`) or pick it from the calendar button, which is the browser's own date picker. It opens on the date already typed, and the picked date is written back as `DD-MON-YYYY`. A date that doesn't exist (`31-FEB-2027`) shows "Enter the … as dd-mmm-yyyy, e.g. 25-OCT-2026."
 
 ## Tokens
 
@@ -148,7 +148,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 - A **Search criteria** card with three fields: **Collateral number**, **Customer number** (with customer search) and **Customer name** (part of the name is enough). **Fetch** and **Clear** sit under the fields. Criteria are optional; blank lists everything.
 - A results card with type filter chips (with counts), sortable columns and the @unionsg/ui DataTable footer: "Showing 1 to 10 of 14 records", ‹, page numbers (current page solid blue), › and **Per page** (5, 10 or 25; 10 by default).
 - Two-line cells keep the table narrow: customer name over number, review over expiry date, status over approver.
-- The **Action** column is last and stays pinned to the right edge. It holds the library's small row-action button: **Amend** (blue, edit style) in Amendment, **Cancel** (red, delete style) in Cancellation, **Review** in Approvals, **Correct** in Returned and **View** (grey) in Enquiry. Clicking the row does the same.
+- The last column holds a simple **›** open button (28px, bordered, blue arrow), the same in every list (Amendment, Cancellation, Approvals, Returned, Enquiry). It stays pinned to the right edge. Clicking the row does the same.
 - Rows that can't be opened (*Amendment pending* or *Cancellation pending*) are muted and their action button is disabled with a tooltip explaining why. A pending request in either module locks the record in **both**.
 
 ### Quick search with funnel (Enquiry)
@@ -243,5 +243,5 @@ The look of inputs, buttons, LOVs, tables and tabs is fixed by @unionsg/ui (see 
 
 ### Reasons from a list (Cancellation, Reject)
 
-- The **closure reason** at Cancellation and the **rejection reason** at Approvals are picked from a list of common reasons.
+- The **closure reason** at Cancellation uses the standard LOV (`01 - Facility fully repaid` … `99 - Other`). The **rejection reason** at Approvals is a plain list inside the reject dialog.
 - Picking **Other** shows a text box for the reason; it is then required. Any other choice needs no typing.
