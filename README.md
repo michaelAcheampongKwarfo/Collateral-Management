@@ -23,6 +23,8 @@ screenshots/cancellation/
 screenshots/approval/
 screenshots/enquiry/
 design/prototype/index.html    Interactive UI prototype for all modules (open in any browser)
+design/prototype/index-type-lov.html  Comparison copy: collateral type picked from a LOV instead of tiles (rebuild with build-type-lov.py)
+design/comparison/             Tiles vs type LOV screenshots
 design/home/screens/           Module home (cards that open each screen)
 design/creation/screens/       Prototype screenshots for slides
 design/amendment/screens/
