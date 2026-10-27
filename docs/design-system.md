@@ -271,14 +271,16 @@ The look of inputs, buttons, LOVs, tables and tabs is fixed by @unionsg/ui (see 
 ### GPS location picker (Property)
 
 - The property's **GPS location** replaces the free-text location. The field holds `latitude, longitude` in decimal degrees to 6 places, e.g. `6.290500, -10.771200` (about 10 cm).
-- The pin button opens **Property location**:
-  - **Use my current location** reads the device's GPS (the browser asks permission first) and shows how accurate the fix is.
-  - **Latitude** and **Longitude** can be typed. Pasting `6.29, -10.77` into either box fills both.
-  - **Check on map** opens the point in OpenStreetMap in a new tab.
-- If permission is refused, the GPS is too slow, or the browser can't share a location, the picker says so and the officer types the coordinates instead.
+- The pin button opens **Property location**, a map picker:
+  - **Click the map** where the property is to drop the pin; **drag the pin** to adjust. The coordinates fill in as you go.
+  - **Map / Satellite** switches between the street map (OpenStreetMap) and satellite imagery (Esri), which helps to find a plot or building.
+  - **Use my current location** reads the device's GPS (the browser asks permission first), moves the map and pin there, and shows how accurate the fix is.
+  - **Latitude** and **Longitude** can also be typed; the pin follows. Pasting `6.29, -10.77` into either box fills both.
+  - The map opens on the current value, or on Monrovia when the field is empty.
+- If map images are blocked (some embedded viewers), the map shows a latitude/longitude grid and reference points (Monrovia centre, Mamba Point, Bushrod Island, Sinkor, Congo Town, Paynesville), and clicking still places the pin. If the map can't load at all, the picker says so and GPS and typing still work.
 - Under the field, and in every read-only view (approval, cancellation, enquiry), **View on map** opens the point so the approver can check it.
 - Checks: required; latitude −90 to 90 and longitude −180 to 180.
-- Angular: `navigator.geolocation.getCurrentPosition` with `enableHighAccuracy`. A map preview (Leaflet or Google Maps) can be added inside the picker if the bank allows a map provider. The prototype links out instead, because the published prototype cannot load map tiles.
+- Angular: Leaflet (`@asymmetrik/ngx-leaflet` or plain Leaflet) with `navigator.geolocation.getCurrentPosition` (`enableHighAccuracy`). For production, use a tile provider the bank has agreed terms with (its own tile server, or a licensed Google, Esri or Mapbox account): the public OpenStreetMap and Esri tiles in the prototype are for demonstration only.
 
 ### Reasons from a list (Cancellation, Reject)
 
