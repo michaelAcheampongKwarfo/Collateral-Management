@@ -15,7 +15,7 @@ The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.verce
 | Width presets | Field widths (see Form layout) | Name 420, LOV 280, phone 240, short 240, amount 180, date 160 |
 | LOV | Every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
 | Button | Action bar, Fetch, Clear, exports | `rounded-lg`, `px-4 py-2 text-sm font-medium`, white with coloured text and border, light tint on hover |
-| DataTable | Amendment, Cancellation, Approvals, Returned and Enquiry lists, and the customer's other collaterals | `#E9EFFB` sticky header (12px, semi-bold, not upper case), triangle sort icons, 12px `#334155` rows on `#f7f4f0`, light blue hover, small row-action buttons, footer pager |
+| DataTable | Amendment, Cancellation, Approvals, Returned and Enquiry lists, and Creation's *Customer's other collaterals* (with the record-count footer) | `#E9EFFB` sticky header (12px, semi-bold, not upper case), triangle sort icons, 12px `#334155` rows on `#f7f4f0`, light blue hover, small row-action buttons, footer pager |
 | Tabs | Enquiry: All / Running / Used collateral | Grey tab strip; active tab solid green-600 with white text; icon and count badge on each tab |
 
 Where the library has no rule, the prototype keeps the module's agreed choices:
@@ -24,8 +24,8 @@ Where the library has no rule, the prototype keeps the module's agreed choices:
 - **Dates** stay `DD-MON-YYYY`, as agreed, at the library's 160px date width, centred. The library's own example uses `DD/MM/YYYY`.
 - The customer search and the documents list stay as dialogs; the library LOV dropdown is for code lists.
 - **Collateral type** at Creation is picked from five tiles (icon, name, code, one-line description), not a LOV: with only five types, every option stays visible and is one click away.
-- **Customer details** at Creation (and the customer card on every other screen) are read-only inputs on the form grid: Customer number, Customer name, Customer type, Home branch, Collaterals and Amount held.
-- **Amount, Review date and Expiry date** share one line, with short labels (*Collateral amount* or *Amount considered*, *Review date*, *Expiry date*); inside that line the amount is 170px and the dates 140px so the three fit beside the side panel at 1440px.
+- **Customer details** at Creation (and the customer card on every other screen) are read-only inputs on the form grid, each sized to its value: Customer number 150px (input plus search; no helper line under it, only errors), Customer name 420px, Customer type 160px, Home branch 220px, Collaterals 80px, Amount held 180px.
+- **Shared lines.** Fields that belong together sit on one line, with short labels, and each is only as wide as its longest value (see *Lines of compact fields* under Form layout).
 
 ## Principles
 
@@ -97,14 +97,23 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Account name | 420px (name) |
 | Amount | 180px, right-aligned, currency prefix |
 | Date | 160px, centred, calendar button |
-| Short code or number (insurance code, policy number, folio numbers, branch) | 240px (short) |
-| Phone number | 240px |
+| Short code or number (insurance code, policy number) | 240px (short) |
+| Phone number | 240px, @unionsg/ui PhoneInput: country selector (GH, LR, NG, SL), dial code, then the number |
 | Percentage, count | 120px |
 | Names and free text (ownership, location, valuer) | Full row, up to 420px |
 | Narration | Full row |
 
 - Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
-- *Amount · Review date · Expiry date* are one full-width line (amount 170px, dates 140px). On narrower screens the last date moves to the next line.
+- **Lines of compact fields.** Fields that belong together share one full-width line. Inside a line each field is only as wide as its longest value: amount 150px (`GHS 99,999,999.99`), date 140px (`25-OCT-2026`), count 100px, rate 110px, folio 120px. Every line fits beside the side panel at 1440px.
+
+| Collateral | Line |
+|---|---|
+| All | Amount considered (Collateral amount for cash) · Review date · Expiry date |
+| Guarantee | Financial institution (fills the line) · Currency 210px |
+| Guarantee | Account number (fills the line) · Branch 210px |
+| Guarantee | Guarantee amount · Interest rate · Number of months |
+| Guarantee, Shares | Folio number · Folio start · Folio end |
+| Shares | No. of shares · Security amount (Stock amount at Amendment) · Market value |
 - Long labels wrap onto a second line inside their column.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).

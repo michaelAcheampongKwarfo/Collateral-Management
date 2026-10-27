@@ -59,8 +59,7 @@ Rows whose status is not *Approved* (either *Amendment pending* or *Cancellation
 | Customer | The shared customer profile strip |
 | Closure summary | Collateral type · Currency · Estimated market · Coverage value · Available value · Realizability value |
 | Type form | The Amendment form for the collateral's type, read-only (values in grey boxes, lookups as code chip + description, amounts right-aligned) |
-| Cancellation card | Closure reason* with quick-pick chips and a character count · Cancellation date (today, auto-filled) · Requested by (current user, auto-filled) · Status after submit (*Cancellation pending*) |
-| Rail: What happens on submit | Sent for approval → locked → closed on approval (for cash: hold on the account released) |
+| Cancellation card | Closure reason* from the standard LOV (`01 - Facility fully repaid` … `99 - Other`; Other opens a text box with a character count) · Cancellation date (today, auto-filled) · Requested by (current user, auto-filled) · Status after submit (*Cancellation pending*) |
 | Rail: Record, Account balances (cash), Documents | As Amendment. **View documents** opens the documents modal view-only |
 | Action bar | **Help**, **Comment**, **New**, **Submit**, **Exit**. **New clears the closure reason** in case of a mistake. New and Submit switch on once a reason is entered. Exit returns to the list and asks before discarding a typed reason. |
 

@@ -716,12 +716,20 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:900px){.ugrid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.ugrid > .field{grid-template-columns:minmax(0,1fr)}.ugrid > .field > *{grid-column:1!important}.ugrid > .field > :not(label):not(.lbl){max-width:none}}
 .section{gap:12px}
+.phone-in{display:flex;align-items:stretch;height:28px;border:1px solid var(--u-in-border);border-radius:4px;background:var(--field);overflow:hidden}
+.phone-in:focus-within{border-color:var(--u-focus);box-shadow:0 0 0 1px var(--u-focus)}
+.phone-in .ph-cc{border:0;border-right:1px solid var(--u-in-border);background:var(--field);color:var(--u-in-text);font:500 12px var(--font-body);padding:0 2px 0 6px;cursor:pointer;outline:none}
+.phone-in .ph-dial{display:flex;align-items:center;padding:0 8px;font-size:13px;color:var(--u-label);border-right:1px solid var(--u-in-border);background:var(--u-gray-h)}
+.phone-in .input{border:0;border-radius:0;height:26px;flex:1;min-width:0;box-shadow:none!important}
+.field.invalid .phone-in{border-color:var(--u-err);box-shadow:0 0 0 1px var(--u-err)}
 /* one full-width line of compact fields (amount, review date, expiry date) */
 .urow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:start}
-.urow > .field{display:grid;grid-template-columns:fit-content(92px) var(--cw);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+.urow > .field{display:grid;grid-template-columns:fit-content(140px) var(--cw);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
 .urow > .field:first-child{grid-template-columns:var(--lw,144px) var(--cw)}
-.urow > .field[style*="--cw:180px"]{--cw:170px!important}
-.urow > .field[style*="--cw:160px"]{--cw:140px!important}
+.urow > .field.grow{flex:1 1 0;grid-template-columns:fit-content(140px) minmax(0,1fr)}
+.urow > .field.grow:first-child{grid-template-columns:var(--lw,144px) minmax(0,1fr)}
+/* the short field after a growing lookup gets a fixed label column, so stacked rows end at the same edge */
+.urow > .field.grow + .field{grid-template-columns:80px var(--cw)}
 .urow > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
 .urow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
 .urow > .field .lbl-auto{display:none}
@@ -737,7 +745,7 @@ textarea.input{min-height:64px;padding:5px 10px}
 /* type tiles: the tick sits top-right, in place of the code, so it never covers the description */
 .tile .tick{top:10px;bottom:auto;right:10px}
 .tile .tick svg{display:block;position:static;margin:0;width:12px;height:12px}
-.tile[aria-checked="true"] .code{right:36px}
+.tile[aria-checked="true"] .code{right:40px}
 
 /* LOV: one box "code - description", search icon segment, clear (×) */
 .lookup-btn{gap:6px;padding-right:0;overflow:hidden}
@@ -811,6 +819,8 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 .open-btn svg{width:14px;height:14px}
 .open-btn:hover:not(:disabled){background:var(--u-blue-h);border-color:var(--u-act-edit-b);color:var(--u-act-edit)}
 .open-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--u-btn-bg)}
+.other-table tbody tr{cursor:default}
+.card:has(> #otherWrap .grid-table){background:var(--u-tbl-bg)}
 .row-act{padding:2px 8px;border-radius:4px;border:1px solid var(--u-act-view-b);background:var(--u-btn-bg);color:var(--u-act-view);font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
 .row-act:hover:not(:disabled){background:var(--u-gray-h)}
 .row-act.edit{color:var(--u-act-edit);border-color:var(--u-act-edit-b)}
@@ -926,13 +936,13 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
         <div class="card-head"><div class="step" id="step1">1</div><div><h2 id="s1">Customer</h2><p>Enter the customer number or search for the customer.</p></div></div>
         <div class="card-body">
           <div class="ugrid cust-grid">
-            <div class="field" id="fld-customer" style="--cw:280px">
+            <div class="field" id="fld-customer" style="--cw:150px">
               <label for="custNo">Customer number<span class="req">*</span></label>
               <div class="search">
                 <input class="input" id="custNo" inputmode="numeric" autocomplete="off" placeholder="e.g. 056719" maxlength="10">
                 <button class="btn" id="custSearch" type="button" aria-label="Search customers"><svg class="i"><use href="#i-search"/></svg></button>
               </div>
-              <div class="hint" id="custHint">Press Enter to fetch the customer.</div>
+              <div class="err" id="custHint" hidden></div>
             </div>
             <div id="custCard" aria-label="Customer profile"></div>
           </div>
@@ -1068,7 +1078,7 @@ const TYPES=[
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
       {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6,placeholder:"e.g. 0302678178"},
+      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6,placeholder:"24 123 4567"},
       {id:"valDate",br:true,label:"Valuation date",type:"date",req:true,col:6},
       {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
       {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
@@ -1077,20 +1087,20 @@ const TYPES=[
   {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
    sections:[
     {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
-      {id:"currency",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
-      {id:"guarAccount",br:true,label:"Account number",type:"lookup",lov:"account",req:true,col:6},
-      {id:"branch",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} - ${s.lookups.guarAccount.branch}`,from:"account"},
+      {id:"finInst",row:"inst",grow:1,label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
+      {id:"currency",row:"inst",cw:"210px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"guarAccount",row:"acct",grow:1,label:"Account number",type:"lookup",lov:"account",req:true,col:6},
+      {id:"branch",row:"acct",cw:"210px",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} - ${s.lookups.guarAccount.branch}`,from:"account"},
       {id:"depositType",br:true,label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
       {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
     {title:"Terms and folio",desc:"Amount, rate and tenor of the guarantee, and its folio range.",fields:[
-      {id:"guarAmount",label:"Guarantee amount",type:"amount",req:true,col:6},
-      {id:"rate",label:"Interest rate",type:"percent",req:true,col:6},
-      {id:"months",label:"Number of months",type:"int",req:true,col:6},
-      {id:"folioNo",w:"s",br:true,label:"Folio number",type:"text",req:true,col:6},
-      {id:"folioStart",w:"s",label:"Folio start number",type:"text",req:true,col:6},
-      {id:"folioEnd",w:"s",label:"Folio end number",type:"text",req:true,col:6},
+      {id:"guarAmount",row:"gterms",label:"Guarantee amount",type:"amount",req:true,col:6},
+      {id:"rate",row:"gterms",label:"Interest rate",type:"percent",req:true,col:6},
+      {id:"months",row:"gterms",label:"Number of months",type:"int",req:true,col:6},
+      {id:"folioNo",row:"folio",label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",row:"folio",label:"Folio start",type:"text",req:true,col:6},
+      {id:"folioEnd",row:"folio",label:"Folio end",type:"text",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
@@ -1098,14 +1108,14 @@ const TYPES=[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",br:true,label:"Number of shares / securities",type:"int",req:true,col:6},
-      {id:"secAmount",label:"Security amount",type:"amount",req:true,col:6},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
+      {id:"units",row:"units",label:"No. of shares",type:"int",req:true,col:6},
+      {id:"secAmount",row:"units",label:"Security amount",type:"amount",req:true,col:6},
+      {id:"marketValue",row:"units",label:"Market value",type:"amount",req:true,col:6},
     ]},
     {title:"Folio",desc:"Folio reference and the certificate range pledged.",fields:[
-      {id:"folioNo",w:"s",br:true,label:"Folio number",type:"text",req:true,col:6},
-      {id:"folioStart",w:"s",label:"Folio start number",type:"text",req:true,col:6},
-      {id:"folioEnd",w:"s",label:"Folio end number",type:"text",req:true,col:6},
+      {id:"folioNo",row:"folio",label:"Folio number",type:"text",req:true,col:6},
+      {id:"folioStart",row:"folio",label:"Folio start",type:"text",req:true,col:6},
+      {id:"folioEnd",row:"folio",label:"Folio end",type:"text",req:true,col:6},
     ]},
     COLL({})]},
 ];
@@ -1130,7 +1140,8 @@ function renderCustomer(){
   const hint=$("#custHint");
   if(S.custError){hint.className="err";hint.innerHTML=icon("alert")+esc(S.custError)}
   else if(S.showErrors&&!c){hint.className="err";hint.innerHTML=icon("alert")+"Enter a customer number to continue."}
-  else{hint.className="hint";hint.textContent=c?"Customer found.":"Press Enter to fetch the customer."}
+  else hint.innerHTML="";
+  hint.hidden=!hint.innerHTML;
   if(S.loading){card.innerHTML=profileFields(null,0,0,false).replaceAll("—","Loading…");return}
   if(!c){card.innerHTML=profileFields(null,0,0,false);return}
   const held=[...S.newRows,...otherOf(c.code)];
@@ -1195,7 +1206,8 @@ function fieldHtml(t,f,st=S){
     ctl=`<input class="input amount" id="${id}" data-f="${f.id}" data-kind="int" inputmode="numeric" placeholder="0" value="${esc(v)}">`;
   }else{
     if(f.type==="date")ctl=dateCtl(`id="${id}" data-f="${f.id}"`,v);
-    else ctl=`<input class="input" type="${f.type==="tel"?"tel":"text"}" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
+    else if(f.type==="tel")ctl=phoneCtl(`id="${id}" data-f="${f.id}"`,v,f.placeholder);
+    else ctl=`<input class="input" type="text" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}" value="${esc(v)}">`;
   }
   let help="";const chg=st.orig&&isChanged(f,st);
   if(err)help=`<div class="err">${icon("alert")}${esc(err)}</div>`;
@@ -1211,14 +1223,25 @@ function fieldHtml(t,f,st=S){
 /* Field widths are the @unionsg/ui TextInput presets: amount 180, date 160, short 240, phone 240, LOV 280, name 420.
    Text and narration fields take the whole row. */
 const CW={amount:"180px",date:"160px",int:"120px",percent:"120px",tel:"240px",lookup:"280px",derived:"280px"};
+/* in a shared row each field is only as wide as its longest value:
+   amount GHS 99,999,999.99 · date 25-OCT-2026 · count 9,999,999 · rate 99.99 % · folio 10-12 characters */
+/* @unionsg/ui PhoneInput: country selector and dial code in front of the number */
+const DIAL={GH:"+233",LR:"+231",NG:"+234",SL:"+232"};
+const phoneCtl=(attrs,v,ph)=>`<div class="phone-in"><select class="ph-cc" aria-label="Country" data-dial>${Object.keys(DIAL).map(k=>`<option>${k}</option>`).join("")}</select><span class="ph-dial">+233</span><input class="input" type="tel" inputmode="tel" ${attrs} placeholder="${esc(ph||"24 123 4567")}" value="${esc(v)}"></div>`;
+document.addEventListener("change",e=>{if(e.target.matches?.("[data-dial]"))e.target.nextElementSibling.textContent=DIAL[e.target.value]});
+const RW={amount:"150px",date:"140px",int:"100px",percent:"110px",text:"120px"};
 function fsize(f){
   if(f.type==="textarea")return{full:1};
+  if(f.grow)return{grow:1};
+  if(f.cw)return{cw:f.cw};
+  if(f.row&&RW[f.type])return{cw:RW[f.type]};
   if(f.w==="s")return{cw:"240px"};
   if(f.w==="name")return{cw:"420px"};
+  if(f.codeOnly)return{cw:"220px"};
   if(CW[f.type])return{cw:CW[f.type]};
   return{full:1,cw:"420px"};
 }
-const fcls=f=>fsize(f).full?"full":"";
+const fcls=f=>{const z=fsize(f);return z.full?"full":z.grow?"grow":""};
 const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
 /* a section's fields on the library's two-column form grid: label right-aligned beside its input.
    Fields sharing a "row" key (amount, review date, expiry date) sit together on one full-width line. */
@@ -1288,9 +1311,9 @@ function renderOther(){
   const rows=[...S.newRows,...otherOf(S.customer.code)];
   $("#otherSub").textContent=`${rows.length} collateral${rows.length===1?"":"s"} held for ${S.customer.name}.`;
   if(!rows.length){w.innerHTML=`<div class="empty-state" style="padding:28px">This customer has no other collaterals.</div>`;return}
-  w.innerHTML=`<table><thead><tr><th>Collateral no.</th><th>Customer no.</th><th>Type</th><th>Description</th><th class="num">Amount considered</th><th class="num">Amount available</th><th>Approval date</th><th>Status</th></tr></thead><tbody>
-  ${rows.map(r=>`<tr class="${r.isNew?"new":""}"><td class="mono">${r.no}</td><td class="mono">${S.customer.code}</td><td class="mono">${r.type}</td><td>${esc(r.desc)}</td><td class="num">${fmt(r.amt)}</td><td class="num">${r.avail==null?"—":fmt(r.avail)}</td><td>${r.date||"—"}</td><td><span class="status ${r.status==="Approved"?"":"pending"}">${r.status}</span></td></tr>`).join("")}
-  </tbody></table>`;
+  w.innerHTML=`<table class="grid-table other-table"><thead><tr><th>Collateral no.</th><th>Collateral type</th><th>Description</th><th class="num">Amount considered</th><th class="num">Amount available</th><th>Approval date</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(r=>{const t=typeBy(r.type);return `<tr class="${r.isNew?"new":""}"><td class="mono">${r.no}</td><td style="--tc:var(${t.tc})"><span class="tdot"></span>${esc(t.name)} <span class="sub mono">${r.type}</span></td><td>${esc(r.desc)}</td><td class="num">${fmt(r.amt)}</td><td class="num">${r.avail==null?"—":fmt(r.avail)}</td><td>${r.date||"—"}</td><td><span class="status ${r.status==="Approved"?"":"pending"}">${r.status}</span></td></tr>`}).join("")}
+  </tbody></table><div class="pager"><span>Showing 1 to ${rows.length} of ${rows.length} record${rows.length===1?"":"s"}</span></div>`;
 }
 
 function renderSteps(){
@@ -1564,18 +1587,18 @@ const AM_TYPES=[
     ]},COLL({})]),
   AMT("C04",[
     {title:"Guarantee details",desc:"The institution, currency and deposit behind the guarantee.",fields:[
-      {id:"finInst",label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
-      {id:"branch",w:"s",label:"Branch",type:"text",col:6},
-      {id:"currency",br:true,label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"finInst",row:"inst",grow:1,label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
+      {id:"currency",row:"inst",cw:"210px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"branch",cw:"160px",label:"Branch",type:"text",col:6},
       {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
     ]},TYPES[3].sections[1],COLL({})]),
   AMT("C05",[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
       {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
-      {id:"units",br:true,label:"Number of shares / securities",type:"int",req:true,col:6},
-      {id:"stockAmount",label:"Stock amount",type:"amount",req:true,col:6},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
+      {id:"units",row:"units",label:"No. of shares",type:"int",req:true,col:6},
+      {id:"stockAmount",row:"units",label:"Stock amount",type:"amount",req:true,col:6},
+      {id:"marketValue",row:"units",label:"Market value",type:"amount",req:true,col:6},
     ]},TYPES[4].sections[1],COLL({})]),
 ];
 const amTypeBy=c=>AM_TYPES.find(t=>t.code===c);
@@ -1687,9 +1710,9 @@ function resetEntry(){
 /* customer facts as library read-only inputs; Creation puts them in the grid that holds the customer number */
 const roField=(label,val,cw,cls="")=>`<div class="field" style="${cw?`--cw:${cw}`:""}"><span class="lbl">${label}</span><div class="ro ${cls} ${val==null?"empty":""}"><span class="t">${val==null?"—":esc(val)}</span></div></div>`;
 function profileFields(c,count,total,withNo){
-  return `${withNo?roField("Customer number",c?c.code:null,"240px"):""}${roField("Customer name",c?c.name:null,"")}
-    ${roField("Customer type",c?c.type:null,"240px")}${roField("Home branch",c?`${c.brCode} - ${c.branch}`:null,"280px")}
-    ${roField("Collaterals",c?String(count):null,"120px","num")}${roField("Amount held",c?(count?fmt(total):"0.00"):null,"180px","num")}`;
+  return `${withNo?roField("Customer number",c?c.code:null,"150px"):""}${roField("Customer name",c?c.name:null,"420px")}
+    ${roField("Customer type",c?c.type:null,"160px")}${roField("Home branch",c?`${c.brCode} - ${c.branch}`:null,"220px")}
+    ${roField("Collaterals",c?String(count):null,"80px","num")}${roField("Amount held",c?(count?fmt(total):"0.00"):null,"180px","num")}`;
 }
 function profileHtml(c,count,total){
   return `<div class="ugrid cust-ro">${profileFields(c,count,total,true)}</div>`;
@@ -1761,10 +1784,7 @@ function renderAmForm(){
 
 function renderAmRail(){
   const t=amTypeBy(A.type),ch=changesOf(A),r=A.rec;
-  let h=isCancel()?`<div class="card"><div class="card-body"><h3>What happens on submit</h3><ol class="next-steps">
-    <li><b>Sent for approval.</b> The collateral stays active until it is approved.</li>
-    <li><b>Locked.</b> It shows <i>Cancellation pending</i> and can't be amended or cancelled again meanwhile.</li>
-    <li><b>Closed on approval.</b> It no longer secures the customer's facilities${r.type==="C01"?". The hold on the source account is released (to confirm)":""}.</li></ol></div></div>`:`<div class="card"><div class="card-body"><h3>Amendment</h3>
+  let h=isCancel()?"":`<div class="card"><div class="card-body"><h3>Amendment</h3>
     <div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
     ${ch.length?`<ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,A))}</span> → <span class="nv">${esc(showVal(f,A.values,A.lookups))}</span></li>`).join("")}</ul>
       <button class="link-btn" id="amUndoAll" style="margin-top:10px">Undo all changes</button>`
