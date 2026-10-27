@@ -104,7 +104,7 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Narration | Full row |
 
 - Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
-- **Lines of compact fields.** Fields that belong together share one full-width line. Inside a line each field is only as wide as its longest value: amount 150px (`GHS 99,999,999.99`), date 140px (`25-OCT-2026`), count 100px, rate 110px, folio 120px. Every line fits beside the side panel at 1440px.
+- **Lines of compact fields.** Fields that belong together share one full-width line. Inside a line each field is only as wide as its longest value: amount 150px (`GHS 99,999,999.99`), date 140px (`25-OCT-2026`), count 100px, rate 110px, folio 120px. The fields are spread across the line (space-between), so the last one ends at the right edge; the gap between them is never less than 8px. Every line fits beside the side panel at 1440px.
 
 | Collateral | Line |
 |---|---|
@@ -114,6 +114,9 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Guarantee | Guarantee amount · Interest rate · Number of months |
 | Guarantee, Shares | Folio number · Folio start · Folio end |
 | Shares | No. of shares · Security amount (Stock amount at Amendment) · Market value |
+| Property | Ownership name · Location (both fill the line) |
+| Property | Valuer name (fills the line) · Contact number (phone, 240px) |
+| Property | Valuation date · Market value (Collateral amount at Amendment) · Forced sale |
 - Long labels wrap onto a second line inside their column.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).

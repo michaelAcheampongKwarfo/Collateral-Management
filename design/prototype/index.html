@@ -723,13 +723,13 @@ textarea.input{min-height:64px;padding:5px 10px}
 .phone-in .input{border:0;border-radius:0;height:26px;flex:1;min-width:0;box-shadow:none!important}
 .field.invalid .phone-in{border-color:var(--u-err);box-shadow:0 0 0 1px var(--u-err)}
 /* one full-width line of compact fields (amount, review date, expiry date) */
-.urow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:start}
+.urow{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 8px;align-items:start}
 .urow > .field{display:grid;grid-template-columns:fit-content(140px) var(--cw);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
 .urow > .field:first-child{grid-template-columns:var(--lw,144px) var(--cw)}
 .urow > .field.grow{flex:1 1 0;grid-template-columns:fit-content(140px) minmax(0,1fr)}
 .urow > .field.grow:first-child{grid-template-columns:var(--lw,144px) minmax(0,1fr)}
 /* the short field after a growing lookup gets a fixed label column, so stacked rows end at the same edge */
-.urow > .field.grow + .field{grid-template-columns:80px var(--cw)}
+.urow > .field.grow + .field{grid-template-columns:var(--slw,fit-content(140px)) var(--cw)}
 .urow > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
 .urow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
 .urow > .field .lbl-auto{display:none}
@@ -1073,24 +1073,24 @@ const TYPES=[
     {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
       {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
       {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
-      {id:"owner",br:true,label:"Ownership name",type:"text",req:true,col:6},
-      {id:"location",label:"Location",type:"text",req:true,col:6,placeholder:"Street, town, plot number"},
+      {id:"owner",row:"own",grow:1,label:"Ownership name",type:"text",req:true,col:6},
+      {id:"location",row:"own",grow:1,label:"Location",type:"text",req:true,col:6,placeholder:"Street, town, plot number"},
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
-      {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6,placeholder:"24 123 4567"},
-      {id:"valDate",br:true,label:"Valuation date",type:"date",req:true,col:6},
-      {id:"marketValue",label:"Market value",type:"amount",req:true,col:6},
-      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
+      {id:"valuer",row:"valuer",grow:1,label:"Valuer name",type:"text",req:true,col:6},
+      {id:"valuerTel",row:"valuer",label:"Contact number",type:"tel",req:true,col:6,placeholder:"24 123 4567"},
+      {id:"valDate",row:"val",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"marketValue",row:"val",label:"Market value",type:"amount",req:true,col:6},
+      {id:"forcedSale",row:"val",label:"Forced sale",type:"amount",req:true,col:6},
     ]},
     COLL({})]},
   {code:"C04",name:"Guarantee",title:"Guarantee collateral",lovDesc:"GUARANTEE COLLATERALS",tc:"--t-guar",ic:"bank",d:"Guarantee or deposit held at a financial institution",
    sections:[
     {title:"Guarantee details",desc:"The institution and account behind the guarantee.",fields:[
       {id:"finInst",row:"inst",grow:1,label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
-      {id:"currency",row:"inst",cw:"210px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"currency",row:"inst",cw:"210px",slw:"80px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
       {id:"guarAccount",row:"acct",grow:1,label:"Account number",type:"lookup",lov:"account",req:true,col:6},
-      {id:"branch",row:"acct",cw:"210px",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} - ${s.lookups.guarAccount.branch}`,from:"account"},
+      {id:"branch",row:"acct",cw:"210px",slw:"80px",label:"Branch",type:"derived",col:6,get:s=>s.lookups.guarAccount&&`${s.lookups.guarAccount.brCode} - ${s.lookups.guarAccount.branch}`,from:"account"},
       {id:"depositType",br:true,label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
       {id:"guarCollType",label:"Collateral type",type:"lookup",lov:"guarCollType",req:true,col:6},
     ]},
@@ -1229,7 +1229,7 @@ const CW={amount:"180px",date:"160px",int:"120px",percent:"120px",tel:"240px",lo
 const DIAL={GH:"+233",LR:"+231",NG:"+234",SL:"+232"};
 const phoneCtl=(attrs,v,ph)=>`<div class="phone-in"><select class="ph-cc" aria-label="Country" data-dial>${Object.keys(DIAL).map(k=>`<option>${k}</option>`).join("")}</select><span class="ph-dial">+233</span><input class="input" type="tel" inputmode="tel" ${attrs} placeholder="${esc(ph||"24 123 4567")}" value="${esc(v)}"></div>`;
 document.addEventListener("change",e=>{if(e.target.matches?.("[data-dial]"))e.target.nextElementSibling.textContent=DIAL[e.target.value]});
-const RW={amount:"150px",date:"140px",int:"100px",percent:"110px",text:"120px"};
+const RW={amount:"150px",date:"140px",int:"100px",percent:"110px",text:"120px",tel:"240px"};
 function fsize(f){
   if(f.type==="textarea")return{full:1};
   if(f.grow)return{grow:1};
@@ -1242,7 +1242,7 @@ function fsize(f){
   return{full:1,cw:"420px"};
 }
 const fcls=f=>{const z=fsize(f);return z.full?"full":z.grow?"grow":""};
-const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
+const fsty=f=>{const z=fsize(f);return (z.cw?`--cw:${z.cw};`:"")+(f.slw?`--slw:${f.slw}`:"")};
 /* a section's fields on the library's two-column form grid: label right-aligned beside its input.
    Fields sharing a "row" key (amount, review date, expiry date) sit together on one full-width line. */
 function rowsHtml(sec,fn){
@@ -1579,16 +1579,16 @@ const AM_TYPES=[
   AMT("C02",[TYPES[1].sections[0],COLL({})]),
   AMT("C03",[TYPES[2].sections[0],
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
-      {id:"valuer",label:"Valuer name",type:"text",req:true,col:6},
-      {id:"valuerTel",label:"Valuer contact number",type:"tel",req:true,col:6},
-      {id:"valDate",br:true,label:"Valuation date",type:"date",req:true,col:6},
-      {id:"collAmount",label:"Collateral amount",type:"amount",req:true,col:6},
-      {id:"forcedSale",label:"Forced sale value",type:"amount",req:true,col:6},
+      {id:"valuer",row:"valuer",grow:1,label:"Valuer name",type:"text",req:true,col:6},
+      {id:"valuerTel",row:"valuer",label:"Contact number",type:"tel",req:true,col:6},
+      {id:"valDate",row:"val",label:"Valuation date",type:"date",req:true,col:6},
+      {id:"collAmount",row:"val",label:"Collateral amount",type:"amount",req:true,col:6},
+      {id:"forcedSale",row:"val",label:"Forced sale",type:"amount",req:true,col:6},
     ]},COLL({})]),
   AMT("C04",[
     {title:"Guarantee details",desc:"The institution, currency and deposit behind the guarantee.",fields:[
       {id:"finInst",row:"inst",grow:1,label:"Financial institution",type:"lookup",lov:"finInst",req:true,col:6},
-      {id:"currency",row:"inst",cw:"210px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
+      {id:"currency",row:"inst",cw:"210px",slw:"80px",label:"Currency",type:"lookup",lov:"currency",req:true,col:6},
       {id:"branch",cw:"160px",label:"Branch",type:"text",col:6},
       {id:"depositType",label:"Deposit type",type:"lookup",lov:"depositType",req:true,col:6},
     ]},TYPES[3].sections[1],COLL({})]),
