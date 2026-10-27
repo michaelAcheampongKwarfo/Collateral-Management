@@ -11,7 +11,7 @@ The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.verce
 | TextInput | Every text, amount, date, phone and number field | 28px high, 4px corners, 1px `#d1d5db` border, 14px text; blue `#2563eb` border and 1px ring on focus; red `#f87171` border and 12px red message on error |
 | TextInput (read-only) | Auto-filled and view-only values, and the customer's details | `#eceef2` fill (a shade deeper than the library's `#f9f8fa`, which hardly shows on the off-white cards), no border, semi-bold `#0f172a` text |
 | TextInput (disabled) | LOVs waiting for their parent field | `#f3f4f6` fill, `#e5e7eb` border, grey text, not-allowed cursor |
-| Label | Every field label | 14px, weight 500, `#374151`, left-aligned in a fixed column beside the input (the library right-aligns; we chose left), red asterisk for required |
+| Label | Every field label | 13.5px, weight 500, `#374151`, **on top of the input**, left-aligned, red asterisk for required (the library puts labels beside inputs; the bank prefers them on top) |
 | Width presets | Field widths (see Form layout) | Name 420, LOV 280, phone 240, short 240, amount 180, date 160 |
 | LOV | Every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
 | Button | Action bar, Fetch, Clear, exports | `rounded-lg`, `px-4 py-2 text-sm font-medium`, white with coloured text and border, light tint on hover |
@@ -104,7 +104,7 @@ Rules:
 
 ## Form layout: inline labels, fields sized to their values
 
-Every label sits **on the same line** as its field, on the left, as in Oracle Forms. Since adopting @unionsg/ui, each section is a **two-column grid**: each column is a left-aligned label (144px) beside its input. Inputs keep the library's preset width for the value they hold.
+Every label sits **on top of** its input, left-aligned, with any hint or error under the input. (October 2026: labels were tried beside the inputs, as in Oracle Forms, then moved back on top.) Each section is a **two-column grid**, and inputs keep the library's preset width for the value they hold.
 
 | Field | Width (@unionsg/ui preset) |
 |---|---|
@@ -134,13 +134,13 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Property | Ownership name (fills the line) · GPS location 250px |
 | Property | Valuer name (fills the line) · Contact number (phone, 240px) |
 | Property | Valuation date · Market value (Collateral amount at Amendment) · Forced sale |
-- Long labels wrap onto a second line inside their column.
+- On a shared line, each field is as wide as its input, or its label if that is longer; hints wrap under the input.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).
 - Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
 - Auto-filled fields use the library's read-only style (light fill, no border, semi-bold) with a lock icon.
 - Side panels (required fields, balances, documents, decision, record) sit on the **right** of the form, 240px wide.
-- Below 900px the grid becomes one column; on phones the label moves above the field and every field takes the full row.
+- Below 900px the grid becomes one column; on phones every field takes the full row.
 
 Sections:
 - Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description above its fields.
