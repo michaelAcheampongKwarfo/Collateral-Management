@@ -5,7 +5,7 @@
 | **Module** | Collateral Management › Approvals (Oracle Forms `Collateral Registration` opened for authorization) |
 | **Target** | Angular front end (migration from Oracle Forms) |
 | **Status** | Draft for presentation. Business rules will be confirmed against the PL/SQL. |
-| **Prototype** | [`design/prototype/index.html#approvals`](../../design/prototype/index.html) (open in a browser, then choose **Approvals** in the sidebar) |
+| **Prototype** | [`design/prototype/index.html#approvals`](../../design/prototype/index.html) (open in a browser, then choose the **Approvals** card on the module home) |
 | **Reference screens** | [`screenshots/approval/`](../../screenshots/approval/): creation and amendment approval samples. There is no cancellation approval screen; it is designed to match. |
 
 ---
@@ -34,7 +34,7 @@ The Angular design keeps all three ideas.
 | Search | One box, about 360px wide (as in Enquiry): customer name, customer number or collateral number, filtering as you type |
 | Request filter | Chips: All, Creation, Amendment, Cancellation, each with a count and its own colour (blue, amber, red) |
 | Table | Request (coloured badge) · Collateral no. · Customer · Collateral type · Considered · **What's asked** (*New collateral*, *3 fields changed*, *Close: reason…*) · Submitted (date, *by* user, "(you)" if it's yours) · **›** |
-| Sidebar | **Approvals** shows a red badge with the number of requests waiting |
+| Module home | The **Approvals** card shows a red count of requests waiting |
 
 ### 3.2 Request page
 
@@ -72,7 +72,7 @@ The request opens on the **same layout as its entry screen**, with every field r
 
 ### 3.5 Returned queue (training note 4)
 
-- A **Returned** module in the sidebar, with an amber count. Its list is laid out like the approval queue: action bar **Help**, **New** (clears the search), **Exit**; the same search box; request-type chips with counts; columns request type, collateral no., customer, type, amount considered, **return reason**, returned by and when, and **›**.
+- A **Returned** card on the module home, with an amber count. Its list is laid out like the approval queue: action bar **Help**, **New** (clears the search), **Exit**; the same search box; request-type chips with counts; columns request type, collateral no., customer, type, amount considered, **return reason**, returned by and when, and **›**.
 - **›** reopens the request **on its own entry screen**, filled with what was submitted:
   - Creation → the Creation screen, customer and type selected, every field filled.
   - Amendment → the Amendment details page, with the proposed changes highlighted against the approved values.

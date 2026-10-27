@@ -5,7 +5,7 @@
 | **Module** | Collateral Management › Amendment (Oracle Forms screens `Collateral Amendment/Evaluat. - LRRU` and `Collateral Registration`) |
 | **Target** | Angular front end (migration from Oracle Forms) |
 | **Status** | Draft for presentation. Business rules will be confirmed against the PL/SQL behind the current screens. |
-| **Prototype** | [`design/prototype/index.html#amendment`](../../design/prototype/index.html) (open in a browser, then choose **Amendment** in the sidebar) |
+| **Prototype** | [`design/prototype/index.html#amendment`](../../design/prototype/index.html) (open in a browser, then choose the **Amendment** card on the module home) |
 | **Reference screens** | [`screenshots/amendment/`](../../screenshots/amendment/) |
 
 ---

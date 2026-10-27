@@ -23,6 +23,7 @@ screenshots/cancellation/
 screenshots/approval/
 screenshots/enquiry/
 design/prototype/index.html    Interactive UI prototype for all modules (open in any browser)
+design/home/screens/           Module home (cards that open each screen)
 design/creation/screens/       Prototype screenshots for slides
 design/amendment/screens/
 design/cancellation/screens/
@@ -68,7 +69,7 @@ docs/design-system.md          Colours, layout grid, action bar and components s
 
 ## Using the prototype
 
-Open `design/prototype/index.html` in a browser and switch modules from the sidebar (`#amendment`, `#cancellation`, `#approvals`, `#returned`, `#enquiry-all`, `#enquiry-running`, `#enquiry-used` or `#report-review` in the address opens that screen directly).
+Open `design/prototype/index.html` in a browser. It starts on the module **home** (`#home`), where a card opens each screen; the breadcrumb, the **CM** mark and **Exit** lead back to it. A hash in the address opens a screen directly: `#creation`, `#amendment`, `#cancellation`, `#approvals`, `#returned`, `#enquiry-all`, `#enquiry-running`, `#enquiry-used` or `#report-review`. There is no sidebar: the bank's main menu, built by another team, opens this module.
 
 **Creation** starts with sample customer `056719` and a cash collateral. Try other customer numbers (`048213`, `061104`, `072530`) or the search button, each collateral type tile, **Submit** with empty fields, then a complete submit.
 

@@ -61,7 +61,7 @@ The flowchart, built from the PL/SQL, is in [`flowchart.md`](flowchart.md).
 
 | Area | Oracle Forms | Angular design |
 |---|---|---|
-| Navigation | One window per screen | App shell with a module sidebar: **Creation** now, **Amendment** and **Cancellation** next |
+| Navigation | One window per screen | The bank's main menu (built by another team) opens the module **home**, where cards open each screen; a breadcrumb and **Exit** lead back to it |
 | Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
 | Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search (Enter to fetch), next to a **customer profile strip** across the row: name and number, customer type, home branch (`010 · SINKOR`), number of collaterals held and total amount held |
 | Collateral type | Code + LOV button + description | **Step 2** card: five selectable tiles that show code, name and a one-line description. Arrow keys move between tiles. |
@@ -266,7 +266,7 @@ The prototype already works this way (`TYPES` and `LOVS` in `design/prototype/in
 
 ```
 collateral/
-├── shell/                         app layout, module sidebar
+├── shell/                         app layout, top bar, module home (cards)
 ├── creation/
 │   ├── creation-page.component    page header, toolbar, step orchestration
 │   ├── customer-lookup.component  step 1

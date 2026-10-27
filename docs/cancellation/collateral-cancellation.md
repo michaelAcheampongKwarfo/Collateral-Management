@@ -5,7 +5,7 @@
 | **Module** | Collateral Management › Cancellation (Oracle Forms screen `Collateral Closing`, block *Collateral Closure*) |
 | **Target** | Angular front end (migration from Oracle Forms) |
 | **Status** | Draft for presentation. Business rules will be confirmed against the PL/SQL behind the current screen. |
-| **Prototype** | [`design/prototype/index.html#cancellation`](../../design/prototype/index.html) (open in a browser, then choose **Cancellation** in the sidebar) |
+| **Prototype** | [`design/prototype/index.html#cancellation`](../../design/prototype/index.html) (open in a browser, then choose the **Cancellation** card on the module home) |
 | **Reference screen** | [`screenshots/cancellation/cancellation.PNG`](../../screenshots/cancellation/cancellation.PNG) |
 
 ---

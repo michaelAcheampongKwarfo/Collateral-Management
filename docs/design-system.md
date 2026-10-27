@@ -35,6 +35,22 @@ Where the library has no rule, the prototype keeps the module's agreed choices:
 4. **Errors tell you what to do.** "Enter the policy number." appears next to the field and in a summary at the top of the form.
 5. **Keyboard first.** Enter fetches the customer. Arrow keys and Enter work in every lookup. Esc closes dialogs. Tab order follows the screen.
 
+## Navigation: module home with cards
+
+The module has **no sidebar**. The bank's main menu (built by another team) opens Collateral Management on its **home** page, and the home page has one card per screen, in four groups:
+
+| Group | Cards |
+|---|---|
+| Collateral records | Creation · Amendment · Cancellation |
+| Approvals | Approvals (red count waiting) · Returned (amber count to correct) |
+| Enquiry | All collateral · Running collateral · Used collateral (record counts) |
+| Reports | Review due / overdue (red count overdue) |
+
+- Each card has an icon, the screen name, one line on what it is for, and a live count where one helps.
+- Every screen shows a breadcrumb that starts with **Collateral Management**, linking home. The **CM** mark in the top bar also links home.
+- **Exit** on a list screen returns home; on a details page it returns to its list first, as before.
+- Three cards per row on desktop, one per row on phones.
+
 ## Standard action bar
 
 Every screen uses the same buttons, in the same order and colours. Each screen shows only the buttons it uses, so nothing on the bar is a dead control.
@@ -135,7 +151,7 @@ Dates:
 
 ## Tokens
 
-Light mode uses a soft blue-grey page with off-white cards, and a smoke-white sidebar that matches the cards. Dark mode keeps its dark sidebar.
+Light mode uses a soft blue-grey page with off-white cards.
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
@@ -144,8 +160,6 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 | `--surface-2` | `#F1F4F8` | `#1A2436` | Table headers, profile strip, hover |
 | `--field` | `#FFFFFF` | `#151E2E` | Editable inputs (the only pure white in light mode) |
 | `--sunken` | `#E7ECF2` | `#111A28` | Read-only fields, code chips |
-| `--side-bg` | `#F5F7FA` | `#0A111D` | Module sidebar: smoke white in light mode, matching the cards |
-| `--side-active` / `--side-active-fg` | `#E3ECF8` / `#0B5CAD` | `#16304F` / `#E5ECF5` | Active module, with a blue left marker |
 | `--primary` | `#0B5CAD` | `#5AA2EE` | Focus ring, links, selected chips |
 | `--fg` / `--muted` | `#13223A` / `#5A6A80` | `#E5ECF5` / `#9AA9BE` | Text |
 | `--danger` | `#B42318` | `#F2867B` | Required asterisk, errors |
@@ -176,7 +190,7 @@ Light mode uses a soft blue-grey page with off-white cards, and a smoke-white si
 
 ### Module sub-navigation (Enquiry)
 
-- A module with several screens gets an indented sub-list in the sidebar (All collateral, Running collateral, Used collateral) and matching @unionsg/ui **Tabs** at the top of the page: an icon, the label and a record-count badge, with the active tab solid green. Both link to the same routes.
+- A module with several screens gets one card per screen on the module home (All collateral, Running collateral, Used collateral) and matching @unionsg/ui **Tabs** at the top of the page: an icon, the label and a record-count badge, with the active tab solid green. Both link to the same routes.
 
 ### Business-rule messages
 
@@ -227,7 +241,7 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 - An amber banner under the page header: "Returned for correction by *user* on *date*", the reason as a quote, and what to do next.
 - The entry screen is otherwise unchanged, so correcting a request works exactly like entering it.
 - Request types have their own colours, used for badges, chips and dots: Creation blue, Amendment amber, Cancellation red.
-- The **Approvals** sidebar link shows a red count of requests waiting.
+- The **Approvals** card on the module home shows a red count of requests waiting.
 
 ### Maker-checker (Approvals)
 

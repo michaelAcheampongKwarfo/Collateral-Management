@@ -24,7 +24,7 @@ Enquiry is read-only. It lets staff find any collateral and see its value, cover
 
 | | Oracle Forms | Angular |
 |---|---|---|
-| Choosing an enquiry | Separate screens | One **Enquiry** module: a sidebar group with three links, and tabs on the page |
+| Choosing an enquiry | Separate screens | One **Enquiry** module: three cards on the module home, and tabs on the page |
 | Search | A Filter Criteria block always open, filled before **Fetch** | **One search box** (customer name or number, collateral number, description, status) that filters as you type, with a **funnel** button for advanced filters |
 | Advanced filters | Always visible | Opened from the funnel. Applied filters show as removable chips; the funnel shows how many are active |
 | Grid | Fixed columns, `>` button per row | Sortable columns, paging, record count, **Refresh**, **PDF** and **Excel**, pinned **›** |

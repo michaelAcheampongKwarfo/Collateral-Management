@@ -68,7 +68,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* Shell */
-.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100%}
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-height:100%}
 .side{background:var(--side-bg);border-right:1px solid var(--side-line);padding:20px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
 .brand{display:flex;align-items:center;gap:10px;padding:0 6px}
 .brand-mark{width:34px;height:34px;border-radius:8px;background:var(--brand-mark);color:#FFFFFF;display:grid;place-items:center;font-weight:800;font-size:13px;letter-spacing:.02em}
@@ -717,6 +717,28 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:900px){.ugrid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.ugrid > .field{grid-template-columns:minmax(0,1fr)}.ugrid > .field > *{grid-column:1!important}.ugrid > .field > :not(label):not(.lbl){max-width:none}}
 .section{gap:12px}
+/* top bar without the sidebar: module mark links home */
+.tb-brand{display:flex;text-decoration:none}
+.tb-brand .brand-mark{width:30px;height:30px;font-size:12px}
+.crumbs a{color:var(--muted);text-decoration:none}
+.crumbs a:hover{color:var(--primary);text-decoration:underline}
+/* module home */
+.hub-group h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:6px 0 10px}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.hub-card{display:flex;align-items:flex-start;gap:14px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--fg);box-shadow:var(--shadow);transition:border-color .15s,box-shadow .15s}
+.hub-card:hover{border-color:var(--tc);box-shadow:0 0 0 1px var(--tc),var(--shadow)}
+.hub-card:focus-visible{outline:2px solid var(--u-focus);outline-offset:2px}
+.hub-ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;color:var(--tc);background:var(--sunken)}
+.hub-ic svg{width:20px;height:20px}
+.hub-t{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.hub-t b{font-size:15px}
+.hub-t > span{font-size:13px;color:var(--muted);line-height:1.4}
+.hub-t .hub-meta{margin-top:6px;font-size:12.5px;color:var(--u-label);display:flex;align-items:center;gap:6px}
+.hub-n{min-width:22px;height:20px;padding:0 6px;border-radius:99px;display:inline-grid;place-items:center;font-size:12px;font-weight:700;background:var(--sunken);color:var(--fg)}
+.hub-n.red{background:var(--danger);color:#fff}.hub-n.amber{background:var(--act-amber);color:#fff}
+.hub-go{color:var(--faint);align-self:center}
+.hub-card:hover .hub-go{color:var(--tc)}
+@media (max-width:640px){.hub-grid{grid-template-columns:minmax(0,1fr)}}
 .phone-in{display:flex;align-items:stretch;height:28px;border:1px solid var(--u-in-border);border-radius:4px;background:var(--field);overflow:hidden}
 .phone-in:focus-within{border-color:var(--u-focus);box-shadow:0 0 0 1px var(--u-focus)}
 .phone-in .ph-cc{border:0;border-right:1px solid var(--u-in-border);background:var(--field);color:var(--u-in-text);font:500 12px var(--font-body);padding:0 2px 0 6px;cursor:pointer;outline:none}
@@ -886,33 +908,19 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 </svg>
 
 <div class="shell">
-  <aside class="side" id="side" aria-label="Modules">
-    <div class="brand"><div class="brand-mark">CM</div><div><b>Collateral<br>Management</b><small>LRSK · Core Banking</small></div></div>
-    <nav class="nav">
-      <div class="nav-label">Modules</div>
-      <a href="#creation" data-view="creation" aria-current="page"><svg class="i"><use href="#i-plus"/></svg>Creation</a>
-      <a href="#amendment" data-view="amendment"><svg class="i"><use href="#i-edit"/></svg>Amendment</a>
-      <a href="#cancellation" data-view="cancellation"><svg class="i"><use href="#i-ban"/></svg>Cancellation</a>
-      <a href="#enquiry-all" data-view="enquiry"><svg class="i"><use href="#i-search"/></svg>Enquiry</a>
-      <div class="subnav" aria-label="Enquiry types"><a href="#enquiry-all" data-ek="all">All collateral</a><a href="#enquiry-running" data-ek="running">Running collateral</a><a href="#enquiry-used" data-ek="used">Used collateral</a></div>
-      <a href="#approvals" data-view="approvals"><svg class="i"><use href="#i-check"/></svg>Approvals<span class="tag count" id="apCount">0</span></a>
-      <a href="#returned" data-view="returned"><svg class="i"><use href="#i-refresh"/></svg>Returned<span class="tag count ret" id="retCount" hidden>0</span></a>
-      <div class="nav-label">Reports</div>
-      <a href="#report-review" data-view="report"><svg class="i"><use href="#i-calendar"/></svg>Review due / overdue</a>
-    </nav>
-    <div class="side-foot">UI prototype for the Oracle Forms → Angular migration. Sample data only.</div>
-  </aside>
 
   <div class="main">
     <header class="topbar">
-      <button class="btn icon ghost menu-btn" id="menuBtn" aria-label="Open modules menu"><svg class="i"><use href="#i-menu"/></svg></button>
-      <div class="crumbs" id="crumbs">Collateral Management <span>/</span> <b>Creation</b></div>
+      <a class="tb-brand" href="#home" title="Collateral Management home"><span class="brand-mark">CM</span></a>
+      <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
       <div class="spacer"></div>
       <span class="sample-pill">Prototype · sample data</span>
       <button class="btn icon ghost" id="themeBtn" aria-label="Toggle dark mode"><svg class="i"><use href="#i-moon"/></svg></button>
       <div class="user-wrap"><button class="user" id="userBtn" aria-haspopup="menu" aria-expanded="false" title="Switch user (prototype)"><span class="avatar" id="meIni">KA</span><span class="user-txt"><b id="meName">K. Asare</b><small id="meRole">Collateral officer · Sinkor</small></span><svg class="i dd"><use href="#i-chev"/></svg></button>
         <div class="user-menu" id="userMenu" role="menu" hidden></div></div>
     </header>
+
+    <main class="page" id="view-home" hidden></main>
 
     <main class="page" id="view-creation">
       <div class="page-head">
@@ -1504,7 +1512,7 @@ function openDocsFor(ctx){
 }
 
 $("#newBtn").addEventListener("click",()=>{S=fresh();$("#custNo").value="";renderAll();$("#custNo").focus();toast("Form cleared. Ready for a new collateral.")});
-$("#exitBtn").addEventListener("click",()=>toast("Exit returns to the Collateral Management home in the Angular app."));
+$("#exitBtn").addEventListener("click",()=>goHome());
 $("#helpBtn").addEventListener("click",()=>{const t=typeBy(S.type);openDrawer("Help · Collateral creation",`
   <ol><li>Enter the <b>customer number</b> and press Enter, or search for the customer. Name and type fill in automatically.</li>
   <li>Choose a <b>collateral type</b>. The details form changes to match it.</li>
@@ -1543,7 +1551,7 @@ $("#submitBtn").addEventListener("click",()=>{
   $("#okNew").addEventListener("click",()=>{closeLayer();$("#newBtn").click()});
 });
 
-$("#menuBtn").addEventListener("click",()=>$("#side").classList.toggle("open"));
+
 $("#themeBtn").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"});
 document.querySelectorAll(".nav a.soon").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();toast(`${a.textContent.replace("Next","").trim()} will be designed in a later phase.`)}));
 
@@ -1872,7 +1880,7 @@ function amExit(){
       <footer><button class="btn" data-close>Keep editing</button><button class="btn act-red" id="amDiscard">Discard and leave</button></footer></div>`);
     $("#amDiscard").addEventListener("click",()=>{closeLayer();backToList()});return;
   }
-  if(A.view==="detail")backToList();else toast("Exit returns to the Collateral Management home in the Angular app.");
+  if(A.view==="detail")backToList();else goHome();
 }
 
 const amView=$("#view-records");
@@ -2046,7 +2054,7 @@ const apView=$("#view-approvals");
 const apType=it=>it.kind==="create"?typeBy(it.type):amTypeBy(it.type);
 const apState=it=>({readonly:true,pfx:"p",type:it.type,customer:custBy(it.cust),values:it.values,lookups:it.lookups,orig:it.kind==="amend"?it.orig:null,origLookups:it.origLookups||{},rec:it.rec||{type:it.type,values:it.values,lookups:it.lookups}});
 const apChanges=it=>it.kind==="amend"?changesOf(apState(it)):[];
-function updateApBadge(){const b=$("#apCount");if(b){b.textContent=QUEUE.length;b.hidden=!QUEUE.length}}
+function updateApBadge(){const b=$("#apCount");if(b){b.textContent=QUEUE.length;b.classList.toggle("red",!!QUEUE.length)}}
 
 const isOwn=it=>!!it&&it.by===ME.code;
 function apActionBar(mode){
@@ -2217,7 +2225,7 @@ function returnModal(it){
 
 /* ---------- RETURNED: requests sent back for correction, reopened on their own entry screen ---------- */
 const retView=$("#view-returned");
-function updateRetBadge(){const b=$("#retCount");if(b){b.textContent=RETURNED.length;b.hidden=!RETURNED.length}}
+function updateRetBadge(){const b=$("#retCount");if(b){b.textContent=RETURNED.length;b.classList.toggle("amber",!!RETURNED.length)}}
 function returnBanner(item){
   return item?`<div class="return-banner" role="note">${icon("refresh")}<div><b>Returned for correction</b> by <span class="mono">${esc(item.retBy)}</span> on ${esc(item.retOn)}<blockquote>${esc(item.retReason)}</blockquote><span class="hint">Make the corrections, then Submit to send it back for approval.</span></div></div>`:"";
 }
@@ -2265,7 +2273,7 @@ function resubmitted(it){const i=RETURNED.indexOf(it);if(i>=0)RETURNED.splice(i,
 retView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#rtHelp")){openDrawer("Help · Returned requests",`<ol><li>An approver returned these requests with a reason.</li><li>Select <b>›</b> to open one on its own entry screen. The reason is shown at the top.</li><li>Correct what the reason asks for, then <b>Submit</b>. The request goes back to the approval queue.</li></ol>`);return}
-  if(T("#rtExit")){toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("#rtExit")){goHome();return}
   if(T("#rtNew")){RT.q="";RT.filter="ALL";renderReturned();toast("Search cleared.");return}
   if(el=T("[data-rtfilter]")){RT.filter=el.dataset.rtfilter;renderReturned();return}
   if(el=T("[data-retopen]")){openReturned(el.dataset.retopen);return}
@@ -2279,7 +2287,7 @@ apView.addEventListener("click",e=>{
   if(T("#apComment")){openDrawer("Comments",`<div class="field"><label for="apCmt">Add a comment</label><textarea class="input" id="apCmt" placeholder="e.g. Called the valuer to confirm the forced sale value"></textarea></div><div><button class="btn primary" id="apCmtAdd">Add comment</button></div><div style="display:flex;flex-direction:column;gap:8px">${P.comments.map(c=>`<div class="comment"><small>${esc(c.when)} · ${esc(ME.name)}</small>${esc(c.text)}</div>`).join("")||'<span class="hint">No comments yet.</span>'}</div>`);
     $("#apCmtAdd").addEventListener("click",()=>{const v=$("#apCmt").value.trim();if(!v)return;P.comments.unshift({text:v,when:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});closeLayer();renderAp();toast("Comment added.")});return}
   if(T("#apNew")){P.q="";P.filter="ALL";renderAp();toast("Search cleared.");return}
-  if(T("#apExit")||T("[data-apback]")){if(P.view==="detail")apBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("#apExit")||T("[data-apback]")){if(P.view==="detail")apBack();else goHome();return}
   if((T("#apAuth")||T("#apDismiss")||T("#apReturn"))&&isOwn(P.item))return;
   if(T("#apAuth")){verifyModal(P.item,"authorize");return}
   if(T("#apDismiss")){verifyModal(P.item,"dismiss");return}
@@ -2525,7 +2533,7 @@ enqView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#enHelp")){openDrawer("Help · Collateral enquiry",`<ol><li>Pick an enquiry: <b>All collateral</b>, <b>Running collateral</b> (active coverage, used and available) or <b>Used collateral</b> (one row per loan account).</li><li>Type in the search box to filter straight away, or open the <b>funnel</b> for advanced filters, then <b>Fetch</b>. Active filters show as chips you can remove one by one.</li><li>Sort any column. <b>PDF</b> and <b>Excel</b> export the rows you see.</li><li>Select <b>›</b> to view a collateral: valuation and coverage, usage by loan account, and its full type form, read only.</li></ol>`);return}
   if(T("#enNew")||T("#enClearAll")){Object.assign(E(),{q:"",quick:"",f:emptyF(),applied:emptyF(),page:0,open:false});renderEnq();toast("Search and filters cleared.");return}
-  if(T("#enExit")){if(E().view==="detail")enqBack();else toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("#enExit")){if(E().view==="detail")enqBack();else goHome();return}
   if(T("[data-eback]")){enqBack();return}
   if(T("#enFunnel")){readFilters();E().open=!E().open;if(E().open)E().f={...E().applied};renderEnq();if(E().open)enqView.querySelector("[data-ff]")?.focus();return}
   if(T("#enCloseF")){E().open=false;renderEnq();$("#enFunnel").focus();return}
@@ -2609,7 +2617,7 @@ rpView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#rpHelp")){openDrawer("Help · Review due / overdue",`<ol><li>The report lists <b>open</b> (approved, not cancelled) collateral whose next review date has passed, or falls within the period you choose.</li><li>Change <b>As at</b>, <b>Due within</b>, <b>Branch</b> or <b>Collateral type</b>; the report updates straight away.</li><li>The summary shows how many reviews are overdue or due, the amounts involved, the longest overdue review and the share reviewed on time.</li><li><b>PDF</b> and <b>Excel</b> export the rows shown. In production the same report is sent by the daily review job (see the training notes).</li></ol>`);return}
   if(T("#rpNew")){RP=RPDEF();renderReport();toast("Parameters reset.");return}
-  if(T("#rpExit")){toast("Exit returns to the Collateral Management home in the Angular app.");return}
+  if(T("#rpExit")){goHome();return}
   if(el=T("[data-rpshow]")){RP.show=el.dataset.rpshow;renderReport();return}
   if(T("#rpPdf")){rpExport("pdf");return}
   if(T("#rpXls")){rpExport("xls");return}
@@ -2633,16 +2641,34 @@ document.addEventListener("click",e=>{if(!e.target.closest(".user-wrap"))closeUs
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#userMenu").hidden){closeUserMenu();$("#userBtn").focus()}});
 
 /* ---------- views + router ---------- */
-function setCrumbs(parts){$("#crumbs").innerHTML=`Collateral Management ${parts.map((p,i)=>`<span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join(" ")}`}
-const viewOf=h=>({"#report-review":"report","#returned":"returned","#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals","#enquiry-all":"enquiry","#enquiry-running":"enquiry","#enquiry-used":"enquiry"})[h]||"creation";
+const goHome=()=>{location.hash="#home"};
+/* ---------- Module home: one card per screen ---------- */
+function renderHome(){
+  const recs=enqRecords(),od=recs.filter(r=>r.status!=="Closed"&&reviewState(r.review)==="overdue").length;
+  const card=(href,ic,tc,title,d,meta="")=>`<a class="hub-card" href="${href}" style="--tc:var(${tc})"><span class="hub-ic">${icon(ic)}</span><span class="hub-t"><b>${title}</b><span>${d}</span>${meta?`<span class="hub-meta">${meta}</span>`:""}</span><span class="hub-go">${icon("chev")}</span></a>`;
+  const group=(t,cards)=>`<section class="hub-group" aria-label="${t}"><h2>${t}</h2><div class="hub-grid">${cards}</div></section>`;
+  $("#view-home").innerHTML=`<div class="page-head"><div><h1>Collateral Management</h1><p>Capture, maintain, approve and look up the collateral that secures customers' facilities. Choose a screen.</p></div></div>
+    ${group("Collateral records",card("#creation","plus","--t-guar","Creation","Capture a new collateral for a customer and send it for approval.")
+      +card("#amendment","edit","--t-prop","Amendment","Change the details of an approved collateral.")
+      +card("#cancellation","ban","--danger","Cancellation","Close a collateral that no longer secures a facility."))}
+    ${group("Approvals",card("#approvals","check","--t-cash","Approvals","Requests waiting for a decision. You can't approve your own.",`<span class="hub-n ${QUEUE.length?"red":""}" id="apCount">${QUEUE.length}</span> waiting`)
+      +card("#returned","refresh","--act-amber","Returned","Requests sent back to you for correction.",`<span class="hub-n ${RETURNED.length?"amber":""}" id="retCount">${RETURNED.length}</span> to correct`))}
+    ${group("Enquiry",card("#enquiry-all","layers","--t-guar","All collateral","Every collateral on record, whatever its status.",`${enqCount("all")} records`)
+      +card("#enquiry-running","chart","--t-shares","Running collateral","Active collateral: coverage, used and available.",`${enqCount("running")} records`)
+      +card("#enquiry-used","bank","--t-ins","Used collateral","Collateral drawn on by loan accounts.",`${enqCount("used")} loan accounts`))}
+    ${group("Reports",card("#report-review","calendar","--danger","Review due / overdue","Collateral whose review date has passed or is coming up.",`<span class="hub-n ${od?"red":""}">${od}</span> overdue`))}`;
+}
+function setCrumbs(parts){$("#crumbs").innerHTML=(parts.length?`<a href="#home">Collateral Management</a>`:`<b>Collateral Management</b>`)+parts.map((p,i)=>` <span>/</span> ${i===parts.length-1?`<b>${esc(p)}</b>`:esc(p)}`).join("")}
+const viewOf=h=>({"":"home","#home":"home","#creation":"creation","#report-review":"report","#returned":"returned","#amendment":"amendment","#cancellation":"cancellation","#approvals":"approvals","#enquiry-all":"enquiry","#enquiry-running":"enquiry","#enquiry-used":"enquiry"})[h]||"home";
 function go(view){
   const am=view==="amendment"||view==="cancellation",ap=view==="approvals";
   const en=view==="enquiry";
+  $("#view-home").hidden=view!=="home";if(view==="home"){setCrumbs([]);renderHome()}
   $("#view-creation").hidden=view!=="creation";$("#view-records").hidden=!am;$("#view-approvals").hidden=!ap;$("#view-enquiry").hidden=!en;$("#view-returned").hidden=view!=="returned";$("#view-report").hidden=view!=="report";if(am)A=STATES[view];if(ap)renderAp();if(view==="returned")renderReturned();if(view==="report")renderReport();
   if(en){EK=(location.hash.split("-")[1])||"all";if(!ENQ[EK])EK="all";renderEnq();}
   document.querySelectorAll(".nav a[data-view]").forEach(a=>{if(a.dataset.view===view)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   if(am)renderAm();else if(view==="creation"){setCrumbs(["Creation"]);renderAll();}
-  $("#side").classList.remove("open");window.scrollTo(0,0);
+  window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
 
@@ -2651,7 +2677,7 @@ S=fresh();
 S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
 S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
 renderAll();
-updateApBadge();updateRetBadge();
+renderHome();updateApBadge();updateRetBadge();
 go(viewOf(location.hash));
 })();
 </script>
