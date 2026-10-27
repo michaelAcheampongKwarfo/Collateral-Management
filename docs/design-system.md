@@ -9,11 +9,11 @@ The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.verce
 | Library component | Used for in Collateral Management | Spec followed |
 |---|---|---|
 | TextInput | Every text, amount, date, phone and number field | 28px high, 4px corners, 1px `#d1d5db` border, 14px text; blue `#2563eb` border and 1px ring on focus; red `#f87171` border and 12px red message on error |
-| TextInput (read-only) | Auto-filled and view-only values | `#f9f8fa` fill, no border, semi-bold `#0f172a` text |
+| TextInput (read-only) | Auto-filled and view-only values, and the customer's details | `#eceef2` fill (a shade deeper than the library's `#f9f8fa`, which hardly shows on the off-white cards), no border, semi-bold `#0f172a` text |
 | TextInput (disabled) | LOVs waiting for their parent field | `#f3f4f6` fill, `#e5e7eb` border, grey text, not-allowed cursor |
 | Label | Every field label | 14px, weight 500, `#374151`, right-aligned beside the input, red asterisk for required |
 | Width presets | Field widths (see Form layout) | Name 420, LOV 280, phone 240, short 240, amount 180, date 160 |
-| LOV | Collateral type and every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
+| LOV | Every lookup field | One box `001 - DESCRIPTION`, search-icon segment on the right with a divider, a × to clear the value, and a dropdown under the field with live search and arrow-key selection |
 | Button | Action bar, Fetch, Clear, exports | `rounded-lg`, `px-4 py-2 text-sm font-medium`, white with coloured text and border, light tint on hover |
 | DataTable | Amendment, Cancellation, Approvals, Returned and Enquiry lists, and the customer's other collaterals | `#E9EFFB` sticky header (12px, semi-bold, not upper case), triangle sort icons, 12px `#334155` rows on `#f7f4f0`, light blue hover, small row-action buttons, footer pager |
 | Tabs | Enquiry: All / Running / Used collateral | Grey tab strip; active tab solid green-600 with white text; icon and count badge on each tab |
@@ -23,6 +23,9 @@ Where the library has no rule, the prototype keeps the module's agreed choices:
 - **Return** (amber) and **Reject** (rose) use the library's outlined button shape in their own colours.
 - **Dates** stay `DD-MON-YYYY`, as agreed, at the library's 160px date width, centred. The library's own example uses `DD/MM/YYYY`.
 - The customer search and the documents list stay as dialogs; the library LOV dropdown is for code lists.
+- **Collateral type** at Creation is picked from five tiles (icon, name, code, one-line description), not a LOV: with only five types, every option stays visible and is one click away.
+- **Customer details** at Creation (and the customer card on every other screen) are read-only inputs on the form grid: Customer number, Customer name, Customer type, Home branch, Collaterals and Amount held.
+- **Collateral amount, Next review date and Expiry review date** share one line; inside that line the amount is 170px and the dates 140px so the three fit beside the side panel at 1440px.
 
 ## Principles
 
@@ -100,7 +103,8 @@ Every label sits **on the same line** as its field, on the left, as in Oracle Fo
 | Names and free text (ownership, location, valuer) | Full row, up to 420px |
 | Narration | Full row |
 
-- Fields fill the grid left to right, two per row. *Collateral amount · Next review date* share a row, then *Expiry review date*; *Insurance company · Insurance code*; *Policy type · Policy number*.
+- Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
+- *Collateral amount · Next review date · Expiry review date* are one full-width line (amount 170px, dates 140px). On narrower screens the last date moves to the next line.
 - Long labels wrap onto a second line inside their column.
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).
@@ -228,7 +232,7 @@ Replaces the Forms *Document Registration (Attach Scanned Document)* window. One
 
 | Component | Behaviour | Angular build |
 |---|---|---|
-| Lookup field (LOV) | @unionsg/ui LOV: one box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`), a dropdown with live search, and a × to clear. Disabled until its parent field is set. Collateral type at Creation is a LOV too. | Angular port of the @unionsg/ui LOV (CDK overlay) |
+| Lookup field (LOV) | @unionsg/ui LOV: one box showing `code - description` (e.g. `001 - MERIDIAN LIFE ASSURANCE`), a dropdown with live search, and a × to clear. Disabled until its parent field is set. (Collateral type at Creation uses tiles instead.) | Angular port of the @unionsg/ui LOV (CDK overlay) |
 | Amount input | Right-aligned, currency prefix, formatted `1,234.56` on blur | `matInput` + custom formatter directive |
 | Date input | Typed or picked; always shown as `DD-MON-YYYY`, placeholder `dd-mmm-yyyy`, matching Oracle | `mat-datepicker` with a custom `DD-MMM-YYYY` date format |
 | Required-fields panel | Count of required fields complete, a progress bar, and the fields still empty (each jumps to its field) | Standalone component |

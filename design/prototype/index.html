@@ -187,7 +187,7 @@ textarea.input{height:auto;min-height:76px;padding:9px 11px;resize:vertical}
 
 /* Step 1: customer */
 .cust-row{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
-#fld-customer{max-width:440px}
+#custCard{display:contents}
 .search{display:flex;gap:0}
 .search .input{border-top-right-radius:0;border-bottom-right-radius:0;font-family:var(--font-mono);letter-spacing:.04em}
 .search .btn{border-top-left-radius:0;border-bottom-left-radius:0;border-left:0;height:38px}
@@ -621,7 +621,7 @@ select.input{appearance:auto}
    Values follow https://unionsg-ui.vercel.app (v1.6.0). Colours are tokens so dark mode keeps working. */
 :root{
   --u-label:#374151; --u-in-border:#d1d5db; --u-in-text:#1f2937; --u-ph:#d1d5db; --u-focus:#2563eb;
-  --u-ro-bg:#f9f8fa; --u-ro-text:#0f172a; --u-dis-bg:#f3f4f6; --u-dis-border:#e5e7eb; --u-dis-text:#9ca3af;
+  --u-ro-bg:#eceef2; --u-ro-text:#0f172a; --u-dis-bg:#f3f4f6; --u-dis-border:#e5e7eb; --u-dis-text:#9ca3af;
   --u-err:#f87171; --u-err-text:#ef4444;
   --u-tbl-bg:#f7f4f0; --u-tbl-line:rgba(226,232,240,.9); --u-th-bg:#E9EFFB; --u-th-hover:#dde6f9; --u-th-line:#cbd5e1; --u-th-text:#0f172a;
   --u-td-text:#334155; --u-td-line:rgba(226,232,240,.6); --u-row-hover:rgba(239,246,255,.6); --u-slate-200:#e2e8f0; --u-slate-300:#cbd5e1;
@@ -638,7 +638,7 @@ select.input{appearance:auto}
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --u-label:#cbd5e1; --u-in-border:#3b4a63; --u-in-text:#e5ecf5; --u-ph:#5b6a80; --u-focus:#60a5fa;
-  --u-ro-bg:#1c2638; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
+  --u-ro-bg:#222d42; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
   --u-err:#f87171; --u-err-text:#fca5a5;
   --u-tbl-bg:#151e2e; --u-tbl-line:#26324a; --u-th-bg:#1b2a45; --u-th-hover:#223456; --u-th-line:#34425d; --u-th-text:#e5ecf5;
   --u-td-text:#cbd5e1; --u-td-line:#222d42; --u-row-hover:rgba(37,99,235,.12); --u-slate-200:#34425d; --u-slate-300:#4b5a73;
@@ -655,7 +655,7 @@ select.input{appearance:auto}
 }}
 :root[data-theme="dark"]{
   --u-label:#cbd5e1; --u-in-border:#3b4a63; --u-in-text:#e5ecf5; --u-ph:#5b6a80; --u-focus:#60a5fa;
-  --u-ro-bg:#1c2638; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
+  --u-ro-bg:#222d42; --u-ro-text:#f1f5f9; --u-dis-bg:#111a28; --u-dis-border:#26324a; --u-dis-text:#6e7d93;
   --u-err:#f87171; --u-err-text:#fca5a5;
   --u-tbl-bg:#151e2e; --u-tbl-line:#26324a; --u-th-bg:#1b2a45; --u-th-hover:#223456; --u-th-line:#34425d; --u-th-text:#e5ecf5;
   --u-td-text:#cbd5e1; --u-td-line:#222d42; --u-row-hover:rgba(37,99,235,.12); --u-slate-200:#34425d; --u-slate-300:#4b5a73;
@@ -681,7 +681,8 @@ textarea.input{min-height:64px;padding:5px 10px}
 .input.amount{font-family:var(--font-body);font-variant-numeric:tabular-nums}
 .search .input{font-family:var(--font-body);letter-spacing:0}
 .input:disabled,.lookup-btn:disabled{background:var(--u-dis-bg);border-color:var(--u-dis-border);color:var(--u-dis-text);cursor:not-allowed}
-.ro{background:var(--u-ro-bg);border-color:transparent;color:var(--u-ro-text);font-weight:600}
+.ro,.ro.ro-view{background:var(--u-ro-bg);border-color:transparent;color:var(--u-ro-text);font-weight:600}
+.ro.empty.ro-view{color:var(--u-dis-text)}
 .ro.empty{color:var(--u-dis-text);font-weight:500}
 .ro svg{width:12px;height:12px}
 .field.invalid .input,.field.invalid .lookup-btn{border-color:var(--u-err);box-shadow:0 0 0 1px var(--u-err)}
@@ -714,6 +715,28 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:900px){.ugrid{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){.ugrid > .field{grid-template-columns:minmax(0,1fr)}.ugrid > .field > *{grid-column:1!important}.ugrid > .field > :not(label):not(.lbl){max-width:none}}
 .section{gap:12px}
+/* one full-width line of compact fields (amount, review date, expiry date) */
+.urow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px 16px;align-items:start}
+.urow > .field{display:grid;grid-template-columns:fit-content(92px) var(--cw);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+.urow > .field:first-child{grid-template-columns:var(--lw,136px) var(--cw)}
+.urow > .field[style*="--cw:180px"]{--cw:170px!important}
+.urow > .field[style*="--cw:160px"]{--cw:140px!important}
+.urow > .field > :is(label,.lbl){grid-column:1;line-height:1.25}
+.urow > .field > :not(label):not(.lbl){grid-column:2;min-width:0}
+.urow > .field .lbl-auto{display:none}
+@media (min-width:641px){.urow > .field > :is(label,.lbl){text-align:right}}
+@media (max-width:640px){.urow > .field,.urow > .field:first-child{flex:1 1 100%;grid-template-columns:minmax(0,1fr)}.urow > .field > *{grid-column:1!important}}
+.cust-ro .ro.num,.cust-grid .ro.num{font-family:var(--font-body)}
+/* Creation: the customer fields render inside #custCard (display:contents), so they join the same grid */
+#custCard > .field{display:grid;grid-template-columns:var(--lw,136px) minmax(0,1fr);column-gap:8px;row-gap:3px;align-items:center;align-content:start;min-width:0}
+#custCard > .field > .lbl{grid-column:1;line-height:1.25}
+#custCard > .field > .ro{grid-column:2;min-width:0;width:100%;max-width:var(--cw,none)}
+@media (min-width:641px){#custCard > .field > .lbl{text-align:right}}
+@media (max-width:640px){#custCard > .field{grid-template-columns:minmax(0,1fr)}#custCard > .field > *{grid-column:1!important}}
+/* type tiles: the tick sits top-right, in place of the code, so it never covers the description */
+.tile .tick{top:10px;bottom:auto;right:10px}
+.tile .tick svg{display:block;position:static;margin:0;width:12px;height:12px}
+.tile[aria-checked="true"] .code{right:36px}
 
 /* LOV: one box "code - description", search icon segment, clear (×) */
 .lookup-btn{gap:6px;padding-right:0;overflow:hidden}
@@ -725,7 +748,6 @@ textarea.input{min-height:64px;padding:5px 10px}
 .lookup-btn .lov-x{display:grid;place-items:center;width:18px;height:18px;border-radius:99px;color:#9ca3af;flex:0 0 auto}
 .lookup-btn .lov-x:hover{background:var(--u-dis-bg);color:var(--u-in-text)}
 .lookup-btn .lov-x svg{width:12px;height:12px}
-#types{max-width:400px}
 .pop-scrim{background:transparent;display:block;padding:0}
 .lov-pop{position:fixed;z-index:51;background:var(--surface);border:1px solid var(--u-in-border);border-radius:6px;box-shadow:0 10px 30px rgba(15,23,42,.18);display:flex;flex-direction:column;max-height:300px;overflow:hidden}
 .lov-pop-search{position:relative;padding:6px;border-bottom:1px solid var(--u-tab-line)}
@@ -898,8 +920,8 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
       <section class="card" aria-labelledby="s1">
         <div class="card-head"><div class="step" id="step1">1</div><div><h2 id="s1">Customer</h2><p>Enter the customer number or search for the customer.</p></div></div>
         <div class="card-body">
-          <div class="cust-row">
-            <div class="field inl" id="fld-customer" style="--lw:130px">
+          <div class="ugrid cust-grid">
+            <div class="field" id="fld-customer" style="--cw:280px">
               <label for="custNo">Customer number<span class="req">*</span></label>
               <div class="search">
                 <input class="input" id="custNo" inputmode="numeric" autocomplete="off" placeholder="e.g. 056719" maxlength="10">
@@ -915,7 +937,7 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
       <!-- Step 2 -->
       <section class="card" aria-labelledby="s2">
         <div class="card-head"><div class="step" id="step2">2</div><div><h2 id="s2">Collateral type</h2><p>Each type opens its own set of details.</p></div></div>
-        <div class="card-body"><div class="field inl type-field" style="--lw:130px"><label for="typeBtn">Collateral type<span class="req">*</span></label><div id="types"></div><div class="hint" id="typeHint"></div></div></div>
+        <div class="card-body"><div class="types" role="radiogroup" aria-labelledby="s2" id="types"></div></div>
       </section>
 
       <!-- Step 3 -->
@@ -1004,9 +1026,9 @@ const LOVS={
 /* Layout: every section is a 12-column grid. `col` = columns the field spans, chosen from the
    length of its value. Every row adds up to 12, so left and right edges always line up. */
 const COLL=(o)=>({title:"Collateral details",desc:o.desc||"Value the bank will rely on, and when the collateral must be reviewed.",fields:[
-  {id:"amount",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:6},
-  {id:"reviewDate",label:o.reviewLabel||"Review date",type:"date",req:true,col:6},
-  {id:"expiryDate",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:6},
+  {id:"amount",row:"terms",label:o.amountLabel||"Amount considered",type:"amount",req:true,col:6},
+  {id:"reviewDate",row:"terms",label:o.reviewLabel||"Review date",type:"date",req:true,col:6},
+  {id:"expiryDate",row:"terms",label:o.expiryLabel||"Expiry date",type:"date",req:true,col:6},
   {id:"comment",label:"Narration",type:"textarea",col:12,placeholder:"Optional narration for the approver"},
 ]});
 const TYPES=[
@@ -1104,11 +1126,10 @@ function renderCustomer(){
   if(S.custError){hint.className="err";hint.innerHTML=icon("alert")+esc(S.custError)}
   else if(S.showErrors&&!c){hint.className="err";hint.innerHTML=icon("alert")+"Enter a customer number to continue."}
   else{hint.className="hint";hint.textContent=c?"Customer found.":"Press Enter to fetch the customer."}
-  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
-  if(S.loading){const sk=`<div class="skeleton" style="width:70%"></div>`;card.innerHTML=`<div class="profile"><div class="who"><div class="avatar"></div><div style="flex:1;display:grid;gap:8px">${sk}<div class="skeleton" style="width:40%"></div></div></div>${[1,2,3,4].map(()=>`<div style="gap:8px"><div class="skeleton" style="width:50%;height:9px"></div>${sk}</div>`).join("")}</div>`;return}
-  if(!c){card.innerHTML=`<div class="profile empty"><div class="who"><div class="avatar">${icon("search")}</div><div><div class="nm">No customer selected</div><div class="sub">Enter a customer number to load the profile</div></div></div>${cell("Customer type","—")}${cell("Home branch","—")}${cell("Collaterals","—")}${cell("Amount held","—")}</div>`;return}
+  if(S.loading){card.innerHTML=profileFields(null,0,0,false).replaceAll("—","Loading…");return}
+  if(!c){card.innerHTML=profileFields(null,0,0,false);return}
   const held=[...S.newRows,...otherOf(c.code)];
-  card.innerHTML=profileHtml(c,held.length,held.reduce((a,r)=>a+(r.amt||0),0));
+  card.innerHTML=profileFields(c,held.length,held.reduce((a,r)=>a+(r.amt||0),0),false);
 }
 function fetchCustomer(code){
   code=String(code||"").trim();
@@ -1129,9 +1150,8 @@ function fetchCustomer(code){
 
 /* ---------- Step 2: type tiles ---------- */
 function renderTypes(){
-  const t=typeBy(S.type);
-  $("#types").innerHTML=`<button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="lov-v"><b>${t.code}</b> - ${esc(t.lovDesc)}</span>`:`<span class="ph">${S.customer?"Search and select":"Find the customer first"}</span>`}<span class="lov-ic">${icon("search")}</span></button>`;
-  $("#typeHint").textContent=t?t.d:"Cash, insurance, property, guarantee or shares. Each opens its own form.";
+  $("#types").innerHTML=TYPES.map(t=>`<button type="button" class="tile" role="radio" aria-checked="${S.type===t.code}" data-type="${t.code}" style="--tc:var(${t.tc})" ${S.customer?"":"disabled"}>
+    <span class="code">${t.code}</span><span class="ic">${icon(t.ic)}</span><b>${t.name}</b><span class="d">${t.d}</span><span class="tick">${icon("check")}</span></button>`).join("");
 }
 /* scroll so the whole card, header included, sits under the sticky top bar */
 function scrollToCard(el){const top=el.getBoundingClientRect().top+window.scrollY-($(".topbar").offsetHeight+14);window.scrollTo({top,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
@@ -1195,9 +1215,13 @@ function fsize(f){
 }
 const fcls=f=>fsize(f).full?"full":"";
 const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
-/* a section's fields on the library's two-column form grid: label right-aligned beside its input */
+/* a section's fields on the library's two-column form grid: label right-aligned beside its input.
+   Fields sharing a "row" key (amount, review date, expiry date) sit together on one full-width line. */
 function rowsHtml(sec,fn){
-  return `<div class="ugrid">${sec.fields.map(fn).join("")}</div>`;
+  const out=[];
+  sec.fields.forEach((f,i)=>{const prev=sec.fields[i-1];
+    if(f.row&&prev?.row===f.row)out[out.length-1].push(f);else out.push(f.row?[f]:f)});
+  return `<div class="ugrid">${out.map(x=>Array.isArray(x)?`<div class="urow">${x.map(fn).join("")}</div>`:fn(x)).join("")}</div>`;
 }
 /* clearing a LOV also clears the LOVs that depend on it */
 function lovClear(t,st,id){const fs=t.sections.flatMap(s=>s.fields),f=fs.find(x=>x.id===id);delete st.values[id];delete st.lookups[id];
@@ -1407,11 +1431,10 @@ $("#custNo").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault
 $("#custNo").addEventListener("change",e=>fetchCustomer(e.target.value));
 $("#custSearch").addEventListener("click",()=>openLov("Find customer",CUSTOMERS,r=>fetchCustomer(r.code),[["code","Customer no."],["name","Name"],["type","Type"]]));
 
-$("#types").addEventListener("click",e=>{const b=e.target.closest("[data-typelov]");if(!b||b.disabled)return;
-  openLov("Collateral types",TYPES.map(t=>({code:t.code,desc:t.lovDesc})),r=>{
-    if(S.type!==r.code){S.type=r.code;S.values={};S.lookups={};S.errors={};S.showErrors=false}
-    renderAll();scrollToCard($("#formCard"));
-  },undefined,b);});
+$("#types").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b||b.disabled)return;
+  if(S.type!==b.dataset.type){S.type=b.dataset.type;S.values={};S.lookups={};S.errors={};S.showErrors=false}
+  renderAll();scrollToCard($("#formCard"));});
+$("#types").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key))return;const tiles=[...document.querySelectorAll(".tile")];const i=tiles.indexOf(document.activeElement);if(i<0)return;const n=tiles[(i+(e.key==="ArrowRight"||e.key==="ArrowDown"?1:-1)+tiles.length)%tiles.length];n.focus();e.preventDefault()});
 
 $("#rail").addEventListener("click",e=>{const b=e.target.closest("[data-jumpf]");if(!b)return;const el=document.getElementById(`f-${S.type}-${b.dataset.jumpf}`);if(el){el.scrollIntoView({block:"center"});el.focus({preventScroll:true})}});
 $("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=valOf(e.target);if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});
@@ -1654,14 +1677,15 @@ function resetEntry(){
   A.values={...A.orig};A.lookups={...A.origLookups};A.errors={};A.showErrors=false;renderAmForm();renderAmRail();syncSubmit();toast("All fields reset to their original values.");
 }
 
+/* customer facts as library read-only inputs; Creation puts them in the grid that holds the customer number */
+const roField=(label,val,cw,cls="")=>`<div class="field" style="${cw?`--cw:${cw}`:""}"><span class="lbl">${label}</span><div class="ro ${cls} ${val==null?"empty":""}"><span class="t">${val==null?"—":esc(val)}</span></div></div>`;
+function profileFields(c,count,total,withNo){
+  return `${withNo?roField("Customer number",c?c.code:null,"240px"):""}${roField("Customer name",c?c.name:null,"")}
+    ${roField("Customer type",c?c.type:null,"240px")}${roField("Home branch",c?`${c.brCode} - ${c.branch}`:null,"280px")}
+    ${roField("Collaterals",c?String(count):null,"120px","num")}${roField("Amount held",c?(count?fmt(total):"0.00"):null,"180px","num")}`;
+}
 function profileHtml(c,count,total){
-  const cell=(k,v,cls="")=>`<div><span class="k">${k}</span><span class="v ${cls}">${v}</span></div>`;
-  const ini=c.name.split(" ").slice(0,2).map(w=>w[0]).join("");
-  return `<div class="profile"><div class="who"><div class="avatar">${esc(ini)}</div><div style="min-width:0"><div class="nm">${esc(c.name)}</div><div class="sub">Customer no. <span class="mono">${esc(c.code)}</span></div></div></div>
-    ${cell("Customer type",`<span class="badge ${c.type==="CORPORATE"?"corp":""}">${esc(c.type)}</span>`)}
-    ${cell("Home branch",`<span class="mono">${esc(c.brCode)}</span> · ${esc(c.branch)}`)}
-    ${cell("Collaterals",String(count),"num")}
-    ${cell("Amount held",count?fmt(total):"—","num")}</div>`;
+  return `<div class="ugrid cust-ro">${profileFields(c,count,total,true)}</div>`;
 }
 
 function renderAm(){
