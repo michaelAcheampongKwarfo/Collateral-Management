@@ -150,19 +150,20 @@ Dates:
 - Every date is shown and typed as **DD-MON-YYYY** (for example `25-OCT-2026`); empty fields show the placeholder `dd-mmm-yyyy`.
 - Users can type the date (also accepted: `25/10/2026`) or pick it from the calendar button, which is the browser's own date picker. It opens on the date already typed, and the picked date is written back as `DD-MON-YYYY`. A date that doesn't exist (`31-FEB-2027`) shows "Enter the … as dd-mmm-yyyy, e.g. 25-OCT-2026."
 
-## Colour: header bars, section bands, accented panels
+## Colour: header bars, numbered sections, panel title strips
 
-Added November 2026 after feedback that the screens had no colour. It follows the bank's other new screens (e.g. Cash Deposit): noticeable, not loud.
+Added November 2026 after feedback that the screens had no colour, then refined. It follows the bank's other new screens (e.g. Cash Deposit): noticeable, not loud. **Rule: colour marks meaning, never decoration.** Navy is structure; strong colours are for actions and status (green Submit, red overdue, amber pending); the collateral type's colour is a small identity mark. No decorative side stripes.
 
 | Element | Treatment | Token (light / dark) |
 |---|---|---|
-| Card header (Customer, Collateral type, the type form, lists, Request, Closure summary) | Navy bar, white title, light-blue subtitle; step circles white or green | `--hdr` `#2F4462` → `--hdr-2` `#3B5577` / `#1C2A3F` → `#24364F` |
-| Section inside a form (*Guarantee details*, *Terms and folio*…) | Tinted band with a 3px left stripe in the collateral type's colour (cash green, insurance purple, property orange, guarantee blue, shares teal) | `--band` `#EEF3FA` / `#18233A` |
-| Side panels (required fields, balances, documents, decision) | 3px blue left stripe; panel titles in the accent blue | `--accent` `#2F6FB5` / `#5AA2EE` |
+| Card header (Customer, Collateral type, the type form, lists, Request, Closure summary) | Flat navy bar, about 44px, white title, light-blue subtitle; step circles white or green | `--hdr` `#2F4462` / `#1C2A3F` |
+| Section inside a form | A circle numbered 1, 2, 3 in the collateral type's colour (cash green, insurance purple, property orange, guarantee blue, shares teal), the title, the description in grey, and a thin line under it | `--tc` |
+| Side panel (Required fields, Account balances, Documents, Decision, Record) | A slim tinted title strip with an icon (list, wallet, paperclip, shield, file) | `--band` `#EEF3FA` / `#18233A` |
+| Decision panel | Keeps its amber outline (it is the one panel that needs a decision) | `--act-amber` |
 | Dialogs and drawers | Same navy header bar as cards | `--hdr` |
-| Module home | Group titles in navy; each card has a 3px top stripe in its screen's colour | |
+| Module home | Icon tile tinted in its screen's colour; group titles in navy | |
 
-Inputs, buttons, tables and tabs keep their @unionsg/ui colours; the colour sits in the frame around them, so data stays easy to read.
+Inputs, buttons, tables and tabs keep their @unionsg/ui colours; the colour sits in the frame around them, so data stays easy to read. Before/after screenshots: `design/comparison/colour-before-*.png` and `colour-after-*.png`.
 
 ## Tokens
 

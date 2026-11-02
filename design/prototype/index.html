@@ -971,6 +971,28 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 /* module home: group titles and card icons pick up the accent */
 .hub-group h2{color:var(--hdr)}
 .hub-card{border-top:3px solid var(--tc)}
+
+/* ===== Colour, refined (November 2026): flat slim navy headers, numbered section headings,
+   panel title strips with icons. No decorative side stripes: colour marks meaning only. ===== */
+:root{--band-ink:#2F4462}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--band-ink:#C9D6E8}}
+:root[data-theme="dark"]{--band-ink:#C9D6E8}
+.card > .card-head{background:var(--hdr);padding:11px 20px;min-height:44px}
+.card > .card-head h2{font-size:15px}
+.card > .card-head p{font-size:12.5px}
+.card > .card-head .step{width:24px;height:24px}
+.section-head{display:grid;grid-template-columns:24px minmax(0,1fr);column-gap:10px;row-gap:1px;align-items:center;background:none;border:0;border-radius:0;padding:0 0 10px;border-bottom:1px solid var(--line)}
+.section-head .n{grid-row:1;grid-column:1;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--tc,var(--accent));color:#fff;font:700 12px var(--font-body);letter-spacing:0}
+.section-head .section-title{grid-column:2;grid-row:1}
+.section-head p{grid-column:2;max-width:none}
+.section + .section{margin-top:26px}
+.rail > .card{overflow:hidden}
+.rail > .card:not(.decision){border-left:1px solid var(--line)}
+.rail > .card.decision{border-left-width:1px}
+.rail h3{margin:-16px -16px 12px;padding:9px 16px;background:var(--band);border-bottom:1px solid var(--band-line);color:var(--band-ink);display:flex;align-items:center;gap:8px}
+.rail h3 svg{width:15px;height:15px;color:var(--accent)}
+.hub-card{border-top:1px solid var(--line)}
+.hub-ic{background:color-mix(in srgb,var(--tc) 14%,var(--surface))}
 </style>
 </head>
 <body>
@@ -1004,6 +1026,8 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
   <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M6 2h8.5L20 7.5V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" fill="#D93025" stroke="none"/><path d="M14.5 2v4a1.5 1.5 0 0 0 1.5 1.5h4z" fill="#F4A79F" stroke="none"/><path d="M8.2 17.6c1.6-1 3.4-4.6 3.6-7.2.1-1.3-.9-1.4-1.1-.4-.3 1.7 1.9 4.7 4.6 5.2 1.4.3 1.6-.8.5-1-2-.4-6.5 1.2-7.6 3.1-.4.7.1 1 .9.3z" fill="none" stroke="#fff" stroke-width="1.1" stroke-linejoin="round"/></symbol>
   <symbol id="i-xls" viewBox="0 0 24 24"><rect x="8" y="3" width="13" height="18" rx="2" fill="#21A366" stroke="none"/><path d="M14 3h5a2 2 0 0 1 2 2v3.5h-7z" fill="#33C481" stroke="none"/><path d="M14 15.5h7V19a2 2 0 0 1-2 2h-5z" fill="#185C37" stroke="none"/><rect x="3" y="6.5" width="11" height="11" rx="1.6" fill="#107C41" stroke="none"/><path d="M6.2 9.3l4.6 5.4M10.8 9.3l-4.6 5.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></symbol>
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h11v4"/><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M16 13h2"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
   <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
@@ -1463,7 +1487,7 @@ function renderForm(){
       <div class="right"><span class="mono" style="font-size:12px;color:var(--muted)">${t.code} · ${esc(t.lovDesc)}</span></div></div>
     <div class="card-body">
       ${errList.length?`<div class="alert" role="alert" id="errSummary">${icon("alert")}<div><b>${errList.length} field${errList.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errList.slice(0,6).map(([k,m])=>`<li><a href="#f-${t.code}-${k}" data-jump="f-${t.code}-${k}">${esc(m)}</a></li>`).join("")}${errList.length>6?`<li>and ${errList.length-6} more</li>`:""}</ul></div></div>`:""}
-      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f))}</div>`).join("")}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${i+1}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f))}</div>`).join("")}
     </div>`;
 }
 
@@ -1475,14 +1499,14 @@ function renderRail(){
   rail.hidden=false;$(".form-wrap").style.gridTemplateColumns="";
   const req=requiredFields(t),done=req.filter(f=>hasValue(f.id)).length;
   const left=req.filter(f=>!hasValue(f.id));
-  let html=`<div class="card"><div class="card-body"><h3>Required fields</h3>
+  let html=`<div class="card"><div class="card-body"><h3>${icon("list")}Required fields</h3>
     <div class="req-prog"><span class="req-n mono"><b>${done}</b> / ${req.length}</span><span class="hint">complete</span></div>
     <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${req.length}" aria-valuenow="${done}" aria-label="Required fields complete"><i style="width:${req.length?done/req.length*100:0}%"></i></div>
     ${left.length?`<ul class="req-left" aria-label="Still to complete">${left.map(f=>`<li><button type="button" class="link-btn" data-jumpf="${f.id}">${esc(f.label)}</button></li>`).join("")}</ul>`
       :`<p class="ok-line">${icon("check")}Every required field is complete</p>`}</div></div>`;
   if(t.rail==="balances"){
     const a=S.lookups.account;
-    html+=`<div class="card"><div class="card-body"><h3>Account balances</h3>${a?`
+    html+=`<div class="card"><div class="card-body"><h3>${icon("wallet")}Account balances</h3>${a?`
       <div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
       <div style="margin-top:8px">
       <div class="bal-row"><span>Cleared balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
@@ -1491,7 +1515,7 @@ function renderRail(){
       <div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}<button class="link-btn" data-detail="block">Details</button></span></div></div>`
       :`<div class="hint">Select a source account to see its balances.</div>`}</div></div>`;
   }
-  html+=`<div class="card"><div class="card-body"><h3>Supporting documents</h3>${docsMini(S.docs)}
+  html+=`<div class="card"><div class="card-body"><h3>${icon("clip")}Supporting documents</h3>${docsMini(S.docs)}
     <button class="btn act-blue doc-btn" data-docs="creation">${icon("clip")}${S.docs.length?`Manage documents (${S.docs.length})`:"Attach documents"}</button>
     </div></div>`;
   rail.innerHTML=html;
@@ -1972,31 +1996,31 @@ function renderAmForm(){
       <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${A.rec.no}</b></div></div>
     <div class="card-body">
       ${errs.length?`<div class="alert" role="alert" id="amErr">${icon("alert")}<div><b>${errs.length} field${errs.length>1?"s need":" needs"} attention before you can submit.</b><ul>${errs.map(([k,m])=>`<li><a href="#a-${t.code}-${k}" data-jump="a-${t.code}-${k}">${esc(m)}</a></li>`).join("")}</ul></div></div>`:""}
-      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,A))}</div>`).join("")}
+      ${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${i+1}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,A))}</div>`).join("")}
     </div>`;
 }
 
 function renderAmRail(){
   const t=amTypeBy(A.type),ch=changesOf(A),r=A.rec;
-  let h=isCancel()?"":`<div class="card"><div class="card-body"><h3>Amendment</h3>
+  let h=isCancel()?"":`<div class="card"><div class="card-body"><h3>${icon("edit")}Amendment</h3>
     <div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
     ${ch.length?`<ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,A))}</span> → <span class="nv">${esc(showVal(f,A.values,A.lookups))}</span></li>`).join("")}</ul>
       <button class="link-btn" id="amUndoAll" style="margin-top:10px">Undo all changes</button>`
     :`<p class="hint" style="margin:6px 0 0">No changes yet. Edit any field to start an amendment. Submit stays off until something changes.</p>`}
   </div></div>`;
   h+=`
-  <div class="card"><div class="card-body"><h3>Record</h3>
+  <div class="card"><div class="card-body"><h3>${icon("file")}Record</h3>
     <div class="kv"><span>Collateral no.</span><b class="mono">${r.no}</b></div>
     <div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
     <div class="kv"><span>Status</span><b><span class="status">${r.status}</span></b></div>
     <div class="kv"><span>Approved by</span><b class="mono">${r.by}</b></div>
     <div class="kv"><span>Approval date</span><b>${r.appr}</b></div></div></div>`;
   if(t.rail==="balances"&&A.lookups.account){const a=A.lookups.account;
-    h+=`<div class="card"><div class="card-body"><h3>Account balances</h3><div class="hint">Available amount</div><div class="bal-total">${fmt(a.bal.avail)}</div>
+    h+=`<div class="card"><div class="card-body"><h3>${icon("wallet")}Account balances</h3><div class="hint">Available amount</div><div class="bal-total">${fmt(a.bal.avail)}</div>
       <div style="margin-top:8px"><div class="bal-row"><span>Source balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
       <div class="bal-row"><span>Used amount</span><span class="v">${fmt(a.bal.block)}</span></div>
       <div class="bal-row"><span>Amount considered</span><span class="v">${A.values.amount||"—"}</span></div></div></div></div>`;}
-  h+=`<div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(r.docs)}
+  h+=`<div class="card"><div class="card-body"><h3>${icon("clip")}Documents</h3>${docsMini(r.docs)}
     <button class="btn act-blue doc-btn" data-docs="record">${icon("clip")}${isCancel()?"View documents":"Manage documents"} (${r.docs.length})</button></div></div>`;
   $("#amRail").innerHTML=h;
 }
@@ -2304,21 +2328,21 @@ function renderApForm(){
   $("#apForm").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div>
       <div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only${it.kind==="amend"?". Edited fields are highlighted.":"."}</p></div>
       <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${it.no}</b></div></div>
-    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${i+1}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
 }
 function renderApRail(){
   const it=P.item,st=apState(it),ch=apChanges(it);
-  let h=isOwn(it)?"":`<div class="card decision"><div class="card-body"><h3>Decision</h3>
+  let h=isOwn(it)?"":`<div class="card decision"><div class="card-body"><h3>${icon("shield")}Decision</h3>
     <ul class="dec-list"><li><span class="kind k-amend">Return</span>Send back with a reason. It reappears in the submitter's Returned queue to correct and resubmit.</li>
       <li><span class="kind k-cancel">Reject</span>End the request for good, with a reason and a final confirmation.</li>
       <li><span class="kind k-ok">Authorize</span>Apply it, after ticking every item on the verification checklist (${verifyItems(it).length} items).</li></ul>
   </div></div>`;
-  if(ch.length)h+=`<div class="card"><div class="card-body"><h3>Requested changes</h3><div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
+  if(ch.length)h+=`<div class="card"><div class="card-body"><h3>${icon("edit")}Requested changes</h3><div class="chg-head"><span class="chg-count">${ch.length}</span><span>${ch.length===1?"field changed":"fields changed"}</span></div>
     <ul class="chg-list">${ch.map(f=>`<li><span class="f">${esc(f.label)}</span><span class="o">${esc(origDisplay(f,st))}</span> → <span class="nv">${esc(showVal(f,st.values,st.lookups))}</span></li>`).join("")}</ul></div></div>`;
   if(it.type==="C01"&&it.lookups.account){const a=it.lookups.account;
-    h+=`<div class="card"><div class="card-body"><h3>Account balances</h3><div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
+    h+=`<div class="card"><div class="card-body"><h3>${icon("wallet")}Account balances</h3><div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
       <div style="margin-top:8px"><div class="bal-row"><span>Cleared balance</span><span class="v">${fmt(a.bal.cleared)}</span></div><div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}</span></div><div class="bal-row"><span>Amount considered</span><span class="v">${it.values.amount}</span></div></div></div></div>`;}
-  h+=`<div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(it.docs)}<button class="btn act-blue doc-btn" data-docs="approval">${icon("clip")}View documents (${it.docs.length})</button></div></div>`;
+  h+=`<div class="card"><div class="card-body"><h3>${icon("clip")}Documents</h3>${docsMini(it.docs)}<button class="btn act-blue doc-btn" data-docs="approval">${icon("clip")}View documents (${it.docs.length})</button></div></div>`;
   $("#apRail").innerHTML=h;
 }
 function renderAp(){
@@ -2668,13 +2692,13 @@ function renderEnqDetailParts(){
   const x=E().item,r=x.r,t=r.isNew?typeBy(r.type):amTypeBy(r.type),st={readonly:true,pfx:"e",type:r.type,values:r.values,lookups:r.lookups,customer:x.cust,rec:r};
   $("#enForm2").innerHTML=`<div class="card-head"><div class="step done">${icon("lock")}</div><div><h2><span class="type-chip"><span class="ic">${icon(t.ic)}</span>${esc(t.title)}</span></h2><p>Read only.</p></div>
     <div class="right coll-no-chip"><span>Collateral no.</span><b class="mono">${x.no}</b></div></div>
-    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${String(i+1).padStart(2,"0")} / ${String(t.sections.length).padStart(2,"0")}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
-  $("#enRail").innerHTML=`<div class="card"><div class="card-body"><h3>Record</h3>
+    <div class="card-body">${t.sections.map((sec,i)=>`<div class="section"><div class="section-head"><span class="n">${i+1}</span><h3 class="section-title">${esc(sec.title)}</h3><p>${esc(sec.desc||"")}</p></div>${rowsHtml(sec,f=>fieldHtml(t,f,st))}</div>`).join("")}</div>`;
+  $("#enRail").innerHTML=`<div class="card"><div class="card-body"><h3>${icon("file")}Record</h3>
     <div class="kv"><span>Collateral no.</span><b class="mono">${x.no}</b></div><div class="kv"><span>Type</span><b>${t.code} · ${esc(t.name)}</b></div>
     <div class="kv"><span>Status</span><b><span class="status ${STATUS_CLS[x.status]}">${x.status}</span></b></div>
     <div class="kv"><span>Branch</span><b><span class="mono">${x.cust.brCode}</span> · ${esc(x.cust.branch)}</b></div>
     <div class="kv"><span>${r.isNew?"Submitted by":"Approved by"}</span><b class="mono">${r.by}</b></div><div class="kv"><span>Approval date</span><b>${r.appr||"—"}</b></div></div></div>
-    <div class="card"><div class="card-body"><h3>Documents</h3>${docsMini(r.docs||[])}<button class="btn act-blue doc-btn" data-docs="enquiry">${icon("clip")}View documents (${(r.docs||[]).length})</button></div></div>`;
+    <div class="card"><div class="card-body"><h3>${icon("clip")}Documents</h3>${docsMini(r.docs||[])}<button class="btn act-blue doc-btn" data-docs="enquiry">${icon("clip")}View documents (${(r.docs||[]).length})</button></div></div>`;
 }
 function renderEnq(){
   const S_=E();
