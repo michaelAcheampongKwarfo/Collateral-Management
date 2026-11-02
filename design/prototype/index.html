@@ -993,6 +993,25 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 .rail h3 svg{width:15px;height:15px;color:var(--accent)}
 .hub-card{border-top:1px solid var(--line)}
 .hub-ic{background:color-mix(in srgb,var(--tc) 14%,var(--surface))}
+
+/* keyboard shortcuts */
+kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--u-slate-300);border-bottom-width:2px;border-radius:5px;background:var(--surface);font:600 12px var(--font-mono);color:var(--fg);text-align:center}
+.keys-modal{width:min(640px,100%)}
+.keys-modal td{white-space:normal;vertical-align:top}
+.dup-modal{width:min(720px,100%)}
+.dup-modal td{white-space:normal}
+.dup-banner{margin-bottom:0}
+/* history timeline */
+.tl{list-style:none;margin:0;padding:0}
+.tl-i{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding-bottom:18px;position:relative}
+.tl-i:last-child{padding-bottom:0}
+.tl-i:not(:last-child)::before{content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--line)}
+.tl-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--c)}
+.tl-dot svg{width:14px;height:14px}
+.tl-blue{--c:var(--accent)}.tl-green{--c:var(--success)}.tl-orange{--c:var(--t-prop)}.tl-red{--c:var(--danger)}.tl-amber{--c:var(--act-amber)}.tl-rose{--c:var(--act-rose)}
+.tl-h{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;padding-top:4px}
+.tl-m{font-size:12.5px;color:var(--muted)}
+.tl-n{font-size:13px;margin-top:2px;color:var(--fg)}
 </style>
 </head>
 <body>
@@ -1028,6 +1047,8 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1 1 2-2M3.5 12l1 1 2-2M3.5 18l1 1 2-2"/></symbol>
   <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h11v4"/><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M16 13h2"/></symbol>
+  <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M6 14h.01M18 14h.01M9 14h6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
   <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
@@ -1042,6 +1063,7 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
       <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
       <div class="spacer"></div>
       <span class="sample-pill">Prototype · sample data</span>
+      <button class="btn icon ghost" id="keysBtn" aria-label="Keyboard shortcuts (Ctrl+K)" title="Keyboard shortcuts (Ctrl+K)"><svg class="i"><use href="#i-keyboard"/></svg></button>
       <button class="btn icon ghost" id="themeBtn" aria-label="Toggle dark mode"><svg class="i"><use href="#i-moon"/></svg></button>
       <div class="user-wrap"><button class="user" id="userBtn" aria-haspopup="menu" aria-expanded="false" title="Switch user (prototype)"><span class="avatar" id="meIni">KA</span><span class="user-txt"><b id="meName">K. Asare</b><small id="meRole">Collateral officer · Sinkor</small></span><svg class="i dd"><use href="#i-chev"/></svg></button>
         <div class="user-menu" id="userMenu" role="menu" hidden></div></div>
@@ -1740,12 +1762,14 @@ $("#submitBtn").addEventListener("click",()=>{
   if(!S.customer){renderAll();$("#custNo").focus();toast("Find the customer first.");return}
   if(!S.type){renderAll();$("#types").scrollIntoView({block:"center"});toast("Choose a collateral type.");return}
   if(Object.keys(S.errors).length){renderForm();$("#errSummary").scrollIntoView({block:"center"});return}
+  if(!S.dupAck){const hits=findDuplicates(S.type,S.values,S.returnItem?.no);if(hits.length){renderForm();dupDialog(hits,ack=>{S.dupAck=ack;$("#submitBtn").click()});return}}
+  const dupNote=S.dupAck||null;S.dupAck=null;
   const t=typeBy(S.type),d=new Date(),p=n=>String(n).padStart(2,"0");
   const no=S.returnItem?S.returnItem.no:`${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}${String(Math.floor(Math.random()*1e7)).padStart(7,"0")}`;
   if(S.returnItem){resubmitted(S.returnItem);S.newRows=S.newRows.filter(r=>r.no!==no);S.returnItem=null;}
   const amt=parseAmt(S.values.amount);
   S.newRows.unshift({no,type:t.code,desc:t.lovDesc,amt,avail:null,date:null,status:"Pending approval",isNew:true});
-  queueRequest({kind:"create",no,cust:S.customer.code,type:t.code,by:ME.code,values:{...S.values},lookups:{...S.lookups},docs:[...S.docs]});
+  queueRequest({kind:"create",no,cust:S.customer.code,type:t.code,by:ME.code,values:{...S.values},lookups:{...S.lookups},docs:[...S.docs],dupNote});
   openLayer(`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="okT" style="width:min(460px,100%)"><div class="mb" style="text-align:center;padding:24px">
     <div class="success-ic">${icon("check")}</div><h2 id="okT" style="margin:0;font-size:18px">Collateral submitted for approval</h2>
     <div class="coll-no">${no}</div>
@@ -2241,7 +2265,63 @@ const KIND={create:{label:"Creation",cls:"k-create",verb:"creation"},amend:{labe
 const QUEUE=[];
 let QSEQ=1;
 const nowStamp=()=>fmtDate(todayIso());
-function queueRequest(o){QUEUE.unshift(Object.assign({id:QSEQ++,on:nowStamp(),docs:[]},o));updateApBadge()}
+/* ---------- Duplicate check: is this security already pledged? ----------
+   Checked against approved collateral (not cancelled) and creation requests waiting or returned. A warning, not a block:
+   a second lien can be legitimate, so the officer may submit anyway with a reason the approver sees. */
+const metresApart=(a,b)=>{const R=6371000,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dn=r(b.lon-a.lon),h=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h))};
+const rangesOverlap=(a1,a2,b1,b2)=>{const n=[a1,a2,b1,b2].map(x=>parseInt(String(x??"").replace(/\D/g,""),10));return n.every(Number.isFinite)&&n[0]<=n[3]&&n[2]<=n[1]};
+function pledgedElsewhere(skipNo){
+  const out=AM.filter(r=>r.status!=="Cancelled"&&r.no!==skipNo).map(r=>({no:r.no,cust:r.cust,type:r.type,values:r.values,lookups:r.lookups||{},status:r.status}));
+  [...QUEUE,...RETURNED].filter(q=>q.kind==="create"&&q.no!==skipNo).forEach(q=>out.push({no:q.no,cust:q.cust,type:q.type,values:q.values,lookups:q.lookups||{},status:RETURNED.includes(q)?"Creation returned":"Creation pending"}));
+  return out;
+}
+function findDuplicates(type,v,skipNo){
+  const hits=[],up=x=>String(x??"").trim().toUpperCase();
+  for(const r of pledgedElsewhere(skipNo)){
+    if(r.type!==type)continue;const rv=r.values;let why="";
+    if(type==="C01"&&v.account&&rv.account===v.account)why=`Same source account ${v.account}`;
+    if(type==="C02"&&v.policyNo&&up(rv.policyNo)===up(v.policyNo)&&rv.insCompany===v.insCompany)why=`Same insurer and policy number ${rv.policyNo}`;
+    if(type==="C03"){const a=gpsParse(v.location),b=gpsParse(rv.location);if(a&&b){const d=metresApart(a,b);if(d<=50)why=`Property ${Math.round(d)} m away by GPS`}}
+    if(type==="C04"){if(v.guarAccount&&rv.guarAccount===v.guarAccount)why=`Same guarantee account ${v.guarAccount}`;
+      else if(v.finInst&&rv.finInst===v.finInst&&up(rv.folioNo)===up(v.folioNo)&&rangesOverlap(v.folioStart,v.folioEnd,rv.folioStart,rv.folioEnd))why=`Same institution and folio ${v.folioNo}, range ${rv.folioStart}–${rv.folioEnd} overlaps`}
+    if(type==="C05"&&v.shareCode&&rv.shareCode===v.shareCode&&up(rv.folioNo)===up(v.folioNo)&&rangesOverlap(v.folioStart,v.folioEnd,rv.folioStart,rv.folioEnd))why=`Same security ${v.shareCode} and folio ${v.folioNo}, range ${rv.folioStart}–${rv.folioEnd} overlaps`;
+    if(why)hits.push({...r,why});
+  }
+  return hits;
+}
+function dupDialog(hits,onGo){
+  openLayer(`<div class="modal dup-modal" role="dialog" aria-modal="true" aria-labelledby="dupT"><header><h2 id="dupT">Possible duplicate</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb"><div class="return-banner" role="note">${icon("alert")}<div><b>This security looks like it is already pledged.</b> Check it isn't the same asset. If it is genuinely different, or a second lien is agreed, say why: the approver sees your note.</div></div>
+      <div class="table-wrap dm-table" style="margin-top:12px"><table><thead><tr><th>Collateral no.</th><th>Customer</th><th>Status</th><th>Why it matches</th></tr></thead><tbody>
+      ${hits.map(h=>{const c=custBy(h.cust);return `<tr><td class="mono">${h.no}</td><td>${esc(c?c.name:h.cust)}<div class="sub mono">${h.cust}</div></td><td><span class="status ${h.status==="Approved"?"":"pending"}">${h.status}</span></td><td>${esc(h.why)}</td></tr>`}).join("")}
+      </tbody></table></div>
+      <div class="field" style="margin-top:14px"><label for="dupWhy">Why it isn't a duplicate<span class="req">*</span></label>
+        <textarea class="input" id="dupWhy" maxlength="300" placeholder="e.g. Second lien on the same account agreed with Credit; the balance covers both."></textarea>
+        <div class="err" id="dupErr" hidden>${icon("alert")}Say why, so the approver can check it.</div></div></div>
+    <footer><button class="btn" data-close>Go back and check</button><button class="btn act-amber" id="dupGo">${icon("alert")}Submit anyway</button></footer></div>`);
+  $("#dupGo").addEventListener("click",()=>{const w=$("#dupWhy").value.trim();if(w.length<5){$("#dupErr").hidden=false;$("#dupWhy").focus();return}
+    closeLayer();onGo({reason:w,matches:hits.map(h=>({no:h.no,why:h.why}))})});
+  $("#dupWhy").focus();
+}
+
+/* ---------- History: what happened to each collateral, who did it and when ---------- */
+const HIST={};
+const EVT={created:["Captured","plus","blue"],resubmitted:["Corrected and resubmitted","refresh","blue"],approved:["Approved","check","green"],
+  amendSub:["Amendment submitted","edit","orange"],amended:["Amendment approved","check","green"],amendRejected:["Amendment rejected","ban","rose"],
+  cancelSub:["Cancellation submitted","ban","red"],cancelled:["Cancelled","ban","red"],cancelRejected:["Cancellation rejected","ban","rose"],
+  returned:["Returned for correction","refresh","amber"],rejected:["Rejected","ban","rose"]};
+function histAdd(no,t,by,on,note){(HIST[no]=HIST[no]||[]).push({t,by,on,note:note||""})}
+function historyHtml(no){
+  const ev=(HIST[no]||[]).slice().reverse();
+  return `<section class="card hist-card" aria-labelledby="histT"><div class="card-head"><div class="step done">${icon("clock")}</div><div><h2 id="histT">History</h2><p>Everything that has happened to this collateral, newest first.</p></div></div>
+    <div class="card-body">${ev.length?`<ol class="tl">${ev.map(e=>{const [lbl,ic,col]=EVT[e.t];return `<li class="tl-i tl-${col}"><span class="tl-dot">${icon(ic)}</span><div><div class="tl-h"><b>${lbl}</b><span class="tl-m">by <span class="mono">${esc(e.by)}</span> · ${esc(e.on)}</span></div>${e.note?`<div class="tl-n">${esc(e.note)}</div>`:""}</div></li>`}).join("")}</ol>`:`<p class="hint" style="margin:0">No history recorded.</p>`}</div></section>`;
+}
+function queueRequest(o){QUEUE.unshift(Object.assign({id:QSEQ++,on:nowStamp(),docs:[]},o));updateApBadge();
+  const it=QUEUE[0],last=(HIST[it.no]||[]).slice(-1)[0];if(last&&last.t==="resubmitted")return;
+  const dup=it.dupNote?` Duplicate warning acknowledged: ${it.dupNote.reason}`:"";
+  if(it.kind==="create")histAdd(it.no,"created",it.by,it.on,`Submitted for approval.${dup}`);
+  else if(it.kind==="amend"){const n=apChanges(it).length;histAdd(it.no,"amendSub",it.by,it.on,`${n} field${n===1?"":"s"} changed.`)}
+  else histAdd(it.no,"cancelSub",it.by,it.on,it.reason||"");}
 const recBy=no=>AM.find(r=>r.no===no);
 /* sample requests waiting today */
 (function seedQueue(){
@@ -2264,6 +2344,14 @@ const apView=$("#view-approvals");
 const apType=it=>it.kind==="create"?typeBy(it.type):amTypeBy(it.type);
 const apState=it=>({readonly:true,pfx:"p",type:it.type,customer:custBy(it.cust),values:it.values,lookups:it.lookups,orig:it.kind==="amend"?it.orig:null,origLookups:it.origLookups||{},rec:it.rec||{type:it.type,values:it.values,lookups:it.lookups}});
 const apChanges=it=>it.kind==="amend"?changesOf(apState(it)):[];
+(function seedHistory(){
+  const back=(d,n)=>{const iso=toIso(d);if(!iso)return d;const t=new Date(iso+"T00:00:00");t.setDate(t.getDate()-n);return fmtDate(t.toISOString().slice(0,10))};
+  AM.forEach(r=>{const maker=r.by==="K.ASARE"?"E.QUAYE":"K.ASARE";
+    histAdd(r.no,"created",maker,back(r.appr,2),"Submitted for approval.");histAdd(r.no,"approved",r.by,r.appr,"")});
+  QUEUE.slice().reverse().forEach(q=>{if(q.kind==="create")histAdd(q.no,"created",q.by,q.on,"Submitted for approval.");
+    else if(q.kind==="amend"){const n=apChanges(q).length;histAdd(q.no,"amendSub",q.by,q.on,`${n} field${n===1?"":"s"} changed.`)}
+    else histAdd(q.no,"cancelSub",q.by,q.on,q.reason)});
+})();
 function updateApBadge(){const b=$("#apCount");if(b){b.textContent=QUEUE.length;b.classList.toggle("red",!!QUEUE.length)}}
 
 const isOwn=it=>!!it&&it.by===ME.code;
@@ -2312,6 +2400,7 @@ function apDetailHtml(){
   return `<div class="page-head"><div><button class="back" data-apback><svg class="i flip"><use href="#i-chev"/></svg>Back to approvals</button>
     <h1>${KIND[it.kind].label} approval <span class="mono h1-no">${it.no}</span></h1><p>${lead}</p></div>${apActionBar("detail")}</div>
   ${isOwn(it)?`<div class="return-banner own-banner" role="note">${icon("lock")}<div><b>You submitted this request, so you can't decide on it.</b> Another officer must return, reject or authorize it (maker-checker).<span class="hint">In the prototype, switch user from the top bar to try it as the approver.</span></div></div>`:""}
+  ${it.dupNote?`<div class="return-banner dup-banner" role="note">${icon("alert")}<div><b>Possible duplicate: the submitter checked it and submitted anyway.</b> ${it.dupNote.matches.map(m=>`<span class="mono">${m.no}</span>: ${esc(m.why)}`).join("; ")}.<blockquote>${esc(it.dupNote.reason)}</blockquote></div></div>`:""}
   <section class="card" aria-labelledby="apR"><div class="card-head"><div class="step done">${icon("layers")}</div><div><h2 id="apR">Request</h2><p>Who asked for what, and when.</p></div></div>
     <div class="card-body"><div class="figs" style="--tc:var(${t.tc})">
       ${cell("Request",kindBadge(it.kind))}${cell("Submitted by",`<span class="mono">${it.by}</span>`)}${cell("Submitted on",it.on)}
@@ -2321,6 +2410,7 @@ function apDetailHtml(){
     <div class="card-body">${profileHtml(c,held.length,held.reduce((a,x)=>a+(parseAmt(x.values.amount)||0),0))}</div></section>
   ${it.kind==="cancel"?`<section class="card reason-card ro-reason" aria-labelledby="apX"><div class="card-head"><div class="step active">${icon("ban")}</div><div><h2 id="apX">Closure reason</h2><p>As entered by <span class="mono">${it.by}</span> on ${it.on}.</p></div></div><div class="card-body"><blockquote class="reason-quote">${esc(it.reason)}</blockquote></div></section>`:""}
   <div class="form-wrap"><section class="card" id="apForm" style="--tc:var(${t.tc})"></section><aside class="rail" id="apRail"></aside></div>
+  ${it.kind!=="create"?historyHtml(it.no):""}
   <div class="foot-note">${icon("info")}Every field is read only.${isOwn(it)?"":" Return or reject with a reason, or authorize after the verification checklist."}</div>`;
 }
 function renderApForm(){
@@ -2366,6 +2456,8 @@ function verifyItems(it){
 /* apply the decision everywhere the record appears: "authorize" | "return" | "dismiss" */
 function decide(it,action,reason){
   QUEUE.splice(QUEUE.indexOf(it),1);updateApBadge();
+  {const ok=action==="authorize",t=action==="return"?"returned":it.kind==="create"?(ok?"approved":"rejected"):it.kind==="amend"?(ok?"amended":"amendRejected"):(ok?"cancelled":"cancelRejected");
+   histAdd(it.no,t,ME.code,nowStamp(),ok?"":(reason||""));}
   const row=S.newRows.find(r=>r.no===it.no);
   if(action==="return"){
     RETURNED.unshift(Object.assign(it,{retReason:reason,retBy:ME.code,retOn:nowStamp()}));updateRetBadge();
@@ -2479,7 +2571,7 @@ function openReturned(id){
     reasonSel:it.kind==="cancel"?splitReason(it.reason,REASONS).sel:"",reasonText:it.kind==="cancel"?splitReason(it.reason,REASONS).text:"",returnItem:it});
   location.hash="#"+mod;go(mod);
 }
-function resubmitted(it){const i=RETURNED.indexOf(it);if(i>=0)RETURNED.splice(i,1);updateRetBadge()}
+function resubmitted(it){const i=RETURNED.indexOf(it);if(i>=0)RETURNED.splice(i,1);updateRetBadge();histAdd(it.no,"resubmitted",ME.code,nowStamp(),"Corrected after the return.")}
 retView.addEventListener("click",e=>{
   const T=x=>e.target.closest(x);let el;
   if(T("#rtHelp")){openDrawer("Help · Returned requests",`<ol><li>An approver returned these requests with a reason.</li><li>Select <b>›</b> to open one on its own entry screen. The reason is shown at the top.</li><li>Correct what the reason asks for, then <b>Submit</b>. The request goes back to the approval queue.</li></ol>`);return}
@@ -2686,6 +2778,7 @@ function enqDetailHtml(){
       ${x.loans.length?`<div class="table-wrap dm-table" style="margin-top:14px"><table><thead><tr><th>Loan account</th><th class="num">Value used</th><th>Posted date</th></tr></thead><tbody>${x.loans.map(l=>`<tr><td class="mono">${l.acct}</td><td class="num">${fmt(l.used)}</td><td>${l.posted}</td></tr>`).join("")}</tbody></table></div>`:`<p class="hint" style="margin:12px 0 0">No loan account is using this collateral.</p>`}
     </div></section>
   <div class="form-wrap"><section class="card" id="enForm2" style="--tc:var(${t.tc})"></section><aside class="rail" id="enRail"></aside></div>
+  ${historyHtml(x.no)}
   <div class="foot-note">${icon("info")}Enquiry only. To change this collateral use Amendment; to close it use Cancellation.</div>`;
 }
 function renderEnqDetailParts(){
@@ -2881,6 +2974,51 @@ function go(view){
   window.scrollTo(0,0);
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
+
+/* ---------- Keyboard: the Oracle Forms keys the officers already use ----------
+   Web Forms defaults (F11 / Ctrl+F11 for query) and the older client-server keys (F7 / F8) both work. */
+const KEYS=[
+  ["F10","Submit / save","Commit (Accept)","the screen's green button: Submit, or Authorize on an approval"],
+  ["F9","List of values","List of Values","opens the lookup for the field you are in (also customer search and the GPS picker)"],
+  ["F11 or F7","Enter query","Enter Query","puts the cursor in the screen's search box"],
+  ["Ctrl+F11 or F8","Execute query","Execute Query","runs the search, or fetches the customer"],
+  ["Ctrl+Q","Exit","Exit","the screen's Exit button"],
+  ["F1","Help","Help","opens Help for the screen"],
+  ["Ctrl+K","Show keys","Show Keys","this list"],
+  ["Esc","Close","","closes a dialog, list or picker"],
+];
+function showKeys(){
+  openLayer(`<div class="modal keys-modal" role="dialog" aria-modal="true" aria-labelledby="keysT"><header><h2 id="keysT">Keyboard shortcuts</h2><button class="btn icon ghost" data-close aria-label="Close">${icon("x")}</button></header>
+    <div class="mb"><p class="hint" style="margin:0 0 12px">The same keys as Oracle Forms, so nothing has to be relearned.</p>
+      <div class="table-wrap dm-table"><table><thead><tr><th>Key</th><th>Does</th><th>Forms name</th></tr></thead><tbody>
+      ${KEYS.map(k=>`<tr><td>${k[0].split(" or ").map(x=>x.split("+").map(y=>`<kbd>${y}</kbd>`).join("+")).join(" or ")}</td><td><b>${k[1]}</b><div class="sub">${k[3]}</div></td><td class="sub">${k[2]||"—"}</td></tr>`).join("")}
+      </tbody></table></div></div>
+    <footer><button class="btn" data-close>Close</button></footer></div>`,"");
+  document.querySelector("#scrim [data-close]").focus();
+}
+$("#keysBtn").addEventListener("click",showKeys);
+const curView=()=>[...document.querySelectorAll("main.page")].find(m=>!m.hidden);
+const barBtn=(v,test)=>[...v.querySelectorAll(".page-head .actionbar .btn")].find(b=>test(b)&&!b.disabled);
+document.addEventListener("keydown",e=>{
+  const k=e.key,c=e.ctrlKey||e.metaKey,layer=!!$("#scrim");
+  if(c&&!e.shiftKey&&k.toLowerCase()==="k"){e.preventDefault();if(!layer)showKeys();return}
+  if(layer)return;
+  const v=curView();if(!v)return;
+  const say=t=>toast(t),hit=b=>{if(b){b.click();return true}return false};
+  if(k==="F10"){e.preventDefault();const b=barBtn(v,b=>b.classList.contains("act-green"));if(hit(b))say(`F10 · ${b.textContent.trim()}`);return}
+  if(c&&k.toLowerCase()==="q"){e.preventDefault();const b=barBtn(v,b=>/Exit/.test(b.textContent));if(hit(b))say("Ctrl+Q · Exit");return}
+  if(k==="F1"){e.preventDefault();hit(barBtn(v,b=>/Help/.test(b.textContent)));return}
+  if(k==="F9"){e.preventDefault();
+    const a=document.activeElement,fld=a?.closest?.(".field,.search,.gps-in");
+    const t=a?.matches?.("[data-lov],[data-typelov],[data-reasonlov]")?a:fld?.querySelector("[data-lov],[data-typelov],[data-reasonlov],[data-gps],#custSearch,#amCustSearch");
+    if(hit(t))return;say("F9 · Put the cursor in a lookup field first.");return}
+  if((k==="F11"&&!c)||(k==="F7"&&!c)){e.preventDefault();const q=v.querySelector("#custNo,#amColl,#enQ,#apQ,#rtQ,input[type=search]");if(q){q.focus();q.select?.();say(`${k} · Enter query`)}return}
+  if((k==="F11"&&c)||(k==="F8"&&!c)){e.preventDefault();
+    if(document.activeElement?.id==="custNo"){fetchCustomer($("#custNo").value);say(`${c?"Ctrl+F11":"F8"} · Fetch customer`);return}
+    const f=v.querySelector("#amSearch");if(f){f.requestSubmit();say(`${c?"Ctrl+F11":"F8"} · Execute query`);return}
+    const fb=v.querySelector(".act-fetch");if(hit(fb)){say(`${c?"Ctrl+F11":"F8"} · Execute query`);return}
+    say("The search runs as you type on this screen.");return}
+});
 
 /* ---------- Initial working state: sample cash collateral, like the reference screen ---------- */
 S=fresh();

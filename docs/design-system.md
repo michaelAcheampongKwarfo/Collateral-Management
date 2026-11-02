@@ -297,6 +297,50 @@ The look of inputs, buttons, LOVs, tables and tabs is fixed by @unionsg/ui (see 
 - Checks: required; latitude −90 to 90 and longitude −180 to 180.
 - Angular: Leaflet (`@asymmetrik/ngx-leaflet` or plain Leaflet) with `navigator.geolocation.getCurrentPosition` (`enableHighAccuracy`). For production, use a tile provider the bank has agreed terms with (its own tile server, or a licensed Google, Esri or Mapbox account): the public OpenStreetMap and Esri tiles in the prototype are for demonstration only.
 
+### Keyboard shortcuts (all screens)
+
+The Oracle Forms keys the officers already use. The keyboard button in the top bar, or **Ctrl+K**, lists them.
+
+| Key | Does | Forms name |
+|---|---|---|
+| F10 | The screen's green button: Submit, or Authorize on an approval (opens the checklist) | Commit (Accept) |
+| F9 | Opens the lookup for the field the cursor is in; also customer search and the GPS picker | List of Values |
+| F11 or F7 | Puts the cursor in the screen's search box | Enter Query |
+| Ctrl+F11 or F8 | Runs the search, or fetches the customer | Execute Query |
+| Ctrl+Q | The screen's Exit button | Exit |
+| F1 | Help for the screen | Help |
+| Ctrl+K | The list of keys | Show Keys |
+| Esc | Closes a dialog, list or picker | |
+
+- Web Forms keys (F11, Ctrl+F11) and the older client-server keys (F7, F8) both work. To confirm against the bank's own key file (`fmrweb.res`).
+- Each shortcut shows a short toast naming the action, e.g. "F10 · Submit".
+- Some browsers keep F11 (full screen) or Ctrl+Q (quit) for themselves. The Angular app should keep F7/F8 and the buttons as fallbacks, or ship as an installed web app where the page gets these keys.
+
+### Duplicate warning (Creation)
+
+On Submit, once the form is valid, the security is checked against approved collateral (not cancelled) and creation requests waiting or returned:
+
+| Type | Counts as the same security |
+|---|---|
+| Cash | Same source account |
+| Insurance | Same insurance company and policy number |
+| Property | GPS location within 50 m of another property |
+| Guarantee | Same guarantee account, or the same institution and folio number with an overlapping folio range |
+| Shares | Same security code and folio number with an overlapping folio range |
+
+- A match opens **Possible duplicate**: the matching collateral number, customer, status and why it matches.
+- **Go back and check** returns to the form. **Submit anyway** needs a reason, because a second lien can be legitimate.
+- The approver sees an amber banner on the request with the match and the reason. The reason is also recorded in the collateral's history.
+- It is a warning, not a block. The rules are a proposal for Credit and Risk to confirm.
+
+### History (Enquiry details, Amendment and Cancellation approvals)
+
+A **History** card lists what happened to the collateral, newest first. Each event has a coloured icon, a label, who did it, when, and a note (the reason for a return or rejection, the number of fields changed, the duplicate-warning reason):
+
+Captured · Corrected and resubmitted · Approved · Amendment submitted / approved / rejected · Cancellation submitted / Cancelled / rejected · Returned for correction · Rejected.
+
+The Angular build reads these events from the audit trail (`USER_ACTION_AUDIT`, the approval tables), so nothing new has to be stored.
+
 ### Reasons from a list (Cancellation, Reject)
 
 - The **closure reason** at Cancellation uses the standard LOV (`01 - Facility fully repaid` … `99 - Other`). The **rejection reason** at Approvals is a plain list inside the reject dialog.
