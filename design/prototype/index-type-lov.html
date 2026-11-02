@@ -931,6 +931,46 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 .ugrid > .field.span2.nl{grid-column:1 / span 2}
 @media (max-width:900px){.ugrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:640px){.ugrid{grid-template-columns:minmax(0,1fr)}.ugrid > .field.span2,.ugrid > .field.span2.nl,.ugrid > .field.nl{grid-column:1/-1}}
+
+/* ===== Colour (November 2026): navy header bars, tinted section bands, accented side panels =====
+   Matches the bank's other new screens: noticeable, not loud. */
+:root{--hdr:#2F4462;--hdr-2:#3B5577;--hdr-ink:#FFFFFF;--hdr-sub:#C9D6E8;--band:#EEF3FA;--band-line:#D9E3F1;--accent:#2F6FB5}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--hdr:#1C2A3F;--hdr-2:#24364F;--hdr-sub:#9FB2CC;--band:#18233A;--band-line:#26324A;--accent:#5AA2EE}}
+:root[data-theme="dark"]{--hdr:#1C2A3F;--hdr-2:#24364F;--hdr-sub:#9FB2CC;--band:#18233A;--band-line:#26324A;--accent:#5AA2EE}
+/* card headers: a navy bar with white title */
+.card > .card-head{background:linear-gradient(180deg,var(--hdr-2),var(--hdr));color:var(--hdr-ink);border-bottom:0;border-radius:calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0 0}
+.card > .card-head h2{color:var(--hdr-ink)}
+.card > .card-head p{color:var(--hdr-sub)}
+.card > .card-head p b{color:var(--hdr-ink)}
+.card > .card-head .right .mono{color:var(--hdr-sub)!important}
+.card > .card-head .step:not(.done):not(.active){background:rgba(255,255,255,.16);color:var(--hdr-ink)}
+.card > .card-head .step.active{background:#fff;color:var(--hdr)}
+.card > .card-head .step.done{box-shadow:0 0 0 2px rgba(255,255,255,.35)}
+.card > .card-head .step svg{color:inherit}
+.card > .card-head .type-chip{color:var(--hdr-ink)}
+.card > .card-head .type-chip .ic{background:#fff;color:var(--tc)}
+.card > .card-head .btn.ghost{color:var(--hdr-ink)}
+.card > .card-head .btn.ghost:hover{background:rgba(255,255,255,.14)}
+.card > .card-head .chip-count{background:rgba(255,255,255,.16);color:var(--hdr-ink)}
+.card > .card-head .coll-no-chip{background:rgba(255,255,255,.14);color:var(--hdr-sub)}
+.card > .card-head .coll-no-chip b,.card > .card-head .coll-no-chip .mono{color:var(--hdr-ink)}
+.card > .card-head .link-btn{color:var(--hdr-ink)}
+/* sections inside a form: a tinted band with a stripe in the collateral type's colour */
+.section-head{background:var(--band);border:1px solid var(--band-line);border-left:3px solid var(--tc,var(--accent));border-radius:6px;padding:9px 14px}
+.section-head .section-title{color:var(--fg)}
+.section + .section{border-top:0;padding-top:0;margin-top:22px}
+/* side panels: accent stripe and coloured titles */
+.rail > .card{border-left:3px solid var(--accent)}
+.rail h3{color:var(--accent)}
+/* dialogs and drawers share the header bar */
+:is(.modal,.drawer) > header{background:linear-gradient(180deg,var(--hdr-2),var(--hdr));color:var(--hdr-ink);border-bottom:0}
+.modal > header{border-radius:12px 12px 0 0}
+:is(.modal,.drawer) > header h2{color:var(--hdr-ink)}
+:is(.modal,.drawer) > header .btn.ghost{color:var(--hdr-ink)}
+:is(.modal,.drawer) > header .btn.ghost:hover{background:rgba(255,255,255,.14)}
+/* module home: group titles and card icons pick up the accent */
+.hub-group h2{color:var(--hdr)}
+.hub-card{border-top:3px solid var(--tc)}
 </style>
 </head>
 <body>
