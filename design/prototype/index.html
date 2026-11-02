@@ -922,6 +922,15 @@ th .arr i.dn.on{border-top-color:var(--u-th-text)}
 .ugrid{gap:14px 24px}
 .field .lbl-auto{display:inline!important}
 @media (max-width:640px){.urow > .field:not(.grow),.urow > .field.grow{flex:1 1 100%}.urow > .field:not(.grow) > :not(label):not(.lbl){width:100%;max-width:none}.urow > .field:not(.grow) > :is(label,.lbl){white-space:normal}}
+
+/* ===== 3-column form grid (November 2026): every field starts on one of three column lines ===== */
+.ugrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 24px}
+.ugrid > .field.span2{grid-column:span 2}
+.ugrid > .field.full{grid-column:1/-1}
+.ugrid > .field.nl{grid-column-start:1}
+.ugrid > .field.span2.nl{grid-column:1 / span 2}
+@media (max-width:900px){.ugrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.ugrid{grid-template-columns:minmax(0,1fr)}.ugrid > .field.span2,.ugrid > .field.span2.nl,.ugrid > .field.nl{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -1124,9 +1133,9 @@ const TYPES=[
   {code:"C02",name:"Insurance",title:"Insurance collateral",lovDesc:"INSURANCE COLLATERALS",tc:"--t-ins",ic:"shield",d:"Assigned insurance policy or its cash value",
    sections:[
     {title:"Insurance details",desc:"The insurer and the policy assigned to the bank.",fields:[
-      {id:"insCompany",label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:6},
+      {id:"insCompany",span:2,label:"Insurance company",type:"lookup",lov:"insCompany",req:true,col:6},
       {id:"insCode",w:"s",label:"Insurance code",type:"text",req:true,col:6},
-      {id:"policyType",br:true,label:"Policy type",type:"lookup",lov:"policyType",req:true,col:6},
+      {id:"policyType",span:2,label:"Policy type",type:"lookup",lov:"policyType",req:true,col:6},
       {id:"policyNo",w:"s",label:"Policy number",type:"text",req:true,col:6},
       {id:"sumAssured",label:"Sum assured",type:"amount",req:true,col:6},
     ]},
@@ -1136,8 +1145,8 @@ const TYPES=[
     {title:"Property details",desc:"What the property is, who owns it and where it is.",fields:[
       {id:"propType",label:"Property type",type:"lookup",lov:"propType",req:true,col:6},
       {id:"propSub",label:"Sub property type",type:"lookup",lov:"propSub",col:6},
-      {id:"owner",row:"own",grow:1,label:"Ownership name",type:"text",req:true,col:6},
-      {id:"location",row:"own",cw:"250px",label:"GPS location",type:"gps",req:true,col:6},
+      {id:"owner",nl:1,grow:1,label:"Ownership name",type:"text",req:true,col:6},
+      {id:"location",cw:"250px",label:"GPS location",type:"gps",req:true,col:6},
     ]},
     {title:"Valuation",desc:"The latest independent valuation of the property.",fields:[
       {id:"valuer",row:"valuer",grow:1,label:"Valuer name",type:"text",req:true,col:6},
@@ -1169,7 +1178,7 @@ const TYPES=[
   {code:"C05",name:"Shares",title:"Shares / stock / security collateral",lovDesc:"SHARES / STOCKS / SECURITIES COLLATERAL",tc:"--t-shares",ic:"chart",d:"Listed shares, stocks or securities pledged",
    sections:[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
-      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
+      {id:"shareCode",span:2,label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
       {id:"units",row:"units",label:"No. of shares",type:"int",req:true,col:6},
       {id:"secAmount",row:"units",label:"Security amount",type:"amount",req:true,col:6},
@@ -1288,7 +1297,7 @@ function fieldHtml(t,f,st=S){
 /* Field widths follow the value: amounts, dates, codes and numbers are fixed; lookups and long text grow */
 /* Field widths are the @unionsg/ui TextInput presets: amount 180, date 160, short 240, phone 240, LOV 280, name 420.
    Text and narration fields take the whole row. */
-const CW={amount:"180px",date:"160px",int:"120px",percent:"120px",tel:"240px",lookup:"280px",derived:"280px"};
+const CW={amount:"150px",date:"140px",int:"120px",percent:"120px",tel:"240px",lookup:"280px",derived:"280px"};
 /* in a shared row each field is only as wide as its longest value:
    amount GHS 99,999,999.99 · date 25-OCT-2026 · count 9,999,999 · rate 99.99 % · folio 10-12 characters */
 /* GPS location: "latitude, longitude" in decimal degrees (6 places). The pin opens the picker:
@@ -1383,24 +1392,17 @@ document.addEventListener("change",e=>{if(e.target.matches?.("[data-dial]"))e.ta
 const RW={amount:"150px",date:"140px",int:"100px",percent:"110px",text:"120px",tel:"240px"};
 function fsize(f){
   if(f.type==="textarea")return{full:1};
-  if(f.grow)return{grow:1};
-  if(f.cw)return{cw:f.cw};
-  if(f.row&&RW[f.type])return{cw:RW[f.type]};
-  if(f.w==="s")return{cw:"240px"};
-  if(f.w==="name")return{cw:"420px"};
-  if(f.codeOnly)return{cw:"220px"};
-  if(CW[f.type])return{cw:CW[f.type]};
-  return{full:1,cw:"420px"};
+  /* a wide field takes two of the three columns, so the field after it starts on the third column line */
+  const span=!!(f.grow||f.span===2||f.w==="name");
+  const cw=f.cw||(span&&"420px")||(f.row&&RW[f.type])||(f.w==="s"&&"240px")||(f.codeOnly&&"220px")||CW[f.type]||"420px";
+  return{span2:span,cw};
 }
-const fcls=f=>{const z=fsize(f);return z.full?"full":z.grow?"grow":""};
-const fsty=f=>{const z=fsize(f);return (z.cw?`--cw:${z.cw};`:"")+(f.slw?`--slw:${f.slw}`:"")};
-/* a section's fields on the library's two-column form grid: label right-aligned beside its input.
-   Fields sharing a "row" key (amount, review date, expiry date) sit together on one full-width line. */
+const fcls=f=>{const z=fsize(f);return (z.full?"full":z.span2?"span2":"")+(f.nl?" nl":"")};
+const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
+/* a section's fields on the 3-column form grid: every field starts on one of three column lines,
+   whatever the collateral type, so fields line up from section to section */
 function rowsHtml(sec,fn){
-  const out=[];
-  sec.fields.forEach((f,i)=>{const prev=sec.fields[i-1];
-    if(f.row&&prev?.row===f.row)out[out.length-1].push(f);else out.push(f.row?[f]:f)});
-  return `<div class="ugrid">${out.map(x=>Array.isArray(x)?`<div class="urow">${x.map(fn).join("")}</div>`:fn(x)).join("")}</div>`;
+  return `<div class="ugrid">${sec.fields.map(fn).join("")}</div>`;
 }
 /* clearing a LOV also clears the LOVs that depend on it */
 function lovClear(t,st,id){const fs=t.sections.flatMap(s=>s.fields),f=fs.find(x=>x.id===id);delete st.values[id];delete st.lookups[id];
@@ -1746,7 +1748,7 @@ const AM_TYPES=[
     ]},TYPES[3].sections[1],COLL({})]),
   AMT("C05",[
     {title:"Security details",desc:"The pledged security, how many units and what they are worth.",fields:[
-      {id:"shareCode",label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
+      {id:"shareCode",span:2,label:"Share / security code",type:"lookup",lov:"shareCode",req:true,col:6},
       {id:"shareIndex",label:"Index",type:"lookup",lov:"shareIndex",req:true,col:6},
       {id:"units",row:"units",label:"No. of shares",type:"int",req:true,col:6},
       {id:"stockAmount",row:"units",label:"Stock amount",type:"amount",req:true,col:6},

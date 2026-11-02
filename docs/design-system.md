@@ -25,7 +25,7 @@ Where the library has no rule, the prototype keeps the module's agreed choices:
 - The customer search and the documents list stay as dialogs; the library LOV dropdown is for code lists.
 - **Collateral type** at Creation is picked from five tiles (icon, name, code, one-line description), not a LOV: with only five types, every option stays visible and is one click away.
 - **Customer details** at Creation (and the customer card on every other screen) are read-only inputs on the form grid, each sized to its value: Customer number 150px (input plus search; no helper line under it, only errors), Customer name 420px, Customer type 160px, Home branch 220px, Collaterals 80px, Amount held 180px.
-- **Shared lines.** Fields that belong together sit on one line, with short labels, and each is only as wide as its longest value (see *Lines of compact fields* under Form layout).
+- **3-column grid.** Every field starts on one of three column lines, and each input is only as wide as its longest value (see *Form layout*).
 
 ## Principles
 
@@ -102,45 +102,45 @@ Rules:
 | `--u-amber` / `--u-amber-b` | `#b45309` / `#fcd34d` | `#fcd34d` / `#6b4a12` |
 | `--u-rose` / `--u-rose-b` | `#be123c` / `#fda4af` | `#fda4af` / `#7a2a3d` |
 
-## Form layout: inline labels, fields sized to their values
+## Form layout: 3-column grid, labels on top, fields sized to their values
 
-Every label sits **on top of** its input, left-aligned, with any hint or error under the input. (October 2026: labels were tried beside the inputs, as in Oracle Forms, then moved back on top.) Each section is a **two-column grid**, and inputs keep the library's preset width for the value they hold.
+Every label sits **on top of** its input, left-aligned, with any hint or error under the input. (October 2026: labels were tried beside the inputs, as in Oracle Forms, then moved back on top.)
 
-| Field | Width (@unionsg/ui preset) |
+Every section, and the Customer section, is a **3-column grid** (November 2026). Every field starts on one of the three column lines, so fields line up from section to section and from one collateral type to the next. A wide field (names, the main lookup of a section) takes two columns, so the field after it starts on the third line; Narration takes all three. Inside its column each input is only as wide as its longest value:
+
+| Field | Width |
 |---|---|
-| Lookup (LOV), including the account number | 280px |
-| Auto-filled code values (product, currency, branch) | 280px |
-| Account name | 420px (name) |
-| Amount | 180px, right-aligned, currency prefix |
-| Date | 160px, centred, calendar button |
-| Short code or number (insurance code, policy number) | 240px (short) |
+| Lookup (LOV), auto-filled code values | 280px, or the column width if smaller |
+| Wide field: account name, ownership name, valuer name, insurance company, policy type, share code, financial institution, guarantee account | 2 columns, input up to 420px |
+| Currency and branch next to a wide lookup | 210px |
+| Account number (cash source account) | 220px |
+| Amount | 150px (`GHS 99,999,999.99`), right-aligned, currency prefix |
+| Date | 140px (`25-OCT-2026`), calendar button |
+| Short code or number (insurance code, policy number) | 240px |
+| Folio number, start, end | 120px |
+| Rate | 110px · Count 100px |
 | Phone number | 240px, @unionsg/ui PhoneInput: country selector (GH, LR, NG, SL), dial code, then the number |
-| Percentage, count | 120px |
-| Names and free text (ownership, valuer) | Full row, up to 420px |
 | GPS location (property) | 250px: `latitude, longitude` box plus a pin button that opens the location picker |
-| Narration | Full row |
+| Narration | All three columns |
 
-- Fields fill the grid left to right, two per row: *Insurance company · Insurance code*; *Policy type · Policy number*.
-- **Lines of compact fields.** Fields that belong together share one full-width line. Inside a line each field is only as wide as its longest value: amount 150px (`GHS 99,999,999.99`), date 140px (`25-OCT-2026`), count 100px, rate 110px, folio 120px. The fields are spread across the line (space-between), so the last one ends at the right edge; the gap between them is never less than 8px. Every line fits beside the side panel at 1440px.
+Amounts and dates are narrower than the library presets (180px, 160px) because those widths still hold the longest value and keep every form on the grid.
 
-| Collateral | Line |
-|---|---|
-| All | Amount considered (Collateral amount for cash) · Review date · Expiry date |
-| Guarantee | Financial institution (fills the line) · Currency 210px |
-| Guarantee | Account number (fills the line) · Branch 210px |
-| Guarantee | Guarantee amount · Interest rate · Number of months |
-| Guarantee, Shares | Folio number · Folio start · Folio end |
-| Shares | No. of shares · Security amount (Stock amount at Amendment) · Market value |
-| Property | Ownership name (fills the line) · GPS location 250px |
-| Property | Valuer name (fills the line) · Contact number (phone, 240px) |
-| Property | Valuation date · Market value (Collateral amount at Amendment) · Forced sale |
-- On a shared line, each field is as wide as its input, or its label if that is longer; hints wrap under the input.
+| Collateral | Row 1 | Row 2 | Row 3 |
+|---|---|---|---|
+| Customer (every screen) | Customer number · Customer name · Customer type | Home branch · Collaterals · Amount held | |
+| Cash | Source account · Account name (2) | Product · Currency · Source branch | |
+| Insurance | Insurance company (2) · Insurance code | Policy type (2) · Policy number | Sum assured |
+| Property | Property type · Sub property type | Ownership name (2) · GPS location | Valuer name (2) · Contact number, then Valuation date · Market value · Forced sale |
+| Guarantee | Financial institution (2) · Currency | Account number (2) · Branch | Deposit type · Collateral type, then Guarantee amount · Interest rate · Number of months, then Folio number · Folio start · Folio end |
+| Shares | Share / security code (2) · Index | No. of shares · Security amount · Market value | Folio number · Folio start · Folio end |
+| All (Collateral details) | Amount considered · Review date · Expiry date | Narration (3) | |
+
 - Hints, limits and errors sit under the field.
 - **Lookups (LOVs)** are one box showing the code and description separated by a hyphen, e.g. `001 - MERIDIAN LIFE ASSURANCE`. Clicking it opens a dropdown under the field with live search; ↑ ↓ and Enter pick a row, Esc closes it, and the × in the box clears the value (and any LOV that depends on it). Auto-filled code values use the same style (`010 - SINKOR`).
 - Values that have their own meaning get their own field. The cash **Source account** box holds only the account number; **Account name**, **Product**, **Currency** and **Source branch** are separate auto-filled fields.
 - Auto-filled fields use the library's read-only style (light fill, no border, semi-bold) with a lock icon.
 - Side panels (required fields, balances, documents, decision, record) sit on the **right** of the form, 240px wide.
-- Below 900px the grid becomes one column; on phones every field takes the full row.
+- Below 900px the grid has two columns; on phones one, and every field takes the full row.
 
 Sections:
 - Each form is split into short sections (for example *Property details*, *Valuation*, *Collateral details*). Each section has a position marker (`01 / 03`), a title and a one-line description above its fields.
