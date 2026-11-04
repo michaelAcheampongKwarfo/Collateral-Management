@@ -750,6 +750,10 @@ textarea.input{min-height:64px;padding:5px 10px}
 @media (max-width:640px){.gps-pair{grid-template-columns:1fr 1fr}.gps-pair .map-link{grid-column:1/-1}.gps-map{height:280px}}
 .gps-pair .field label{font-size:13px}
 .gps-err{margin-bottom:6px}
+.gps-linkf{margin:2px 0 10px}
+.gps-linkf .input.bad{border-color:var(--u-err);box-shadow:0 0 0 1px var(--u-err)}
+.gps-linkf .hint .map-link{font-size:inherit}
+.gps-layers button:disabled{opacity:.45;cursor:not-allowed}
 /* top bar without the sidebar: module mark links home */
 .tb-brand{display:flex;text-decoration:none}
 .tb-brand .brand-mark{width:30px;height:30px;font-size:12px}
@@ -1391,6 +1395,15 @@ const CW={amount:"150px",date:"140px",int:"120px",percent:"120px",tel:"240px",lo
    the device's own GPS (the browser asks first), or coordinates typed or pasted from the valuation report. */
 const GPS_RE=/^\s*(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
 const gpsParse=v=>{const m=GPS_RE.exec(v||"");if(!m)return null;const lat=+m[1],lon=+m[2];return Math.abs(lat)<=90&&Math.abs(lon)<=180?{lat,lon}:null};
+/* a link copied from Google Maps or OpenStreetMap carries the point; take it from the link */
+function coordsFromText(t){
+  t=String(t||"").trim();if(!t)return null;
+  const plain=gpsParse(t);if(plain)return plain;
+  const pats=[/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/,/[?&]mlat=(-?\d+\.\d+)&mlon=(-?\d+\.\d+)/,/[#&?]map=\d+\/(-?\d+\.\d+)\/(-?\d+\.\d+)/,
+    /[?&](?:q|query|ll|destination)=(-?\d+\.\d+)(?:,|%2C)\s*(-?\d+\.\d+)/i,/@(-?\d+\.\d+),(-?\d+\.\d+)/];
+  for(const re of pats){const m=re.exec(t);if(m){const g=gpsParse(`${m[1]},${m[2]}`);if(g)return g}}
+  return null;
+}
 const gpsFmt=(lat,lon)=>`${lat.toFixed(6)}, ${lon.toFixed(6)}`;
 const mapUrl=g=>`https://www.openstreetmap.org/?mlat=${g.lat}&mlon=${g.lon}#map=17/${g.lat}/${g.lon}`;
 const mapLink=v=>{const g=gpsParse(v);return g?`<a class="map-link" href="${mapUrl(g)}" target="_blank" rel="noopener">${icon("pin")}View on map</a>`:""};
@@ -1412,6 +1425,8 @@ function openGpsPicker(inputId){
         <div class="gps-layers" role="group" aria-label="Map style"><button type="button" class="on" data-layer="street" aria-pressed="true">Map</button><button type="button" data-layer="sat" aria-pressed="false">Satellite</button></div></div>
       <div class="gps-map" id="gpsMapBox" aria-label="Map: click to place the pin, drag the pin to adjust"><div class="gps-loading">Loading map…</div></div>
       <div class="gps-msg" id="gpsMsg" role="status">Click the map where the property is, or drag the pin.</div>
+      <div class="field gps-linkf"><label for="gpsLink">Or paste a map link</label><input class="input" id="gpsLink" placeholder="Paste a Google Maps or OpenStreetMap link, or 6.2905, -10.7712" autocomplete="off">
+        <div class="hint">Find the property in <a class="map-link" id="gpsFind" target="_blank" rel="noopener">${icon("pin")}OpenStreetMap</a> or Google Maps, copy the link from the address bar, and paste it here.</div></div>
       <div class="gps-pair"><div class="field"><label for="gpsLat">Latitude</label><input class="input mono" id="gpsLat" inputmode="decimal" placeholder="6.290500" value="${cur?cur.lat.toFixed(6):""}"></div>
         <div class="field"><label for="gpsLon">Longitude</label><input class="input mono" id="gpsLon" inputmode="decimal" placeholder="-10.771200" value="${cur?cur.lon.toFixed(6):""}"></div>
         <a class="map-link" id="gpsMap" target="_blank" rel="noopener" hidden>${icon("pin")}Open in OpenStreetMap</a></div>
@@ -1425,20 +1440,37 @@ function openGpsPicker(inputId){
     if(g&&map){pin.setLatLng([g.lat,g.lon]);if(!map.hasLayer(pin))pin.addTo(map);if(pan)map.setView([g.lat,g.lon],Math.max(map.getZoom(),16))}};
   const place=(ll,how)=>{lat.value=ll.lat.toFixed(6);lon.value=ll.lng.toFixed(6);sync(false);say(how,"ok")};
   /* pasting "6.29, -10.77" into either box fills both */
-  const paste=e=>{const g=gpsParse(e.clipboardData?.getData("text"));if(!g)return;e.preventDefault();lat.value=g.lat.toFixed(6);lon.value=g.lon.toFixed(6);sync(true)};
+  const paste=e=>{const g=coordsFromText(e.clipboardData?.getData("text"));if(!g)return;e.preventDefault();lat.value=g.lat.toFixed(6);lon.value=g.lon.toFixed(6);sync(true)};
   lat.addEventListener("input",()=>sync(true));lon.addEventListener("input",()=>sync(true));lat.addEventListener("paste",paste);lon.addEventListener("paste",paste);sync(false);
+  const linkIn=$("#gpsLink"),find=$("#gpsFind");
+  const findAt=(a,o,z)=>{find.href=`https://www.openstreetmap.org/#map=${z}/${a.toFixed(5)}/${o.toFixed(5)}`};
+  {const c=read();findAt(c?c.lat:GPS_HOME[0],c?c.lon:GPS_HOME[1],c?17:13)}
+  linkIn.addEventListener("input",()=>{const v=linkIn.value.trim();if(!v){linkIn.classList.remove("bad");return}
+    const g=coordsFromText(v);linkIn.classList.toggle("bad",!g);
+    if(g){lat.value=g.lat.toFixed(6);lon.value=g.lon.toFixed(6);sync(true);say("Location taken from the link. Check the pin, then use this location.","ok")}
+    else say("That link has no coordinates in it. Copy the link after the map has moved to the property, or right-click the place in Google Maps and copy the numbers.","bad")});
   loadLeaflet().then(L=>{
     if(!document.body.contains(box))return;
     box.innerHTML="";
     const start=read(),center=start?[start.lat,start.lon]:GPS_HOME;
     map=L.map(box,{zoomControl:true}).setView(center,start?17:13);
+    map.on("moveend",()=>{const c=map.getCenter();findAt(c.lat,c.lng,map.getZoom())});
     const layers={street:L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}),
       sat:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Imagery © Esri"})};
     layers.street.addTo(map);
     /* when map images are blocked (some embedded viewers), draw a coordinate grid and reference points instead */
     let bad=0,ok=0,fallback=false;
     const noTiles=()=>{if(fallback||ok)return;fallback=true;box.classList.add("no-tiles");
-      const note=L.control({position:"bottomleft"});note.onAdd=()=>{const d=L.DomUtil.create("div","gps-note");d.textContent="Map images can't load here; the grid shows latitude and longitude. Clicking still places the pin.";return d};note.addTo(map);
+      Object.values(layers).forEach(l=>map.removeLayer(l));
+      const sat=document.querySelector('.gps-layers [data-layer="sat"]');if(sat){sat.disabled=true;sat.title="Satellite needs live map images"}
+      const st=document.querySelector('.gps-layers [data-layer="street"]');if(st){st.classList.add("on");st.setAttribute("aria-pressed","true")}
+      const note=L.control({position:"bottomleft"});note.onAdd=()=>{const d=L.DomUtil.create("div","gps-note");d.textContent="Live map images can't load here, so this is a saved street map of Monrovia. Zoom in on the property and click it.";return d};note.addTo(map);
+      /* saved copy of the OpenStreetMap streets of greater Monrovia (zoom 15), published with the page */
+      const saved=L.imageOverlay("maps/monrovia-z15.webp",[[6.238855,-10.843506],[6.380812,-10.678711]],{attribution:"© OpenStreetMap contributors (saved copy)",interactive:false}).addTo(map);
+      map.setMaxZoom(17);
+      saved.on("error",()=>{map.removeLayer(saved);note.getContainer().textContent="Map images can't load here; the grid shows latitude and longitude. Paste a map link below, or click to place the pin.";gridFallback()});
+    };
+    const gridFallback=()=>{
       const grid=L.layerGroup().addTo(map);
       const draw=()=>{grid.clearLayers();const b=map.getBounds(),z=map.getZoom(),st=z>=17?.0005:z>=15?.002:z>=13?.01:z>=11?.05:.2;
         for(let a=Math.ceil(b.getSouth()/st)*st;a<b.getNorth();a+=st)L.polyline([[a,b.getWest()],[a,b.getEast()]],{color:"#94a3b8",weight:1,interactive:false}).bindTooltip(a.toFixed(4),{permanent:true,direction:"right",className:"gps-tick"}).addTo(grid);
@@ -1469,6 +1501,8 @@ function openGpsPicker(inputId){
   $("#gpsHere").focus();
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-gps]");if(b)openGpsPicker(b.dataset.gps)});
+document.addEventListener("paste",e=>{const i=e.target.closest?.(".gps-in input");if(!i)return;const t=e.clipboardData?.getData("text"),g=coordsFromText(t);
+  if(!g||gpsParse(t))return;e.preventDefault();i.value=gpsFmt(g.lat,g.lon);i.dispatchEvent(new Event("input",{bubbles:true}));toast("Coordinates taken from the map link.")});
 /* the map link under the field follows the value as it is typed or picked */
 document.addEventListener("input",e=>{if(!e.target.closest?.(".gps-in"))return;const h=e.target.closest(".field").querySelector(".gps-hint");if(h)h.innerHTML=mapLink(e.target.value)});
 
