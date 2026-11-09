@@ -156,11 +156,11 @@ Added November 2026 after feedback that the screens had no colour, then refined.
 
 | Element | Treatment | Token (light / dark) |
 |---|---|---|
-| Card header (Customer, Collateral type, the type form, lists, Request, Closure summary) | Flat navy bar, about 44px, white title, light-blue subtitle; step circles white or green | `--hdr` `#2F4462` / `#1C2A3F` |
+| Card header (Customer, Collateral type, the type form, lists, Request, Closure summary) | Navy bar, about 44px, solid for the first half then easing into a lighter steel blue at the right-hand end; white title, light-blue subtitle; step circles white or green | `--hdr` `#2F4462` → `--hdr-end` `#5B7FAE` / `#1C2A3F` → `#2E4A6E` |
 | Section inside a form | A circle numbered 1, 2, 3 in the collateral type's colour (cash green, insurance purple, property orange, guarantee blue, shares teal), the title, the description in grey, and a thin line under it | `--tc` |
 | Side panel (Required fields, Account balances, Documents, Decision, Record) | A slim tinted title strip with an icon (list, wallet, paperclip, shield, file) | `--band` `#EEF3FA` / `#18233A` |
 | Decision panel | Keeps its amber outline (it is the one panel that needs a decision) | `--act-amber` |
-| Dialogs and drawers | Same navy header bar as cards | `--hdr` |
+| Dialogs and drawers | Same header bar as cards, with the same fade | `--hdr` → `--hdr-end` |
 | Module home | Icon tile tinted in its screen's colour; group titles in navy | |
 
 Inputs, buttons, tables and tabs keep their @unionsg/ui colours; the colour sits in the frame around them, so data stays easy to read. Before/after screenshots: `design/comparison/colour-before-*.png` and `colour-after-*.png`.

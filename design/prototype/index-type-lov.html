@@ -1016,6 +1016,12 @@ kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--u
 .tl-h{display:flex;gap:10px;flex-wrap:wrap;align-items:baseline;padding-top:4px}
 .tl-m{font-size:12.5px;color:var(--muted)}
 .tl-n{font-size:13px;margin-top:2px;color:var(--fg)}
+
+/* header bars: navy easing into a lighter blue at the right-hand end */
+:root{--hdr-end:#5B7FAE}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--hdr-end:#2E4A6E}}
+:root[data-theme="dark"]{--hdr-end:#2E4A6E}
+.card > .card-head,:is(.modal,.drawer) > header{background:linear-gradient(90deg,var(--hdr) 0%,var(--hdr) 45%,var(--hdr-end) 100%)}
 </style>
 </head>
 <body>
