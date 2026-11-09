@@ -1022,6 +1022,109 @@ kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--u
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--hdr-end:#2E4A6E}}
 :root[data-theme="dark"]{--hdr-end:#2E4A6E}
 .card > .card-head,:is(.modal,.drawer) > header{background:linear-gradient(90deg,var(--hdr) 0%,var(--hdr) 45%,var(--hdr-end) 100%)}
+
+/* ===================================================================================
+   Visual style, November 2026: the bank's new screens (e.g. Cheque Book Requisition)
+   replace the @unionsg/ui look. Royal-blue title banner with a back arrow and the actions,
+   square blue section bars with a white tick, underline inputs, read-only values as plain text.
+   =================================================================================== */
+:root{--hdr:#1E4E9C;--hdr-end:#4F7FC6;--sec-ink:#1E4E9C;--ul:#C3CCD8;--r-md:3px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--hdr:#173B73;--hdr-end:#2D5A98;--sec-ink:#9CC0F5;--ul:#3B4A63}}
+:root[data-theme="dark"]{--hdr:#173B73;--hdr-end:#2D5A98;--sec-ink:#9CC0F5;--ul:#3B4A63}
+
+/* title banner */
+.page-head{position:sticky;top:57px;z-index:15;align-items:center;flex-wrap:wrap;gap:10px 14px;padding:12px 16px;
+  background:linear-gradient(90deg,var(--hdr) 0%,var(--hdr) 55%,var(--hdr-end) 100%);color:#fff;box-shadow:0 2px 8px rgba(12,32,66,.18)}
+.page-head > div:not(.actionbar){flex:1 1 260px;min-width:0}
+.page-head h1{color:#fff;font-size:20px}
+.page-head p{color:rgba(255,255,255,.78);font-size:12.5px;margin-top:2px}
+.page-head .h1-no{color:rgba(255,255,255,.72)}
+.page-head .back{display:none}
+.ph-back{width:34px;height:34px;flex:none;display:grid;place-items:center;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:4px;cursor:pointer}
+.ph-back:hover{background:rgba(255,255,255,.24)}
+.ph-back svg{width:18px;height:18px}
+.page-head .actionbar{gap:8px}
+.page-head .actionbar .ph-exit{display:none}
+.page-head .actionbar .btn{height:34px;min-width:0;border-radius:4px;box-shadow:none}
+.page-head .actionbar .sep{background:rgba(255,255,255,.3);height:22px}
+.page-head .actionbar .ph-icon{width:34px;padding:0;justify-content:center;font-size:0;gap:0;position:relative;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff}
+.page-head .actionbar .ph-icon:hover:not(:disabled){background:rgba(255,255,255,.24);color:#fff}
+.page-head .actionbar .ph-icon svg{width:17px;height:17px}
+.page-head .actionbar .ph-icon span:not(:empty){position:absolute;top:-7px;right:-7px;font-size:10px;font-weight:700;line-height:16px;min-width:16px;padding:0 4px;border-radius:99px;background:#F59E0B;color:#111}
+.page-head .actionbar .ph-ghost{background:transparent;border-color:rgba(255,255,255,.75);color:#fff}
+.page-head .actionbar .ph-ghost:hover:not(:disabled){background:rgba(255,255,255,.14);color:#fff}
+.page-head .actionbar .act-green{background:#16A34A;border-color:#16A34A;color:#fff}
+.page-head .actionbar .act-green:hover:not(:disabled){background:#15803D}
+.page-head .actionbar .act-amber{background:#D97706;border-color:#D97706;color:#fff}
+.page-head .actionbar .act-amber:hover:not(:disabled){background:#B45309;color:#fff}
+.page-head .actionbar .act-rose{background:#E11D48;border-color:#E11D48;color:#fff}
+.page-head .actionbar .act-rose:hover:not(:disabled){background:#BE123C;color:#fff}
+.page-head .actionbar .btn:disabled{opacity:.5}
+@media (max-width:640px){.page-head{top:52px}.page-head .actionbar{width:100%}.page-head .actionbar .btn:not(.ph-icon){flex:1 1 auto}}
+
+/* section bars: square blue bar, uppercase title after a white tick */
+.card{border-radius:3px}
+.card > .card-head{border-radius:3px 3px 0 0;padding:10px 18px;min-height:42px}
+.card > .card-head .step{display:none}
+.card > .card-head h2{font-size:14px;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.card > .card-head h2::before{content:"";width:3px;height:16px;background:#fff;border-radius:1px;flex:none}
+.card > .card-head:not(.wrap) p{display:none}
+.card > .card-head .type-chip .ic{width:24px;height:24px}
+.modal,.drawer{border-radius:4px}
+.modal > header{border-radius:4px 4px 0 0}
+
+/* sections inside a form: blue uppercase title after a tick in the collateral type's colour */
+.section-head{grid-template-columns:minmax(0,1fr);padding:0 0 8px}
+.section-head .n{display:none}
+.section-head .section-title{grid-column:1;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:var(--sec-ink);display:flex;align-items:center;gap:8px}
+.section-head .section-title::before{content:"";width:3px;height:14px;background:var(--tc,var(--hdr));border-radius:1px;flex:none}
+.section-head p{grid-column:1}
+
+/* side panels: blue edge, blue title with its icon */
+.rail > .card:not(.decision){border-left:3px solid var(--hdr)}
+.rail h3{margin:0 0 12px;padding:0;background:transparent;border:0;color:var(--sec-ink);font-size:14px;font-weight:700;text-transform:none;letter-spacing:0}
+.rail h3 svg{color:var(--sec-ink)}
+
+/* labels and underline inputs */
+.field label,.field .lbl,:is(.grid,.ugrid,.urow,#custCard) > .field > :is(label,.lbl){font-size:12.5px;font-weight:500;color:var(--muted)}
+.input,.lookup-btn{height:32px;border:0;border-bottom:1px solid var(--ul);border-radius:0;background:transparent;padding:0 2px;font-size:15px;box-shadow:none}
+.input:hover,.lookup-btn:hover{border-bottom-color:var(--faint)}
+.input:focus,.lookup-btn:focus,.lookup-btn:focus-visible{border-bottom-color:var(--u-focus);box-shadow:0 1px 0 0 var(--u-focus);outline:none}
+textarea.input{border:1px solid var(--ul);border-radius:3px;padding:6px 8px}
+textarea.input:focus{box-shadow:0 0 0 1px var(--u-focus)}
+.input:disabled,.lookup-btn:disabled{background:transparent;border-bottom-style:dashed;color:var(--u-dis-text)}
+.field.invalid .input,.field.invalid .lookup-btn,.field.invalid .search,.field.invalid .phone-in{border-bottom-color:var(--u-err);box-shadow:0 1px 0 0 var(--u-err)}
+.field.changed .input,.field.changed .lookup-btn{border-bottom-color:var(--chg);box-shadow:0 1px 0 0 var(--chg);background:var(--chg-soft)}
+.lookup-btn{padding-right:0}
+.lookup-btn .lov-ic{border-left:0;width:26px;color:var(--muted)}
+.lookup-btn .lov-v,.lookup-btn .lov-v b{font-size:15px}
+.search{border-bottom:1px solid var(--ul)}
+.search:focus-within{border-bottom-color:var(--u-focus);box-shadow:0 1px 0 0 var(--u-focus)}
+.search .input{border-bottom:0;box-shadow:none!important}
+.search .btn{height:32px;background:transparent;border:0;color:var(--muted);padding:0 6px}
+.search .btn:hover{background:transparent;color:var(--u-focus)}
+.affix .pre{left:2px}
+.affix .pre + .input{padding-left:36px}
+.date-in .input{text-align:left;padding-left:2px}
+.date-btn{background:transparent}
+.phone-in{border:0;border-bottom:1px solid var(--ul);border-radius:0;background:transparent;height:32px}
+.phone-in:focus-within{border-bottom-color:var(--u-focus);box-shadow:0 1px 0 0 var(--u-focus)}
+.phone-in .ph-cc,.phone-in .ph-dial{background:transparent;border-right:0}
+.phone-in .input{height:31px}
+/* read-only values: plain text, no box */
+.ro,.ro.ro-view{background:transparent;border:0;border-radius:0;padding:0 2px;height:auto;min-height:32px;font-size:15px;font-weight:500;color:var(--fg)}
+.ro.ro-multi{min-height:0;padding:4px 2px}
+.ro.empty,.ro.empty.ro-view{color:var(--faint)}
+.ro.num{font-family:var(--font-body)}
+
+/* tabs: pills, the active one filled blue */
+.seg.utabs{background:transparent;border:0;gap:8px;padding:0}
+.seg.utabs a{border:1px solid var(--line-strong);border-radius:4px;margin:0;padding:6px 14px;background:var(--surface)}
+.seg.utabs a.on{background:var(--hdr);border-color:var(--hdr);color:#fff}
+.seg.utabs a.on .tb{background:rgba(255,255,255,.25);color:#fff}
+
+.page-head .actionbar .sep:has(+ .ph-exit),.page-head .actionbar .sep:last-child{display:none}
+@media (max-width:640px){.crumbs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
 </style>
 </head>
 <body>
@@ -1059,6 +1162,7 @@ kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--u
   <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h11v4"/><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M16 13h2"/></symbol>
   <symbol id="i-keyboard" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M9.5 10h.01M13 10h.01M16.5 10h.01M6 14h.01M18 14h.01M9 14h6"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-arrowl" viewBox="0 0 24 24"><path d="M19 12H5M11 18l-6-6 6-6"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
   <symbol id="i-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
@@ -3015,6 +3119,25 @@ function go(view){
 }
 window.addEventListener("hashchange",()=>go(viewOf(location.hash)));
 
+/* ---------- Title banner (November 2026, the bank's new screen style) ----------
+   The back arrow does what Exit did on that screen (details → list, list → home, with the unsaved-changes check);
+   the Exit button stays in the page for Ctrl+Q but is not shown. Help and Comment become icons; New an outline button. */
+function decorateHeads(){
+  document.querySelectorAll(".page-head").forEach(h=>{
+    if(h.dataset.dec)return;h.dataset.dec="1";
+    const bar=h.querySelector(".actionbar"),btns=bar?[...bar.querySelectorAll(".btn")]:[];
+    const exit=btns.find(b=>/^\s*Exit\s*$/.test(b.textContent));
+    if(exit){exit.classList.add("ph-exit");
+      const back=document.createElement("button");back.type="button";back.className="ph-back";
+      const lbl=h.querySelector(".back")?.textContent.trim()||"Back";back.title=`${lbl} (Ctrl+Q)`;back.setAttribute("aria-label",lbl);
+      back.innerHTML=icon("arrowl");back.addEventListener("click",()=>exit.click());h.prepend(back);}
+    btns.forEach(b=>{const t=b.textContent.replace(/\(\d+\)/,"").trim();
+      if(t==="Help"||t==="Comment"){b.classList.add("ph-icon");b.title=t;b.setAttribute("aria-label",t)}
+      else if(t==="New")b.classList.add("ph-ghost")});
+  });
+}
+new MutationObserver(decorateHeads).observe(document.body,{childList:true,subtree:true});
+
 /* ---------- Keyboard: the Oracle Forms keys the officers already use ----------
    Web Forms defaults (F11 / Ctrl+F11 for query) and the older client-server keys (F7 / F8) both work. */
 const KEYS=[
@@ -3022,7 +3145,7 @@ const KEYS=[
   ["F9","List of values","List of Values","opens the lookup for the field you are in (also customer search and the GPS picker)"],
   ["F11 or F7","Enter query","Enter Query","puts the cursor in the screen's search box"],
   ["Ctrl+F11 or F8","Execute query","Execute Query","runs the search, or fetches the customer"],
-  ["Ctrl+Q","Exit","Exit","the screen's Exit button"],
+  ["Ctrl+Q","Exit","Exit","the back arrow ← on the title banner"],
   ["F1","Help","Help","opens Help for the screen"],
   ["Ctrl+K","Show keys","Show Keys","this list"],
   ["Esc","Close","","closes a dialog, list or picker"],
@@ -3065,7 +3188,7 @@ S=fresh();
 S.customer=CUSTOMERS[0];$("#custNo").value=S.customer.code;
 S.type="C01";S.lookups.account=ACCOUNTS[0];S.values.account=ACCOUNTS[0].code;
 renderAll();
-renderHome();updateApBadge();updateRetBadge();
+renderHome();updateApBadge();updateRetBadge();decorateHeads();
 go(viewOf(location.hash));
 })();
 </script>

@@ -2,7 +2,24 @@
 
 The visual rules used by the prototype, so the Angular build and later modules (Amendment, Cancellation) look the same.
 
-## Component library: @unionsg/ui
+## Visual style: the bank's new screens (November 2026)
+
+The bank's front-end teams have moved on from the @unionsg/ui look (see below). New screens, e.g. *Cheque Book Requisition*, use the style below, and Collateral Management now follows it. Where this section and the @unionsg/ui section disagree, this section wins.
+
+| Element | New style |
+|---|---|
+| Title banner | Royal-blue bar (`#1E4E9C`, easing to `#4F7FC6` at the right end), square corners. **Back arrow** in a small square on the left, the screen title in white with a one-line subtitle. It stays under the top bar when you scroll |
+| Actions on the banner | On the right of the banner: **Help** and **Comment** as icon buttons (Comment shows its count as a badge), then **New** (white outline) and **Submit** (solid green). Approvals: **Return** (solid amber), **Reject** (solid rose), **Authorize** (solid green) |
+| Exit | The back arrow. It does what Exit did on that screen: details → list, list → module home, and it asks before discarding unsaved changes. Ctrl+Q still works |
+| Section bars | Blue bar, square corners, uppercase title after a white tick. Step circles and subtitles are not shown (list bars keep their record count) |
+| Sections inside a form | Blue uppercase title after a short tick in the collateral type's colour, the description under it, a thin rule |
+| Inputs | Underline style: no box, a 1px bottom line that turns blue on focus and red on error; label small and grey above. Lookups, dates, phone and GPS fields follow the same line. Narration keeps a light box |
+| Read-only values | Plain text, no grey box (amounts still right-aligned) |
+| Side panels | White panel with a blue left edge, title in blue with its icon (as *Account Summary* on Cheque Book Requisition) |
+| Tabs | Pills; the active one filled blue |
+| Corners | 3–4px on cards and dialogs; banners and bars square |
+
+## Component library: @unionsg/ui (superseded for look, kept for behaviour)
 
 The bank's standard UI library ([unionsg-ui.vercel.app](https://unionsg-ui.vercel.app), v1.6.0) sets the look of the form controls, buttons, lookups, data tables and tabs. The prototype follows it (October 2026). The library ships as React components; its documented class values (Tailwind) and plain CSS are what the Angular build should reproduce.
 
