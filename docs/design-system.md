@@ -15,6 +15,7 @@ The bank's front-end teams have moved on from the @unionsg/ui look (see below). 
 | Sections inside a form | Blue uppercase title after a short tick in the collateral type's colour, the description under it, a thin rule |
 | Inputs | Underline style: no box, a 1px bottom line that turns blue on focus and red on error; label small and grey above. Lookups, dates, phone and GPS fields follow the same line. Narration keeps a light box |
 | Read-only values | Plain text, no grey box (amounts still right-aligned) |
+| Details panel | Secondary auto-filled facts sit together in a light panel under the identity row, split by thin dividers (as on Cheque Book Requisition, where Currency and Branch sit under Account No. and Account Desc). **Customer:** number and name on top; Customer type · Home branch · Collaterals · Amount held in the panel. **Cash:** Source account and Account name on top; Product · Currency · Source branch in a panel captioned *From the source account*. An empty value shows a dash |
 | Side panels | White panel with a blue left edge, title in blue with its icon (as *Account Summary* on Cheque Book Requisition) |
 | Tabs | Pills; the active one filled blue |
 | Corners | 3–4px on cards and dialogs; banners and bars square |

@@ -1125,6 +1125,26 @@ textarea.input:focus{box-shadow:0 0 0 1px var(--u-focus)}
 
 .page-head .actionbar .sep:has(+ .ph-exit),.page-head .actionbar .sep:last-child{display:none}
 @media (max-width:640px){.crumbs{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+
+/* read-only details panel: secondary auto-filled facts grouped under the main identity row */
+:root{--panel:#F1F4F9}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--panel:#18233A}}
+:root[data-theme="dark"]{--panel:#18233A}
+.ro-panel{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));background:var(--panel);border:1px solid var(--line);border-radius:3px}
+.ro-panel > .ro-cap{grid-column:1/-1;padding:8px 16px 0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.ro-panel > .field{display:flex;flex-direction:column;gap:2px;padding:10px 16px;min-width:0}
+.ro-panel > .field + .field{border-left:1px solid var(--line)}
+.ro-panel .ro,.ro-panel .ro.ro-view{min-height:0;font-weight:600;width:auto;max-width:none}
+.ro-panel .ro svg,.ro-panel .lbl-auto{display:none!important}
+.ro-panel .lbl{font-size:12px;color:var(--muted);font-weight:500}
+#custCard > .field.span2{grid-column:span 2}
+@media (max-width:640px){.ro-panel{grid-template-columns:minmax(0,1fr)}.ro-panel > .field + .field{border-left:0;border-top:1px solid var(--line)}#custCard > .field.span2{grid-column:1/-1}}
+
+.ro-panel{display:flex;flex-wrap:wrap}
+.ro-panel > .ro-cap{flex:1 1 100%}
+.ro-panel > .field{flex:1 1 170px}
+.ro-panel .ro{white-space:normal}
+.ro-panel .ro .t{overflow:visible;white-space:normal;text-overflow:clip}
 </style>
 </head>
 <body>
@@ -1324,9 +1344,9 @@ const TYPES=[
     {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
       {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:6,codeOnly:true},
       {id:"accName",w:"name",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
-      {id:"product",br:true,label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
-      {id:"ccy",w:"m",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
-      {id:"srcBranch",w:"m",br:true,label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
+      {id:"product",panel:"acct",panelCap:"From the source account",label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
+      {id:"ccy",panel:"acct",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
+      {id:"srcBranch",panel:"acct",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
     ]},
     COLL({amountLabel:"Collateral amount",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
@@ -1466,7 +1486,7 @@ function fieldHtml(t,f,st=S){
     const blocked=lov.dependsOn&&!st.values[lov.dependsOn];
     ctl=`<button type="button" class="lookup-btn" id="${id}" data-lov="${f.id}" ${blocked?"disabled":""}>${row?`<span class="lov-v">${f.codeOnly?`<b>${esc(row.code)}</b>`:`<b>${esc(row.code)}</b> - ${esc(row.desc)}`}</span><span class="lov-x" role="button" tabindex="-1" data-lovclear="${f.id}" aria-label="Clear ${esc(f.label)}">${icon("x")}</span>`:`<span class="ph">${blocked?"Select "+esc(fieldLabel(t,lov.dependsOn).toLowerCase())+" first":"Search and select"}</span>`}<span class="lov-ic">${icon("search")}</span></button>`;
   }else if(f.type==="derived"){
-    const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
+    const val=f.get(st);ctl=`<div class="ro ${val?"":"empty"}" id="${id}"><span class="t">${val?esc(val):f.panel?"—":f.from==="account"?"From the account":"From source account"}</span>${icon("lock")}</div>`;
     return `<div class="field ${fcls(f)}" style="${fsty(f)}"><span class="lbl">${esc(f.label)}<span class="lbl-auto">Auto-filled</span></span>${ctl}</div>`;
   }else if(f.type==="textarea"){
     ctl=`<textarea class="input" id="${id}" data-f="${f.id}" placeholder="${esc(f.placeholder||"")}">${esc(v)}</textarea>`;
@@ -1632,7 +1652,9 @@ const fsty=f=>{const z=fsize(f);return z.cw?`--cw:${z.cw}`:""};
 /* a section's fields on the 3-column form grid: every field starts on one of three column lines,
    whatever the collateral type, so fields line up from section to section */
 function rowsHtml(sec,fn){
-  return `<div class="ugrid">${sec.fields.map(fn).join("")}</div>`;
+  const out=[];
+  sec.fields.forEach((f,i)=>{const prev=sec.fields[i-1];if(f.panel&&prev?.panel===f.panel)out[out.length-1].push(f);else out.push(f.panel?[f]:f)});
+  return `<div class="ugrid">${out.map(x=>Array.isArray(x)?`<div class="ro-panel">${x[0].panelCap?`<div class="ro-cap">${esc(x[0].panelCap)}</div>`:""}${x.map(fn).join("")}</div>`:fn(x)).join("")}</div>`;
 }
 /* clearing a LOV also clears the LOVs that depend on it */
 function lovClear(t,st,id){const fs=t.sections.flatMap(s=>s.fields),f=fs.find(x=>x.id===id);delete st.values[id];delete st.lookups[id];
@@ -2096,9 +2118,10 @@ function resetEntry(){
 /* customer facts as library read-only inputs; Creation puts them in the grid that holds the customer number */
 const roField=(label,val,cw,cls="")=>`<div class="field" style="${cw?`--cw:${cw}`:""}"><span class="lbl">${label}</span><div class="ro ${cls} ${val==null?"empty":""}"><span class="t">${val==null?"—":esc(val)}</span></div></div>`;
 function profileFields(c,count,total,withNo){
-  return `${withNo?roField("Customer number",c?c.code:null,"150px"):""}${roField("Customer name",c?c.name:null,"420px")}
-    ${roField("Customer type",c?c.type:null,"160px")}${roField("Home branch",c?`${c.brCode} - ${c.branch}`:null,"220px")}
-    ${roField("Collaterals",c?String(count):null,"80px","num")}${roField("Amount held",c?(count?fmt(total):"0.00"):null,"180px","num")}`;
+  const item=(l,v,num)=>`<div class="field"><span class="lbl">${l}</span><div class="ro ${num?"num":""} ${v==null?"empty":""}"><span class="t">${v==null?"—":esc(v)}</span></div></div>`;
+  return `${withNo?roField("Customer number",c?c.code:null,"150px"):""}
+    <div class="field span2" style="--cw:420px"><span class="lbl">Customer name</span><div class="ro ${c?"":"empty"}"><span class="t">${c?esc(c.name):"—"}</span></div></div>
+    <div class="ro-panel">${item("Customer type",c?c.type:null)}${item("Home branch",c?`${c.brCode} - ${c.branch}`:null)}${item("Collaterals",c?String(count):null,1)}${item("Amount held",c?(count?fmt(total):"0.00"):null,1)}</div>`;
 }
 function profileHtml(c,count,total){
   return `<div class="ugrid cust-ro">${profileFields(c,count,total,true)}</div>`;
