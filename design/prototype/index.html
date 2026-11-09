@@ -1145,6 +1145,16 @@ textarea.input:focus{box-shadow:0 0 0 1px var(--u-focus)}
 .ro-panel > .field{flex:1 1 170px}
 .ro-panel .ro{white-space:normal}
 .ro-panel .ro .t{overflow:visible;white-space:normal;text-overflow:clip}
+
+/* balances: small arrow button opens the breakdown */
+.arrow-btn{width:22px;height:22px;flex:none;display:inline-grid;place-items:center;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);color:var(--sec-ink);cursor:pointer;padding:0}
+.arrow-btn:hover{background:var(--primary-soft);border-color:var(--sec-ink)}
+.arrow-btn svg{width:13px;height:13px}
+.bal-row .v{gap:8px}
+/* Help and Comment on the banner: icon and label on a soft white button */
+.page-head .actionbar .ph-soft{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff;position:relative}
+.page-head .actionbar .ph-soft:hover:not(:disabled){background:rgba(255,255,255,.24);color:#fff}
+.page-head .actionbar .ph-soft span:not(:empty){font-size:12px;font-weight:700;background:#F59E0B;color:#111;border-radius:99px;padding:0 6px;line-height:16px;margin-left:2px}
 </style>
 </head>
 <body>
@@ -1344,9 +1354,9 @@ const TYPES=[
     {title:"Account details",desc:"The deposit account that secures the facility. Branch, product and currency come from the account.",fields:[
       {id:"account",label:"Source account",type:"lookup",lov:"account",req:true,col:6,codeOnly:true},
       {id:"accName",w:"name",label:"Account name",type:"derived",col:6,get:s=>s.lookups.account&&s.lookups.account.desc},
-      {id:"product",panel:"acct",panelCap:"From the source account",label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
-      {id:"ccy",panel:"acct",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
-      {id:"srcBranch",panel:"acct",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
+      {id:"product",label:"Product",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.prod} - ${s.lookups.account.prodDesc}`},
+      {id:"ccy",label:"Currency",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.ccy} - ${s.lookups.account.ccyDesc}`},
+      {id:"srcBranch",label:"Source branch",type:"derived",col:6,get:s=>s.lookups.account&&`${s.lookups.account.brCode} - ${s.lookups.account.branch}`},
     ]},
     COLL({amountLabel:"Collateral amount",desc:"Amount to hold against the account, and when the lien must be reviewed."})],
    rail:"balances"},
@@ -1698,9 +1708,9 @@ function renderRail(){
       <div class="hint">Available balance</div><div class="bal-total">${fmt(a.bal.avail)}</div>
       <div style="margin-top:8px">
       <div class="bal-row"><span>Cleared balance</span><span class="v">${fmt(a.bal.cleared)}</span></div>
-      <div class="bal-row"><span>Uncleared balance</span><span class="v">${fmt(a.bal.uncleared)}<button class="link-btn" data-detail="uncleared">Details</button></span></div>
+      <div class="bal-row"><span>Uncleared balance</span><span class="v">${fmt(a.bal.uncleared)}<button class="arrow-btn" data-detail="uncleared" aria-label="Uncleared items" title="Uncleared items">${icon("chev")}</button></span></div>
       <div class="bal-row"><span>OD amount</span><span class="v">${fmt(a.bal.od)}</span></div>
-      <div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}<button class="link-btn" data-detail="block">Details</button></span></div></div>`
+      <div class="bal-row"><span>Block amount</span><span class="v">${fmt(a.bal.block)}<button class="arrow-btn" data-detail="block" aria-label="Blocked amounts" title="Blocked amounts">${icon("chev")}</button></span></div></div>`
       :`<div class="hint">Select a source account to see its balances.</div>`}</div></div>`;
   }
   html+=`<div class="card"><div class="card-body"><h3>${icon("clip")}Supporting documents</h3>${docsMini(S.docs)}
@@ -1724,7 +1734,7 @@ function renderOther(){
 function renderSteps(){
   $("#step1").className="step "+(S.customer?"done":"active");$("#step1").innerHTML=S.customer?icon("check"):"1";
   $("#step2").className="step "+(S.type?"done":S.customer?"active":"");$("#step2").innerHTML=S.type?icon("check"):"2";
-  $("#commentCount").textContent=S.comments.length?`(${S.comments.length})`:"";
+  $("#commentCount").textContent=S.comments.length?String(S.comments.length):"";
 }
 function renderAll(){const rb=$("#crReturn");if(rb)rb.innerHTML=returnBanner(S.returnItem);renderCustomer();renderTypes();renderForm();renderRail();renderOther();renderSteps()}
 
@@ -2102,7 +2112,7 @@ function amActionBar(mode){
     <button class="btn act-blue" id="amNew" title="Clear the search and show all collaterals">${icon("plus")}New</button>${exit}</div>`;
   const dirty=isDirty();
   return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}
-    <button class="btn act-blue" id="amComment">${icon("msg")}Comment${A.comments.length?`<span>(${A.comments.length})</span>`:""}</button>${sep}
+    <button class="btn act-blue" id="amComment">${icon("msg")}Comment${A.comments.length?`<span>${A.comments.length}</span>`:""}</button>${sep}
     <button class="btn act-blue" id="amNew" ${dirty?`title="${newTitle()}"`:`disabled title="Nothing to reset yet."`}>${icon("plus")}New</button>
     <button class="btn act-green" id="amSubmit" ${dirty?"":`disabled title="${submitWhy()}"`}>${icon("check")}Submit</button>${exit}</div>`;
 }
@@ -2525,9 +2535,9 @@ const isOwn=it=>!!it&&it.by===ME.code;
 function apActionBar(mode){
   const help=`<button class="btn act-blue" id="apHelp">${icon("help")}Help</button>`,exit=`<button class="btn act-red" id="apExit">${icon("close")}Exit</button>`,sep=`<span class="sep" aria-hidden="true"></span>`;
   if(mode!=="detail")return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${sep}<button class="btn act-blue" id="apNew" title="Clear the search and show all requests">${icon("plus")}New</button>${exit}</div>`;
-  const cmt=`<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>(${P.comments.length})</span>`:""}</button>`;
+  const cmt=`<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>${P.comments.length}</span>`:""}</button>`;
   if(isOwn(P.item))return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}${cmt}${sep}${exit}</div>`;
-  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>(${P.comments.length})</span>`:""}</button>${sep}
+  return `<div class="actionbar" role="toolbar" aria-label="Screen actions">${help}<button class="btn act-blue" id="apComment">${icon("msg")}Comment${P.comments.length?`<span>${P.comments.length}</span>`:""}</button>${sep}
     <button class="btn act-amber" id="apReturn" title="Send back to the submitter for correction">${icon("refresh")}Return</button>
     <button class="btn act-rose" id="apDismiss" title="End the request for good">${icon("ban")}Reject</button>
     <button class="btn act-green" id="apAuth">${icon("check")}Authorize</button>${sep}${exit}</div>`;
@@ -3155,7 +3165,7 @@ function decorateHeads(){
       const lbl=h.querySelector(".back")?.textContent.trim()||"Back";back.title=`${lbl} (Ctrl+Q)`;back.setAttribute("aria-label",lbl);
       back.innerHTML=icon("arrowl");back.addEventListener("click",()=>exit.click());h.prepend(back);}
     btns.forEach(b=>{const t=b.textContent.replace(/\(\d+\)/,"").trim();
-      if(t==="Help"||t==="Comment"){b.classList.add("ph-icon");b.title=t;b.setAttribute("aria-label",t)}
+      if(t==="Help"||t==="Comment")b.classList.add("ph-soft");
       else if(t==="New")b.classList.add("ph-ghost")});
   });
 }
