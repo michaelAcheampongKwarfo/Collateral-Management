@@ -1155,6 +1155,10 @@ textarea.input:focus{box-shadow:0 0 0 1px var(--u-focus)}
 .page-head .actionbar .ph-soft{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:#fff;position:relative}
 .page-head .actionbar .ph-soft:hover:not(:disabled){background:rgba(255,255,255,.24);color:#fff}
 .page-head .actionbar .ph-soft span:not(:empty){font-size:12px;font-weight:700;background:#F59E0B;color:#111;border-radius:99px;padding:0 6px;line-height:16px;margin-left:2px}
+
+/* enquiry filters: ranges are two value-sized boxes with "to" between */
+#enForm .range{width:100%;max-width:var(--cw)}
+#enForm .range > .input,#enForm .range > .date-in{flex:1 1 0;min-width:0}
 </style>
 </head>
 <body>
@@ -2892,23 +2896,24 @@ function enqActionBar(mode){
 }
 function filterPanelHtml(){
   const f=E().f,has=k=>ENQ_KINDS[EK].filters.includes(k);
-  const field=(col,lbl,ctl)=>`<div class="field" style="--col:6;--lw:160px"><label>${lbl}</label>${ctl}</div>`;
+  /* 3-column grid like the forms; each filter only as wide as its longest value */
+  const field=(cw,lbl,ctl)=>`<div class="field" style="--cw:${cw}"><label>${lbl}</label>${ctl}</div>`;
   const rng=(k,type,ph)=>type==="amount"
     ?`<div class="range"><input class="input amount" type="text" inputmode="decimal" data-ff="${k}From" value="${esc(f[k+"From"])}" aria-label="${FILTER_LABELS[k]} from" placeholder="From"><span>to</span><input class="input amount" type="text" inputmode="decimal" data-ff="${k}To" value="${esc(f[k+"To"])}" aria-label="${FILTER_LABELS[k]} to" placeholder="To"></div>`
     :`<div class="range">${dateCtl(`data-ff="${k}From" aria-label="${FILTER_LABELS[k]} from"`,f[k+"From"])}<span>to</span>${dateCtl(`data-ff="${k}To" aria-label="${FILTER_LABELS[k]} to"`,f[k+"To"])}</div>`;
   const parts=[];
-  if(has("cust"))parts.push(field(4,"Customer ID",`<div class="search"><input class="input" data-ff="cust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(f.cust)}"><button class="btn" type="button" id="enCustLov" aria-label="Search customers">${icon("search")}</button></div>`));
-  if(has("branch"))parts.push(field(4,"Branch",`<select class="input" data-ff="branch"><option value="">Any branch</option>${BRANCHES.map(b=>`<option value="${b.code}" ${f.branch===b.code?"selected":""}>${b.code} · ${b.desc}</option>`).join("")}</select>`));
-  if(has("coll"))parts.push(field(4,"Collateral no.",`<input class="input mono" data-ff="coll" placeholder="e.g. 2609184352" value="${esc(f.coll)}">`));
-  if(has("type"))parts.push(field(4,"Collateral type",`<select class="input" data-ff="type"><option value="">Any type</option>${TYPES.map(t=>`<option value="${t.code}" ${f.type===t.code?"selected":""}>${t.code} · ${t.name}</option>`).join("")}</select>`));
-  if(has("status"))parts.push(field(4,"Status",`<select class="input" data-ff="status"><option value="">Any status</option>${["Active","Pending","Closed"].map(s=>`<option ${f.status===s?"selected":""}>${s}</option>`).join("")}</select>`));
-  if(has("cov"))parts.push(field(4,"Coverage amount between",rng("cov","amount",1)));
-  if(has("review"))parts.push(field(4,"Review date between",rng("review","date")));
-  if(has("expiry"))parts.push(field(4,"Expiry date between",rng("expiry","date")));
-  if(has("posted"))parts.push(field(4,"Posted date between",rng("posted","date")));
-  const fill=parts.length%2?3:0;
+  if(has("cust"))parts.push(field("150px","Customer ID",`<div class="search"><input class="input" data-ff="cust" inputmode="numeric" placeholder="e.g. 004997" value="${esc(f.cust)}"><button class="btn" type="button" id="enCustLov" aria-label="Search customers">${icon("search")}</button></div>`));
+  if(has("coll"))parts.push(field("180px","Collateral no.",`<input class="input mono" data-ff="coll" placeholder="e.g. 2609184352" value="${esc(f.coll)}">`));
+  if(has("branch"))parts.push(field("220px","Branch",`<select class="input" data-ff="branch"><option value="">Any branch</option>${BRANCHES.map(b=>`<option value="${b.code}" ${f.branch===b.code?"selected":""}>${b.code} · ${b.desc}</option>`).join("")}</select>`));
+  if(has("type"))parts.push(field("180px","Collateral type",`<select class="input" data-ff="type"><option value="">Any type</option>${TYPES.map(t=>`<option value="${t.code}" ${f.type===t.code?"selected":""}>${t.code} · ${t.name}</option>`).join("")}</select>`));
+  if(has("status"))parts.push(field("150px","Status",`<select class="input" data-ff="status"><option value="">Any status</option>${["Active","Pending","Closed"].map(s=>`<option ${f.status===s?"selected":""}>${s}</option>`).join("")}</select>`));
+  if(has("cov"))parts.push(field("330px","Coverage amount between",rng("cov","amount",1)));
+  if(has("review"))parts.push(field("310px","Review date between",rng("review","date")));
+  if(has("expiry"))parts.push(field("310px","Expiry date between",rng("expiry","date")));
+  if(has("posted"))parts.push(field("310px","Posted date between",rng("posted","date")));
+
   return `<div class="filter-panel" id="enFilters"><div class="fp-head"><span>${icon("funnel")}<b>Advanced filters</b></span><button class="link-btn" id="enCloseF">${icon("x")}Close</button></div>
-    <form class="grid" id="enForm" autocomplete="off">${parts.join("")}${fill?`<div style="grid-column:span 6"></div>`:""}
+    <form class="ugrid" id="enForm" autocomplete="off">${parts.join("")}
     <div class="search-actions" style="grid-column:1/-1"><button type="button" class="btn ghost" id="enClearF">${icon("refresh")}Clear filters</button><button type="submit" class="btn act-fetch">${icon("search")}Fetch</button></div></form></div>`;
 }
 function enqListHtml(){

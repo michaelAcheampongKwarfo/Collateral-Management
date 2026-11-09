@@ -214,7 +214,7 @@ Light mode uses a soft blue-grey page with off-white cards.
 ### Quick search with funnel (Enquiry)
 
 - One search box, about 360px wide (customer name or number, collateral number, description, status), that filters as you type, with a solid blue **funnel** button beside it. Approvals and Returned use the same 360px box without the funnel.
-- The funnel opens an **Advanced filters** panel inside the same card, laid out two fields per row with inline labels (ranges as *from – to*). **Fetch** applies and closes it; **Clear filters** empties it.
+- The funnel opens an **Advanced filters** panel inside the same card, laid out on the same 3-column grid as the forms, each filter as wide as its longest value: Customer ID 150px, Collateral no. 180px, Branch 220px, Collateral type 180px, Status 150px, amount ranges two 150px boxes and date ranges two 140px boxes with *to* between. **Fetch** applies and closes it; **Clear filters** empties it.
 - Applied filters appear as chips under the search box, each with its own ×, plus **Clear all**. The funnel shows a red count of active filters.
 
 ### Data grid toolbar (Enquiry)
