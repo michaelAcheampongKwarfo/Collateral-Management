@@ -62,9 +62,9 @@ The flowchart, built from the PL/SQL, is in [`flowchart.md`](flowchart.md).
 | Area | Oracle Forms | Angular design |
 |---|---|---|
 | Navigation | One window per screen | The bank's main menu (built by another team) opens the module **home**, where cards open each screen; a breadcrumb and **Exit** lead back to it |
-| Toolbar | Help, Comment, New, Submit, Exit buttons | The **standard action bar** used on every module screen, in the same order as Forms: Help, Comment, New (blue), Submit (green), Exit (red). Help and Comment open side panels. See [design system](../design-system.md#standard-action-bar). |
-| Customer | Number + LOV button, read-only name and type | **Step 1** card: number field with search (Enter to fetch), next to a **customer profile strip** across the row: name and number, customer type, home branch (`010 · SINKOR`), number of collaterals held and total amount held |
-| Collateral type | Code + LOV button + description | **Step 2** card: five selectable tiles that show code, name and a one-line description. Arrow keys move between tiles. |
+| Toolbar | Help, Comment, New, Submit, Exit buttons | The **title banner**: back arrow (does what Exit did), the title, then Help, Comment, New and Submit (green) on the right. Help and Comment open side panels. See [design system](../design-system.md) |
+| Customer | Number + LOV button, read-only name and type | **Customer** section: number field with search (Enter to fetch) and the customer name on top; customer type, home branch, number of collaterals and amount held in a details panel underneath |
+| Collateral type | Code + LOV button + description | **Collateral type** section: one lookup box (`C01 - CASH COLLATERALS`) with a searchable dropdown and the type's one-line description under it. Agreed after comparing it with five tiles: it keeps working as the bank adds types |
 | Dynamic area | Stacked canvas for the selected type | **Step 3** card built from the type's form definition, grouped into sections |
 | Collateral No | Read-only green field | Shown in the **Summary** panel as "Assigned on submit", then in the confirmation dialog |
 | Balances (cash) | Panel on the right of the cash form | **Account balances** card in the right-hand panel |
@@ -270,7 +270,7 @@ collateral/
 ├── creation/
 │   ├── creation-page.component    page header, toolbar, step orchestration
 │   ├── customer-lookup.component  step 1
-│   ├── collateral-type-picker     step 2 (tiles)
+│   ├── collateral-type-picker     step 2 (lookup)
 │   ├── dynamic-collateral-form    step 3 (renders CollateralTypeDef)
 │   ├── summary-panel              summary, progress
 │   ├── balances-panel             cash only

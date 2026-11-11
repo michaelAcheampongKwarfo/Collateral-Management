@@ -1,91 +1,54 @@
 # Collateral Management: Oracle Forms → Angular
 
-Design and documentation for moving the Collateral Management screens from Oracle Forms to Angular. Work goes module by module.
+UI design, prototype and documentation for moving the Collateral Management (LRSK) screens from Oracle Forms to Angular. The mock-up was presented and approved; the Angular build is **on hold until the green light** ([next phase](docs/angular-next-phase.md)).
 
-| Module | Status |
+## Start here
+
+| | |
 |---|---|
-| Creation | Spec, UI prototype and flowchart from the PL/SQL ready ([flowchart](docs/creation/flowchart.md), [creation and approval flow, payload](docs/creation/creation-approval-flow.html)). |
-| Amendment | Spec, UI prototype and draft flow ready. [Amendment and approval flow, payload](docs/amendment/amendment-approval-flow.html) from the PL/SQL. |
-| Cancellation | Spec, UI prototype and draft flow ready. Uses the Amendment list with a read-only form and closure reason. [Cancellation and approval flow](docs/cancellation/cancellation-approval-flow.html) from the PL/SQL. |
-| Approvals | Spec, UI prototype and draft flow ready. One queue for creation, amendment and cancellation requests. |
-| Enquiry | Spec, UI prototype and draft flow ready. All, running and used collateral, with quick search, funnel filters, review-date filters and PDF / Excel. |
-| Returned | Prototype ready (in the Approval spec). Requests returned by an approver, corrected on their entry screen and resubmitted. [Return and resubmit flow](docs/returned/return-flow.html). |
-| Reporting | **Review due / overdue** report prototyped ([spec](docs/reporting/review-due-overdue.md)). Expiring collateral and Audit trail chosen next ([training notes](docs/training-notes.md)). |
+| **Prototype** | Open [`design/prototype/index.html`](design/prototype/index.html) in a browser. All names, accounts and amounts are sample data |
+| **Design rules** | [`docs/design-system.md`](docs/design-system.md): visual style, field widths, components, shortcuts, duplicate check, history |
+| **Screenshots** | [`design/screens/`](design/screens/) |
+| **Next phase** | [`docs/angular-next-phase.md`](docs/angular-next-phase.md): what the Angular build works from and what is still needed |
+| **Training notes** | [`docs/training-notes.md`](docs/training-notes.md): each note from the training session and where it is handled |
 
-Training session notes and where each is handled: [docs/training-notes.md](docs/training-notes.md).
+## Modules
+
+| Module | Spec | Flow from the PL/SQL |
+|---|---|---|
+| Creation | [spec](docs/creation/collateral-creation.md) | [creation and approval, payload](docs/creation/creation-approval-flow.html) |
+| Amendment | [spec](docs/amendment/collateral-amendment.md) | [amendment and approval, payload](docs/amendment/amendment-approval-flow.html) |
+| Cancellation | [spec](docs/cancellation/collateral-cancellation.md) | [cancellation and approval](docs/cancellation/cancellation-approval-flow.html) |
+| Approvals | [spec](docs/approval/collateral-approval.md) | one queue for creation, amendment and cancellation |
+| Returned (new) | in the [Approvals spec](docs/approval/collateral-approval.md) | [return and resubmit](docs/returned/return-flow.html) |
+| Enquiry | [spec](docs/enquiry/collateral-enquiry.md) | draft |
+| Reporting | [Review due / overdue](docs/reporting/review-due-overdue.md) | — |
 
 ## Contents
 
 ```
-screenshots/creation/          Current Oracle Forms screens (reference)
-screenshots/amendment/
-screenshots/cancellation/
-screenshots/approval/
-screenshots/enquiry/
-design/prototype/index.html    Interactive UI prototype for all modules (open in any browser)
-design/prototype/index-type-lov.html  Comparison copy: collateral type picked from a LOV instead of tiles (rebuild with build-type-lov.py)
-design/comparison/             Tiles vs type LOV screenshots
-design/home/screens/           Module home (cards that open each screen)
-design/creation/screens/       Prototype screenshots for slides
-design/amendment/screens/
-design/cancellation/screens/
-design/approval/screens/
-design/enquiry/screens/
-design/returned/screens/
-design/reporting/screens/
-docs/creation/                 Functional spec and process flow per module
-docs/amendment/
-docs/cancellation/
-docs/approval/
-docs/enquiry/
-docs/reporting/
-docs/design-system.md          Colours, layout grid, action bar and components shared by all modules
-docs/angular-next-phase.md     Next phase: promoting the prototype to the Angular project (on hold until the green light)
+design/prototype/index.html   Interactive prototype for every module
+design/prototype/maps/        Saved Monrovia street map for the GPS picker
+design/screens/               Current screenshots (01 home … 22 mobile)
+docs/                         Design system, next phase, training notes, a spec and flow per module
+screenshots/                  The current Oracle Forms screens, for reference
 ```
 
 ## Before and after
 
-| Oracle Forms | Angular design |
+| Oracle Forms | New design |
 |---|---|
-| ![Current creation screen](screenshots/creation/cash.PNG) | ![New creation screen](design/creation/screens/01-cash.png) |
-| ![Current amendment list](screenshots/amendment/amendment%20grid.PNG) | ![New amendment list](design/amendment/screens/01-search-list.png) |
-| ![Current amendment details](screenshots/amendment/amendment%20property-entry.PNG) | ![New amendment details](design/amendment/screens/09-edited.png) |
-| ![Current cancellation screen](screenshots/cancellation/cancellation.PNG) | ![New cancellation details](design/cancellation/screens/07-reason.png) |
-| ![Current amendment approval](screenshots/approval/amendment%20-approval%20sample.PNG) | ![New amendment approval](design/approval/screens/05-amendment.png) |
-| ![Current document registration](screenshots/creation/document-registration.png) | ![New documents modal](design/creation/screens/10-documents.png) |
-| ![Current running collateral enquiry](screenshots/enquiry/running%20collateral-grid.PNG) | ![New running collateral enquiry](design/enquiry/screens/05-running-filters.png) |
-| ![Current enquiry details](screenshots/enquiry/all%20collateral-details.PNG) | ![New enquiry details](design/enquiry/screens/07-detail-property.png) |
+| ![Forms creation](screenshots/creation/cash.PNG) | ![New creation](design/screens/02-creation-cash.png) |
+| ![Forms amendment list](screenshots/amendment/amendment%20grid.PNG) | ![New amendment list](design/screens/09-amendment-list.png) |
+| ![Forms amendment approval](screenshots/approval/amendment%20-approval%20sample.PNG) | ![New approval](design/screens/13-approval-creation.png) |
+| ![Forms running collateral](screenshots/enquiry/running%20collateral-grid.PNG) | ![New enquiry](design/screens/15-enquiry-all.png) |
 
-**Creation screens:** [documents](design/creation/screens/10-documents.png) · [insurance](design/creation/screens/02-insurance.png) · [property](design/creation/screens/03-property.png) · [guarantee](design/creation/screens/04-guarantee.png) · [shares](design/creation/screens/05-shares.png) · [validation](design/creation/screens/06-validation.png) · [lookup](design/creation/screens/07-lookup.png) · [submitted](design/creation/screens/08-submitted.png) · [blank](design/creation/screens/00-blank.png) · [mobile, dark](design/creation/screens/09-mobile-dark.png)
+## Trying the prototype
 
-**Amendment screens:** [filtered and sorted](design/amendment/screens/02-filtered-sorted.png) · [search by customer](design/amendment/screens/03-search-customer.png) · [cash](design/amendment/screens/04-cash.png) · [insurance](design/amendment/screens/05-insurance.png) · [property](design/amendment/screens/06-property.png) · [guarantee](design/amendment/screens/07-guarantee.png) · [shares](design/amendment/screens/08-shares.png) · [validation](design/amendment/screens/10-validation.png) · [submitted](design/amendment/screens/11-submitted.png) · [pending in list](design/amendment/screens/12-list-pending.png) · [mobile, dark](design/amendment/screens/13-mobile-dark.png) · [desktop, dark](design/amendment/screens/14-desktop-dark.png)
+It opens on the module **home**; each card opens a screen, and the back arrow on each screen leads back. A hash opens a screen directly: `#creation`, `#amendment`, `#cancellation`, `#approvals`, `#returned`, `#enquiry-all`, `#enquiry-running`, `#enquiry-used`, `#report-review`. **Ctrl+K** lists the keyboard shortcuts.
 
-**Cancellation screens:** [search list](design/cancellation/screens/01-search-list.png) · [cash](design/cancellation/screens/02-cash.png) · [insurance](design/cancellation/screens/03-insurance.png) · [property](design/cancellation/screens/04-property.png) · [guarantee](design/cancellation/screens/05-guarantee.png) · [shares](design/cancellation/screens/06-shares.png) · [confirm](design/cancellation/screens/08-confirm.png) · [submitted](design/cancellation/screens/09-submitted.png) · [pending in list](design/cancellation/screens/10-list-pending.png) · [mobile, dark](design/cancellation/screens/11-mobile-dark.png)
-
-**Approval screens:** [decisions](design/approval/screens/10-decisions.png) · [your own request (maker-checker)](design/approval/screens/14-own-request.png) · [switch user](design/approval/screens/15-switch-user.png) · [return](design/approval/screens/11-return.png) · [verification](design/approval/screens/12-verify.png) · [dismiss](design/approval/screens/13-dismiss.png) · [queue](design/approval/screens/01-queue.png) · [amendments only](design/approval/screens/02-queue-amendments.png) · [creation, cash](design/approval/screens/03-creation-cash.png) · [creation, property](design/approval/screens/04-creation-property.png) · [cancellation](design/approval/screens/08-cancellation.png) · [authorized](design/approval/screens/06-authorized.png) · [reject reason](design/approval/screens/07-reject-reason.png) · [mobile, dark](design/approval/screens/09-mobile-dark.png)
-
-**Enquiry screens:** [all](design/enquiry/screens/01-all.png) · [all, filters open](design/enquiry/screens/02-all-filters.png) · [all, filtered](design/enquiry/screens/03-all-filtered.png) · [running](design/enquiry/screens/04-running.png) · [used](design/enquiry/screens/06-used.png) · [details](design/enquiry/screens/07-detail-property.png) · [pending details](design/enquiry/screens/08-detail-pending.png) · [mobile, dark](design/enquiry/screens/09-mobile-dark.png)
-
-**Returned screens:** [queue](design/returned/screens/01-returned-queue.png) · [amendment to correct](design/returned/screens/02-amendment-correct.png) · [creation to correct](design/returned/screens/03-creation-correct.png)
-
-**Report screens:** [review due / overdue](design/reporting/screens/01-review-report.png) · [filtered](design/reporting/screens/02-review-filtered.png) · [mobile, dark](design/reporting/screens/03-mobile-dark.png)
-
-## Using the prototype
-
-Open `design/prototype/index.html` in a browser. It starts on the module **home** (`#home`), where a card opens each screen; the breadcrumb, the **CM** mark and **Exit** lead back to it. A hash in the address opens a screen directly: `#creation`, `#amendment`, `#cancellation`, `#approvals`, `#returned`, `#enquiry-all`, `#enquiry-running`, `#enquiry-used` or `#report-review`. There is no sidebar: the bank's main menu, built by another team, opens this module.
-
-**Creation** starts with sample customer `056719` and a cash collateral. Try other customer numbers (`048213`, `061104`, `072530`) or the search button, each collateral type tile, **Submit** with empty fields, then a complete submit.
-
-**Amendment** lists 14 approved collaterals. Try searching for customer `004997`, the type chips, sorting a column, then **›** on a row. Change a few fields to see change tracking and **Undo**, then **Submit**.
-
-**Cancellation** uses the same list. Open a record to see its read-only form, pick or type a closure reason, then **Submit** and confirm. The record is then locked in both Amendment and Cancellation.
-
-**Approvals** starts with 6 sample requests, and everything you submit in the other modules joins the queue. You can't decide on a request you submitted (maker-checker): switch user from the name at the top right (K. Asare, officer, or A. Mensah, supervisor) to approve it. Open one, then **Authorize** (tick every item on the verification checklist), **Return** (with a reason) or **Dismiss** (with a reason and a final tick). An authorized creation appears in Amendment, an authorized cancellation leaves the lists, and a returned request appears in **Returned**, where it reopens on its own entry screen to correct and resubmit.
-
-**Documents:** **Attach documents** in Creation (and **Manage documents** in Amendment) opens the documents modal. Choose or drop a file, or use **Scan document**, then **Save document**.
-
-**Enquiry** has three tabs. Type in the search box, or open the funnel for advanced filters and **Fetch**; remove filters from the chips. Sort columns, export with **Excel**, and select **›** for the read-only details with valuation, usage and the type form.
-
-**Reports › Review due / overdue** lists open collateral whose review date has passed or is due. Change the parameters, filter Overdue / Due, and export to PDF or Excel.
-
-All names, accounts and amounts are sample data.
+- **Creation:** starts with customer `056719` and a cash collateral. Pick another collateral type from the lookup, submit with empty fields to see the checks, then a complete submit. For the duplicate warning, create an Insurance collateral with insurer `002` and policy `LA-2025-0412`.
+- **Amendment / Cancellation:** search (e.g. customer `004997`), open a record with **›**, change fields or give a closure reason, then **Submit**.
+- **Approvals:** you can't decide on your own request (maker-checker). Switch user from the name at the top right (K. Asare, A. Mensah), open a request, then **Authorize**, **Return** or **Reject**. Returned requests appear under **Returned**, reopen on their entry screen and are resubmitted.
+- **Enquiry:** search, open the funnel for advanced filters, export to PDF or Excel, and open **›** for details, usage and history.
+- **Reports:** Review due / overdue, with parameters and exports.

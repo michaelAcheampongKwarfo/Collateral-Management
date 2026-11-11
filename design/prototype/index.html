@@ -1258,7 +1258,7 @@ textarea.input:focus{box-shadow:0 0 0 1px var(--u-focus)}
       <!-- Step 2 -->
       <section class="card" aria-labelledby="s2">
         <div class="card-head"><div class="step" id="step2">2</div><div><h2 id="s2">Collateral type</h2><p>Each type opens its own set of details.</p></div></div>
-        <div class="card-body"><div class="types" role="radiogroup" aria-labelledby="s2" id="types"></div></div>
+        <div class="card-body"><div class="ugrid"><div class="field full" style="--cw:280px"><label for="typeBtn">Collateral type<span class="req">*</span></label><div id="types"></div><div class="hint" id="typeHint"></div></div></div></div>
       </section>
 
       <!-- Step 3 -->
@@ -1472,8 +1472,9 @@ function fetchCustomer(code){
 
 /* ---------- Step 2: type tiles ---------- */
 function renderTypes(){
-  $("#types").innerHTML=TYPES.map(t=>`<button type="button" class="tile" role="radio" aria-checked="${S.type===t.code}" data-type="${t.code}" style="--tc:var(${t.tc})" ${S.customer?"":"disabled"}>
-    <span class="code">${t.code}</span><span class="ic">${icon(t.ic)}</span><b>${t.name}</b><span class="d">${t.d}</span><span class="tick">${icon("check")}</span></button>`).join("");
+  const t=typeBy(S.type);
+  $("#types").innerHTML=`<button type="button" class="lookup-btn" id="typeBtn" data-typelov ${S.customer?"":"disabled"}>${t?`<span class="lov-v"><b>${t.code}</b> - ${esc(t.lovDesc)}</span>`:`<span class="ph">${S.customer?"Search and select":"Find the customer first"}</span>`}<span class="lov-ic">${icon("search")}</span></button>`;
+  $("#typeHint").textContent=t?t.d:"Each type opens its own form.";
 }
 /* scroll so the whole card, header included, sits under the sticky top bar */
 function scrollToCard(el){const top=el.getBoundingClientRect().top+window.scrollY-($(".topbar").offsetHeight+14);window.scrollTo({top,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})}
@@ -1879,10 +1880,11 @@ $("#custNo").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault
 $("#custNo").addEventListener("change",e=>fetchCustomer(e.target.value));
 $("#custSearch").addEventListener("click",()=>openLov("Find customer",CUSTOMERS,r=>fetchCustomer(r.code),[["code","Customer no."],["name","Name"],["type","Type"]]));
 
-$("#types").addEventListener("click",e=>{const b=e.target.closest(".tile");if(!b||b.disabled)return;
-  if(S.type!==b.dataset.type){S.type=b.dataset.type;S.values={};S.lookups={};S.errors={};S.showErrors=false}
-  renderAll();scrollToCard($("#formCard"));});
-$("#types").addEventListener("keydown",e=>{if(!["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key))return;const tiles=[...document.querySelectorAll(".tile")];const i=tiles.indexOf(document.activeElement);if(i<0)return;const n=tiles[(i+(e.key==="ArrowRight"||e.key==="ArrowDown"?1:-1)+tiles.length)%tiles.length];n.focus();e.preventDefault()});
+$("#types").addEventListener("click",e=>{const b=e.target.closest("[data-typelov]");if(!b||b.disabled)return;
+  openLov("Collateral types",TYPES.map(t=>({code:t.code,desc:t.lovDesc})),r=>{
+    if(S.type!==r.code){S.type=r.code;S.values={};S.lookups={};S.errors={};S.showErrors=false}
+    renderAll();scrollToCard($("#formCard"));
+  },undefined,b);});
 
 $("#rail").addEventListener("click",e=>{const b=e.target.closest("[data-jumpf]");if(!b)return;const el=document.getElementById(`f-${S.type}-${b.dataset.jumpf}`);if(el){el.scrollIntoView({block:"center"});el.focus({preventScroll:true})}});
 $("#formCard").addEventListener("input",e=>{const f=e.target.dataset.f;if(!f)return;S.values[f]=valOf(e.target);if(S.showErrors&&S.errors[f]&&hasValue(f)){delete S.errors[f];const w=e.target.closest(".field");w.classList.remove("invalid");w.querySelector(".err")?.remove()}renderRail()});

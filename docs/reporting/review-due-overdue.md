@@ -6,7 +6,7 @@
 | **Target** | Angular front end |
 | **Status** | Draft for presentation. Answers training note 6 (enforce the next review date). |
 | **Prototype** | [`design/prototype/index.html#report-review`](../../design/prototype/index.html) |
-| **Screenshots** | [`design/reporting/screens/`](../../design/reporting/screens/) |
+| **Screenshots** | [`design/screens/18-report-review.png`](../../design/screens/18-report-review.png) |
 
 ---
 

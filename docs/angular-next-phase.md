@@ -10,11 +10,11 @@ The source of truth for the build:
 
 | What | Where |
 |---|---|
-| Visual style, widths, colours, components, shortcuts, duplicate rules, history | `docs/design-system.md` (the *Visual style: the bank's new screens* section wins over the older @unionsg/ui section) |
+| Visual style, widths, colours, components, shortcuts, duplicate rules, history | `docs/design-system.md`, screenshots in `design/screens/` |
 | What each Submit / Approve does in the database, and the proposed API calls and payloads | `docs/*/…-flow.html`, `docs/returned/return-flow.html` |
 | Module specs | `docs/creation`, `docs/amendment`, `docs/cancellation`, `docs/approval`, `docs/enquiry`, `docs/returned`, `docs/reporting` |
 | Open questions for the PL/SQL team (incl. where GPS coordinates are stored, real column sizes) | *Collateral Management: Questions for the PL/SQL Team* (Claude Docs) |
-| Agreed design | Collateral type as **tiles** (`index.html`); `index-type-lov.html` is a comparison copy only |
+| Agreed design | `design/prototype/index.html`. Collateral type is picked from a **lookup (LOV)**, decided after comparing it with tiles |
 
 ## Planned work (to confirm on the green light)
 
