@@ -40,6 +40,7 @@ docs/approval/
 docs/enquiry/
 docs/reporting/
 docs/design-system.md          Colours, layout grid, action bar and components shared by all modules
+docs/angular-next-phase.md     Next phase: promoting the prototype to the Angular project (on hold until the green light)
 ```
 
 ## Before and after
